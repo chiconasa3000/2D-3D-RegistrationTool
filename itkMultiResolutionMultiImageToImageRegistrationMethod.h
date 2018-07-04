@@ -10,7 +10,7 @@
 #include "itkMultiImageRegistrationMacro.h"
 #include "itkMultiImageToImageMetric.h"
 #include "itkMultiImageToImageRegistrationMethod.h"
-
+#include "itkImageFileWriter.h"
 
 /** \class MultiResolutionMultiImageToImageRegistrationMethod
  * \brief Multi-resolution registration using multiple fixed images.
@@ -55,7 +55,11 @@ class ITK_EXPORT MultiResolutionMultiImageToImageRegistrationMethod
   : public MultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
 {
 public:
-  /** Standard class typedefs. */
+    /** Write Files in order to view images in every resolution level*/
+    typedef itk::ImageFileWriter< TFixedImage  > WriterType;
+    typedef typename WriterType::Pointer fixedWriter;
+    typedef typename WriterType::Pointer movingWriter;
+    /** Standard class typedefs. */
   typedef MultiResolutionMultiImageToImageRegistrationMethod             Self;
   typedef MultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>  Superclass;
   typedef SmartPointer<Self>                                             Pointer;

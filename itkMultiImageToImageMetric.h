@@ -49,6 +49,7 @@ namespace itk
   class ITK_EXPORT MultiImageToImageMetric : public SingleValuedCostFunction
   {
   public:
+
 /** Standard class typedefs */
     typedef MultiImageToImageMetric         Self;
     typedef SingleValuedCostFunction        Superclass;

@@ -3,7 +3,10 @@
 
 #include "itkMultiResolutionMultiImageToImageRegistrationMethod.h"
 #include <itkRecursiveMultiResolutionPyramidImageFilter.h>
-
+#include <sstream>
+#include <string.h>
+#include <fstream>
+#include <iostream>
 namespace itk
 {
 
@@ -64,6 +67,68 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
     this->m_CurrentFixedMultiImageRegion.push_back(
       this->m_FixedMultiImageRegionPyramid[f][m_CurrentLevel] );
     }
+
+  //Here It need to traverse the fixed images and moving image in order to write the files
+  //of the actual level
+
+  //the char command has to reuse
+    //char nameFixedImage[200];
+  //write fixed images in the current level
+  for(int i=0; i<m_CurrentFixedMultiImage.size();i++){
+      fixedWriter fixedwriter = WriterType::New();
+      char nameFixedImage[200];
+
+      //build the name of the file
+      std::string command = "fixedimage ";
+      strcpy(nameFixedImage, command.c_str());
+
+      //conversion del numero de imagen
+      std::ostringstream numImg;
+      numImg << i;
+      strcat(nameFixedImage, numImg.str().c_str());
+
+      //agregando level word
+      std::string levelWord = "level";
+      strcat(nameFixedImage, levelWord.c_str());
+
+      //conversion del nivel actual
+      std::ostringstream currentLevel;
+      currentLevel << m_CurrentLevel;
+      strcat(nameFixedImage, currentLevel.str().c_str());
+
+      //extension del archivo
+      std::string extension = ".mha";
+      strcat(nameFixedImage, extension.c_str());
+
+      fixedwriter->SetFileName(nameFixedImage);
+      fixedwriter->SetInput(m_CurrentFixedMultiImage[i]);
+      fixedwriter->Update();
+  }
+
+  //For moving image it has its only writer write image in the current level
+  movingWriter movingwriter = WriterType::New();
+
+    //build the name of the file
+  char nameMovingImage[200];
+  std::string command = "movingimage ";
+  strcpy(nameMovingImage, command.c_str());
+
+  //agregando level word
+  std::string levelWord = "level";
+  strcat(nameMovingImage, levelWord.c_str());
+
+  //conversion del nivel actual
+  std::ostringstream currentLevel;
+  currentLevel << m_CurrentLevel;
+  strcat(nameMovingImage, currentLevel.str().c_str());
+
+  //extension del archivo
+  std::string extension = ".mha";
+  strcat(nameMovingImage, extension.c_str());
+
+  movingwriter->SetFileName(nameMovingImage);
+  movingwriter->SetInput(m_MovingImagePyramid->GetOutput( m_CurrentLevel ));
+  movingwriter->Update();
 
   this->m_MultiMetric->SetFixedMultiImage( this->m_CurrentFixedMultiImage );
   this->m_MultiMetric->SetTransform( this->m_Transform );

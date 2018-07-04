@@ -1,8 +1,10 @@
+# CPU Implementation
+
 cmake_minimum_required(VERSION 2.6)
 
 include(${CMAKE_SOURCE_DIR}/IJMacros.txt)
 
-project(itkMultiImageRegistration)
+project(CPUitkMultiImageRegistration)
 
 #The following lines are required to use Dart
 #enable_testing()
@@ -65,8 +67,8 @@ itkPatternIntensityMultiImageToImageMetric.txx
 #add_executable(MultiImageSearch Examples/MultiImageSearch.cxx)
 #target_link_libraries(MultiImageSearch ${Libraries})
 
-#add_executable(ReadCmd Examples/readCmd.cpp)
-#target_link_libraries(ReadCmd ${Libraries})
+add_executable(ReadCmd Examples/readCmd.cpp)
+target_link_libraries(ReadCmd ${Libraries})
 
 add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx  ${FILES_GPU} ${HeaderFiles})
 target_link_libraries(MultiImageRegistration ${Libraries})
