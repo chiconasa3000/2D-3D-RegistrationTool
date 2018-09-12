@@ -71,20 +71,21 @@ namespace itk
       this->GetFixedImageRegion() );
     m_ResampleImageFilter->Update();
 
+
     for (unsigned int dim=0; dim < m_MaxDimension; dim++)
-      {
-      m_MovingSobelFilters[dim] = SobelFilterType::New();
-      m_MovingSobelFilters[dim]->OverrideBoundaryCondition(
-        &m_MovingBoundaryCondition );
-      m_MovingSobelFilters[dim]->SetOperator( m_SobelOperators[dim] );
-      m_MovingSobelFilters[dim]->SetInput(m_ResampleImageFilter->GetOutput());
-      m_MovingSobelFilters[dim]->GetOutput()->SetRequestedRegion(
-        this->GetFixedImageRegion() );
-      }
+    {
+        m_MovingSobelFilters[dim] = SobelFilterType::New();
+        m_MovingSobelFilters[dim]->OverrideBoundaryCondition(
+                    &m_MovingBoundaryCondition );
+        m_MovingSobelFilters[dim]->SetOperator( m_SobelOperators[dim] );
+        m_MovingSobelFilters[dim]->SetInput(m_ResampleImageFilter->GetOutput());
+        m_MovingSobelFilters[dim]->GetOutput()->SetRequestedRegion(
+                    this->GetFixedImageRegion() );
+    }
   }
 
 
-/**
+  /**
  * PrintSelf
  */
   template <class TFixedImage, class TMovingImage>

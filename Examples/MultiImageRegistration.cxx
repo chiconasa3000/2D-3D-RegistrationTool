@@ -360,6 +360,94 @@ int main(int argc, char* argv[] )
     argc--;
     argv++;
 
+    //----------------------------------------------------------------------------
+    // Save projected images
+    //----------------------------------------------------------------------------
+    typedef itk::ResampleImageFilter<MovingImageType, FixedImageType>  ResamplerType;
+    typedef itk::SubtractImageFilter<FixedImageType,FixedImageType, FixedImageType>  SubtracterType;
+    typedef itk::ImageFileWriter<FixedImageType> WriterType;
+    typedef itk::RescaleIntensityImageFilter< MovingImageType, MovingImageType > RescaleFilterType;
+
+
+    //traverse every fixed image
+    for( unsigned int f=0; f<FImgTotal; f++ )
+    {
+        //the moving image is updating with the last transformation
+        ResamplerType::Pointer resampler = ResamplerType::New();
+        resampler->SetInput( registration->GetMovingImage() );
+        resampler->SetInterpolator( registration->GetMultiInterpolator()[f] );
+        resampler->SetTransform( transform );
+        resampler->SetUseReferenceImage( true );
+        resampler->SetReferenceImage( registration->GetFixedMultiImage()[f] );
+
+
+        //threshold the image with the correct intensity values
+        RescaleFilterType::Pointer rescaler1 = RescaleFilterType::New();
+        rescaler1->SetOutputMinimum(   0 );
+        rescaler1->SetOutputMaximum( 255 );
+        rescaler1->SetInput( resampler->GetOutput());
+        rescaler1->Update();
+
+        std::stringstream strStream;
+        strStream << outDir << "/initial_projection";
+
+        //impresion del punto focal
+        strStream << "_"<< vfocalPoint[f][0] <<"_"<<vfocalPoint[f][1]<<"_"<<vfocalPoint[f][2];
+        strStream.width(3);
+        strStream.fill('FF');
+        strStream << f;
+        strStream.width(0);
+        strStream << ".mha";
+
+        //the projection is condition
+        WriterType::Pointer projectionWriter = WriterType::New();
+        projectionWriter->SetFileName( strStream.str().c_str() );
+        //projectionWriter->SetInput( resampler->GetOutput() );
+        projectionWriter->SetInput( rescaler1->GetOutput() );
+
+        std::cout << "Attempting to write projection file " <<
+                     projectionWriter->GetFileName() << std::endl;
+        try
+        {
+            projectionWriter->Update();
+        }
+        catch( itk::ExceptionObject & e )
+        {
+            std::cerr << e.GetDescription() << std::endl;
+        }
+
+        //the difference is between the projection and the current fixed image in this case the last level
+        SubtracterType::Pointer subtracter = SubtracterType::New();
+        subtracter->SetInput1( registration->GetFixedMultiImage()[f] );
+        //subtracter->SetInput2( resampler->GetOutput() );
+        subtracter->SetInput2( rescaler1->GetOutput() );
+
+        std::stringstream strStream2;
+        strStream2 << outDir << "/initial_subtraction";
+        strStream2 << "_"<< vfocalPoint[f][0] <<"_"<<vfocalPoint[f][1]<<"_"<<vfocalPoint[f][2];
+        strStream2.width(3);
+        strStream2.fill('SS');
+        strStream2 << f;
+        strStream2.width(0);
+        strStream2 << ".mha";
+
+        WriterType::Pointer subtractionWriter = WriterType::New();
+        subtractionWriter->SetFileName( strStream2.str().c_str() );
+        subtractionWriter->SetInput( subtracter->GetOutput() );
+
+        std::cout << "Attempting to write subtraction file " <<
+                     subtractionWriter->GetFileName() << std::endl;
+        try
+        {
+            subtractionWriter->Update();
+        }
+        catch( itk::ExceptionObject & e )
+        {
+            std::cerr << e.GetDescription() << std::endl;
+        }
+
+    }
+
 
     //----------------------------------------------------------------------------
     // Read the transform file, if given
@@ -527,10 +615,6 @@ int main(int argc, char* argv[] )
     //----------------------------------------------------------------------------
     // Save projected images
     //----------------------------------------------------------------------------
-    typedef itk::ResampleImageFilter<MovingImageType, FixedImageType>  ResamplerType;
-    typedef itk::SubtractImageFilter<FixedImageType,FixedImageType, FixedImageType>  SubtracterType;
-    typedef itk::ImageFileWriter<FixedImageType> WriterType;
-
 
     //traverse every fixed image
     for( unsigned int f=0; f<FImgTotal; f++ )
@@ -542,8 +626,6 @@ int main(int argc, char* argv[] )
         resampler->SetTransform( transform );
         resampler->SetUseReferenceImage( true );
         resampler->SetReferenceImage( registration->GetFixedMultiImage()[f] );
-
-        typedef itk::RescaleIntensityImageFilter< MovingImageType, MovingImageType > RescaleFilterType;
 
         //threshold the image with the correct intensity values
         RescaleFilterType::Pointer rescaler1 = RescaleFilterType::New();

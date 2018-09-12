@@ -32,26 +32,25 @@ string GetStdoutFromCommand(string cmd){
 
 int main(){
 	//vector of step tolerances
-	static const int arrStepSize[] = {2.0};
-    std::vector<float> stepSize(arrStepSize, arrStepSize + sizeof(arrStepSize)/sizeof(arrStepSize[0]));
+    std::vector<float> stepSize={2.0};
 
     for(int i=0;i <stepSize.size(); i++){
 
 		char comman[200];
         string command = "./MultiImageRegistration ";
 		strcpy(comman, command.c_str());
-        string movingImage = "../bestData/pelvisSegmIntensity.mha ";
+        string movingImage = "../Cpu-midas-journal-800/bestData/settingRai/pelvisSegmIntensityRai.mha ";
 		strcat(comman,movingImage.c_str());
-		string numImages = "2 ";
+        string numImages = "2 ";
 		strcat(comman, numImages.c_str());
-        string fixed1Image = "../bestData/pelvisDRRG0LspCenter.mha ";
+        string fixed1Image = "../Cpu-midas-journal-800/bestData/settingRai/brokenAp_r0t0_iso225145110_res0.mha ";
 		strcat(comman, fixed1Image.c_str());
-		string focal1Point = "0 1990 0 ";
-		strcat(comman, focal1Point.c_str());
-        string fixed2Image = "../bestData/pelvisDRRG90PsrCenter.mha ";
-		strcat(comman, fixed2Image.c_str());
-		string focal2Point = "-1990 0 0 ";
-		strcat(comman, focal2Point.c_str());
+        string focal1Point = "0 -1990 0 ";
+        strcat(comman, focal1Point.c_str());
+        string fixed2Image = "../Cpu-midas-journal-800/bestData/settingRai/brokenLt_r0t0_iso225145110_res0.mha ";
+        strcat(comman, fixed2Image.c_str());
+        string focal2Point = "-2067.5 0 0 ";
+        strcat(comman, focal2Point.c_str());
         string stepTolerance = "0.01 ";
         strcat(comman, stepTolerance.c_str());
 
@@ -63,18 +62,14 @@ int main(){
 
 		string schedule = "4 6 4 2 1 ";
 		strcat(comman, schedule.c_str());
-        string outputDir ="../bestData/outDirNewUmbral ";
+        string outputDir ="../Cpu-midas-journal-800/bestData/outDirNewUmbral";
 		strcat(comman, outputDir.c_str());
-
-		string transforminput = "../bestData/outDirNewUmbral/outTransform_0.01_2.txt";
-		strcat(comman, transforminput.c_str());
-		
 
 		string outputTextRegistration = GetStdoutFromCommand(comman);
 		
 		//el archivo del log tendra los parametros que fueron usados
 		char nameLogRegistro[100];
-		string cabezera = "../bestData/outDirNewUmbral/LogRegisterIteration_";
+		string cabezera = "LogRegisterIteration_";
 		strcpy(nameLogRegistro, cabezera.c_str());
 
 		//numero de imagenes

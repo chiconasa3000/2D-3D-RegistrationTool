@@ -11,6 +11,7 @@
 #include <itkTimeStamp.h>
 #include <vector>
 
+
 #include "itkMultiImageRegistrationMacro.h"
 
 /** Macro used by the subclasses of itkMultiImageToImageMetric for creation of
@@ -205,6 +206,7 @@ namespace itk
 
 /**  Get the value for single valued optimizers. */
     virtual MeasureType GetValue( const TransformParametersType & parameters ) const;
+
 
   protected:
     MultiImageToImageMetric();

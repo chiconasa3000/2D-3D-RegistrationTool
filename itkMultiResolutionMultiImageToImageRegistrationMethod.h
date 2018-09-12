@@ -12,6 +12,10 @@
 #include "itkMultiImageToImageRegistrationMethod.h"
 #include "itkImageFileWriter.h"
 
+#include <itkResampleImageFilter.h>
+#include <itkSubtractImageFilter.h>
+#include <itkRescaleIntensityImageFilter.h>
+
 /** \class MultiResolutionMultiImageToImageRegistrationMethod
  * \brief Multi-resolution registration using multiple fixed images.
  *
@@ -177,6 +181,13 @@ public:
    */
   void Initialize() throw (ExceptionObject);
 
+
+  //tipos para la generacion de proyecciones y substraccion con la imagen movible
+  typedef typename itk::ResampleImageFilter<MovingImageType, FixedImageType>  ResamplerType;
+
+  typedef typename itk::SubtractImageFilter<FixedImageType,FixedImageType, FixedImageType>  SubtracterType;
+  typedef typename itk::RescaleIntensityImageFilter< MovingImageType, MovingImageType > RescaleFilterType;
+
 protected:
   MultiResolutionMultiImageToImageRegistrationMethod();
   virtual ~MultiResolutionMultiImageToImageRegistrationMethod() {};
@@ -199,12 +210,16 @@ private:
   FixedMultiImageType              m_CurrentFixedMultiImage;
 
   MovingImagePyramidPointer        m_MovingImagePyramid;
+
   FixedMultiImagePyramidType       m_FixedMultiImagePyramid;
 
   ParametersType                   m_InitialTransformParametersOfNextLevel;
 
   FixedMultiImageRegionPyramidType m_FixedMultiImageRegionPyramid;
   FixedMultiImageRegionType        m_CurrentFixedMultiImageRegion;
+
+  MultiInterpolatorType            m_CurrentMultiInterpolator;
+  MultiInterpolatorType            m_MultiInterpolator;
 
   unsigned long                    m_NumberOfLevels;
   unsigned long                    m_CurrentLevel;

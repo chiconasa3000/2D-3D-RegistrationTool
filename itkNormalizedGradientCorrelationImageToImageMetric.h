@@ -7,7 +7,6 @@
 #include <itkNeighborhoodOperatorImageFilter.h>
 #include <itkResampleImageFilter.h>
 
-
 namespace itk
 {
 

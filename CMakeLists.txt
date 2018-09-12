@@ -31,10 +31,10 @@ set(Libraries ${ITK_LIBRARIES})
 
 file(GLOB TXX_FILES *.txx)
 
-#set(TXX_DIR "/home/administrador/Gpu-Midas-Journal-800")
+#set(TXX_DIR "/home/cris/Gpu-Midas-Journal-800")
 #set(FILES_TXX ${TXX_DIR}/itkNormalizedGradientCorrelationImageToImageMetric.txx)
 
-set(GPU_DIR "/home/administrador/basicPrograms/InsightToolkit-4.13.0/Modules/Filtering/GPUImageFilterBase/include")
+set(GPU_DIR "/home/citesoft01/BasicPrograms/InsightToolkit-4.13.0/Modules/Filtering/GPUImageFilterBase/include")
 set(FILES_GPU ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.hxx ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.h)
 
 set(HeaderFiles
