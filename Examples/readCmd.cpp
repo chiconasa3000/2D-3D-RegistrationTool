@@ -7,91 +7,96 @@
 #include <vector>
 #include <sstream>
 
+#include "subprocess.hpp"
 using namespace std;
+namespace sp = subprocess;
 
-string GetStdoutFromCommand(string cmd){
 
-	string data;
-	FILE * stream;
-	const int max_buffer = 256;
-	char buffer[max_buffer];
-	cmd.append(" 2>&1");
 
-	stream = popen(cmd.c_str(),"r");
-	if(stream){
-		while(!feof(stream))
-			if(fgets(buffer, max_buffer, stream) != NULL){
-				std::cout<<buffer<<endl;
-				data.append(buffer);
-			}
-			pclose(stream);
-	}
-	return data;
-
+void GetStdoutFromCommand(){
+    auto p = sp::Popen({"./../build-Cpu-midas-journal-800-MyCmake-Default/MultiImageRegistration", "../Cpu-midas-journal-800/bestData/settingRai/pelvisSegmIntensityRai.mha", "2", "../Cpu-midas-journal-800/bestData/settingRai/brokenAp_r0t0_iso225145110_res0.mha", "0","-1990", "0", "../Cpu-midas-journal-800/bestData/settingRai/brokenLt_r0t0_iso225145110_res0.mha", "-2067.5", "0", "0", "0.01", "2.0", "4", "6", "4", "2", "1", "../Cpu-midas-journal-800/bestData/outDirNewUmbral"});
+    //auto p = sp::Popen({"./MultiImageRegistration", "../bestData/settingRai/pelvisSegmIntensityRai.mha", "2", "../bestData/settingRai/brokenAp_r0t0_iso225145110_res0.mha", "0","-1990", "0", "../bestData/settingRai/brokenLt_r0t0_iso225145110_res0.mha", "-2067.5", "0", "0", "0.01", "2.0", "4", "6", "4", "2", "1", "../bestData/outDirNewUmbral"});
+    auto obuf = p.communicate().first;
+    std::cout << "Data : " << obuf.buf.data() << std::endl;
+    //return "";
+    
+    //auto obuf = sp::check_output({"./../build-Cpu-midas-journal-800-MyCmake-Default/MultiImageRegistration", "../Cpu-midas-journal-800/bestData/settingRai/pelvisSegmIntensityRai.mha", "2", "../Cpu-midas-journal-800/bestData/settingRai/brokenAp_r0t0_iso225145110_res0.mha", "0","-1990", "0", "../Cpu-midas-journal-800/bestData/settingRai/brokenLt_r0t0_iso225145110_res0.mha", "-2067.5", "0", "0", "0.01", "2.0", "4", "6", "4", "2", "1", "../Cpu-midas-journal-800/bestData/outDirNewUmbral"});
+    //std::cout << "Data : " << obuf.buf.data() << std::endl;
+    //std::cout << "Data len: " << obuf.length << std::endl;
+    //return "";
 }
 
 int main(){
-	//vector of step tolerances
-    std::vector<float> stepSize={2.0};
-
-    for(int i=0;i <stepSize.size(); i++){
-
-		char comman[200];
-        string command = "./MultiImageRegistration ";
-		strcpy(comman, command.c_str());
-        string movingImage = "../Cpu-midas-journal-800/bestData/settingRai/pelvisSegmIntensityRai.mha ";
-		strcat(comman,movingImage.c_str());
-        string numImages = "2 ";
-		strcat(comman, numImages.c_str());
-        string fixed1Image = "../Cpu-midas-journal-800/bestData/settingRai/brokenAp_r0t0_iso225145110_res0.mha ";
-		strcat(comman, fixed1Image.c_str());
-        string focal1Point = "0 -1990 0 ";
-        strcat(comman, focal1Point.c_str());
-        string fixed2Image = "../Cpu-midas-journal-800/bestData/settingRai/brokenLt_r0t0_iso225145110_res0.mha ";
-        strcat(comman, fixed2Image.c_str());
-        string focal2Point = "-2067.5 0 0 ";
-        strcat(comman, focal2Point.c_str());
-        string stepTolerance = "0.01 ";
-        strcat(comman, stepTolerance.c_str());
-
-		ostringstream ostr;
-        ostr << stepSize[i];
-        std::string strSizeValue = ostr.str()+" ";
-        //string stepSize = ostr.str()+" ";
-        strcat(comman, strSizeValue.c_str());
-
-		string schedule = "4 6 4 2 1 ";
-		strcat(comman, schedule.c_str());
+    // GetStdoutFromCommand();
+    //vector of step tolerances
+    
+    std::vector<float> stepTolerances={2.0};
+    std::vector<float> focalPoint1={0, 1000, 0};
+    std::vector<float> focalPoint2={-1000,0,0};
+    std::vector<float> schedules={6, 4, 2, 1};
+    for(int i=0;i <stepTolerances.size(); i++){
+        
+        char comman[200];
+        
+        string registrationCommand = "./../build-Cpu-midas-journal-800-MyCmake-Default/MultiImageRegistration";
+        
+        string movingImage = "../Cpu-midas-journal-800/bestData/settingRai/volumenAsTorax/newBrokenTwistedRAI.mha";
+        
+        string numImages = std::to_string(2);
+        
+        string fixed1Image = "../Cpu-midas-journal-800/bestData/settingRai/volumenAsTorax/newbrokenAP_scd1000_iso226_-253_112.mha";
+        
+        string fixed2Image = "../Cpu-midas-journal-800/bestData/settingRai/volumenAsTorax/newbrokenLT_scd1000_iso452_126_4.mha";
+        
+        string stepSize = std::to_string(0.01);
+        
+        std::string stepTolerance = std::to_string(stepTolerances[i]);
+        
+        std::vector<string> focalPoint1Str;
+        std::vector<string> focalPoint2Str;
+        
+        for(int i=0; i<3; i++){
+            focalPoint1Str.push_back(std::to_string(focalPoint1[i]));
+            focalPoint2Str.push_back(std::to_string(focalPoint2[i]));
+        }
+        
+        std::string numberLevels = std::to_string(schedules.size());
+        
+        std::vector<string> schedulesStr;
+        
+        for(int i=0; i<schedules.size(); i++){
+            schedulesStr.push_back(std::to_string(schedules[i]));
+        }
+        
         string outputDir ="../Cpu-midas-journal-800/bestData/outDirNewUmbral";
-		strcat(comman, outputDir.c_str());
-
-		string outputTextRegistration = GetStdoutFromCommand(comman);
-		
-		//el archivo del log tendra los parametros que fueron usados
-		char nameLogRegistro[100];
-		string cabezera = "LogRegisterIteration_";
-		strcpy(nameLogRegistro, cabezera.c_str());
-
-		//numero de imagenes
-		replace(numImages.begin(), numImages.end(), ' ', '_');
-		strcat(nameLogRegistro, numImages.c_str());
-
-		//step tolerance
-		replace(stepTolerance.begin(), stepTolerance.end(), ' ', '_');
-		strcat(nameLogRegistro, stepTolerance.c_str());
-
-		//size step
-        replace(strSizeValue.begin(), strSizeValue.end(), ' ', '_');
-        strcat(nameLogRegistro, strSizeValue.c_str());
-
-		//schedule
-		replace(schedule.begin(), schedule.end(), ' ', '_');
-		strcat(nameLogRegistro, schedule.c_str());
-		strcat(nameLogRegistro, ".txt");
-		
-		ofstream out(nameLogRegistro);
-		out << outputTextRegistration << endl;
-		out.close();
-	}
-	return 0;
+        
+        auto p = sp::Popen({registrationCommand.c_str(), movingImage.c_str(), numImages.c_str(), fixed1Image.c_str(), focalPoint1Str[0].c_str(),focalPoint1Str[1].c_str(),focalPoint1Str[2].c_str(),fixed2Image.c_str(), focalPoint2Str[0].c_str(), focalPoint2Str[1].c_str(), focalPoint2Str[2].c_str(), stepSize.c_str(), stepTolerance.c_str(), numberLevels.c_str(), schedulesStr[0].c_str(), schedulesStr[1].c_str(), schedulesStr[2].c_str(), schedulesStr[3].c_str(), outputDir.c_str()});
+        //auto p = sp::Popen({"./MultiImageRegistration", "../bestData/settingRai/pelvisSegmIntensityRai.mha", "2", "../bestData/settingRai/brokenAp_r0t0_iso225145110_res0.mha", "0","-1990", "0", "../bestData/settingRai/brokenLt_r0t0_iso225145110_res0.mha", "-2067.5", "0", "0", "0.01", "2.0", "4", "6", "4", "2", "1", "../bestData/outDirNewUmbral"});
+        auto obuf = p.communicate().first;
+        //std::cout << "Data : " << obuf.buf.data() << std::endl;
+        
+        //el archivo del log tendra los parametros que fueron usados
+        char nameLogRegistro[100];
+        string cabezera = "LogRegisterIteration_";
+        strcpy(nameLogRegistro, cabezera.c_str());
+        
+        //numero de imagenes
+        strcat(nameLogRegistro, numImages.c_str());
+        
+        //step tolerance
+        strcat(nameLogRegistro, stepTolerance.c_str());
+        
+        //size step
+        strcat(nameLogRegistro, stepSize.c_str());
+        
+        //schedule
+        strcat(nameLogRegistro, numberLevels.c_str());
+        strcat(nameLogRegistro, ".txt");
+        
+        ofstream out(nameLogRegistro);
+        out << obuf.buf.data() << endl;
+        out.close();
+    }
+    return 0;
 }
+
