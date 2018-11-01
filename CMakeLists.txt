@@ -1,5 +1,5 @@
 # CPU Implementation
-
+set (CMAKE_CXX_STANDARD 11)
 cmake_minimum_required(VERSION 2.6)
 
 include(${CMAKE_SOURCE_DIR}/IJMacros.txt)
@@ -34,7 +34,7 @@ file(GLOB TXX_FILES *.txx)
 #set(TXX_DIR "/home/cris/Gpu-Midas-Journal-800")
 #set(FILES_TXX ${TXX_DIR}/itkNormalizedGradientCorrelationImageToImageMetric.txx)
 
-set(GPU_DIR "/home/citesoft01/BasicPrograms/InsightToolkit-4.13.0/Modules/Filtering/GPUImageFilterBase/include")
+set(GPU_DIR "/Users/student/BasePrograms/InsightToolkit-4.13.0/Modules/Filtering/GPUImageFilterBase/include")
 set(FILES_GPU ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.hxx ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.h)
 
 set(HeaderFiles

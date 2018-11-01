@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.7.1, 2018-10-30T19:04:56. -->
+<!-- Written by QtCreator 4.6.2, 2018-09-11T20:13:08. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
-  <value type="QByteArray">{74590cee-fab2-4b0b-8b8c-0cded0ed571d}</value>
+  <value type="QByteArray">{b1a5c2af-c736-479f-894b-8fdd0e64a0a2}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -59,15 +59,15 @@
  <data>
   <variable>ProjectExplorer.Project.Target.0</variable>
   <valuemap type="QVariantMap">
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">MyCmake</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">MyCmake</value>
-   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{4b7393e6-5d41-41fe-8aaf-df4772dff803}</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Desktop Qt 5.11.0 GCC 64bit</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Desktop Qt 5.11.0 GCC 64bit</value>
+   <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">qt.qt5.5110.gcc_64_kit</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">1</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
     <valuelist type="QVariantList" key="CMake.Configuration"/>
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/Users/student/Frameworks/InitCpuMidasJournal800/build-Cpu-midas-journal-800-MyCmake-Default</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/citesoft01/Frameworks/Qt-Frameworks1/build-Cpu-midas-journal-800-Desktop_Qt_5_11_0_GCC_64bit-Default</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="QString" key="CMakeProjectManager.MakeStep.AdditionalArguments"></value>
@@ -111,7 +111,7 @@
     <valuelist type="QVariantList" key="CMake.Configuration">
      <value type="QString">CMAKE_BUILD_TYPE:STRING=Debug</value>
     </valuelist>
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/Users/student/Frameworks/InitCpuMidasJournal800/build-Cpu-midas-journal-800-MyCmake-Debug</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/citesoft01/Frameworks/Qt-Frameworks1/build-Cpu-midas-journal-800-Desktop_Qt_5_11_0_GCC_64bit-Debug</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="QString" key="CMakeProjectManager.MakeStep.AdditionalArguments"></value>
@@ -155,7 +155,7 @@
     <valuelist type="QVariantList" key="CMake.Configuration">
      <value type="QString">CMAKE_BUILD_TYPE:STRING=Release</value>
     </valuelist>
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/Users/student/Frameworks/InitCpuMidasJournal800/build-Cpu-midas-journal-800-MyCmake-Release</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/citesoft01/Frameworks/Qt-Frameworks1/build-Cpu-midas-journal-800-Desktop_Qt_5_11_0_GCC_64bit-Release</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="QString" key="CMakeProjectManager.MakeStep.AdditionalArguments"></value>
@@ -199,7 +199,7 @@
     <valuelist type="QVariantList" key="CMake.Configuration">
      <value type="QString">CMAKE_BUILD_TYPE:STRING=RelWithDebInfo</value>
     </valuelist>
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/Users/student/Frameworks/InitCpuMidasJournal800/build-Cpu-midas-journal-800-MyCmake-Release with Debug Information</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/citesoft01/Frameworks/Qt-Frameworks1/build-Cpu-midas-journal-800-Desktop_Qt_5_11_0_GCC_64bit-Release with Debug Information</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="QString" key="CMakeProjectManager.MakeStep.AdditionalArguments"></value>
@@ -243,7 +243,7 @@
     <valuelist type="QVariantList" key="CMake.Configuration">
      <value type="QString">CMAKE_BUILD_TYPE:STRING=MinSizeRel</value>
     </valuelist>
-    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/Users/student/Frameworks/InitCpuMidasJournal800/build-Cpu-midas-journal-800-MyCmake-Minimum Size Release</value>
+    <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/citesoft01/Frameworks/Qt-Frameworks1/build-Cpu-midas-journal-800-Desktop_Qt_5_11_0_GCC_64bit-Minimum Size Release</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="QString" key="CMakeProjectManager.MakeStep.AdditionalArguments"></value>
@@ -338,15 +338,15 @@
      <value type="int">13</value>
      <value type="int">14</value>
     </valuelist>
-    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.Arguments"></value>
+    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguation.Title">MultiImageRegistration</value>
+    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.Arguments">../Cpu-midas-journal-800/bestData/pelvisSegmIntensity.mha 2 ../Cpu-midas-journal-800/bestData/pelvisDRRG0LspCenter.mha 0 1990 0 ../Cpu-midas-journal-800/bestData/pelvisDRRG90PsrCenter.mha -1990 0 0 0.01 2.0 4 6 4 2 1 ../Cpu-midas-journal-800/bestData/outDirNewUmbral</value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory"></value>
-    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/Users/student/Frameworks/InitCpuMidasJournal800/build-Cpu-midas-journal-800-MyCmake-Default</value>
+    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/home/citesoft01/Frameworks/Qt-Frameworks1/build-Cpu-midas-journal-800-Desktop_Qt_5_11_0_GCC_64bit-Default</value>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">ReadCmd</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">MultiImageRegistration</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.ReadCmd
-/Users/student/Frameworks/InitCpuMidasJournal800/Cpu-midas-journal-800/</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.MultiImageRegistration</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
@@ -394,15 +394,15 @@
      <value type="int">13</value>
      <value type="int">14</value>
     </valuelist>
-    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.Arguments">../Cpu-midas-journal-800/bestData/settingRai/volumenAsTorax/newBrokenTwistedRAI.mha 2 ../Cpu-midas-journal-800/bestData/settingRai/volumenAsTorax/newbrokenAP_scd1000_iso226_-253_112.mha 0 1000 0 ../Cpu-midas-journal-800/bestData/settingRai/volumenAsTorax/newbrokenLT_scd1000_iso452_126_4.mha -1000 0 0 0.01 2.0 4 6 4 2 1 ../Cpu-midas-journal-800/bestData/outDirNewUmbral</value>
+    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguation.Title">ReadCmd</value>
+    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.Arguments">../Cpu-Midas-Journal-800/bestData/pelvisSegmIntensity.mha 2 ../Cpu-Midas-Journal-800/bestData/pelvisDRRG0LspCenter.mha 0 1990 0 ../Cpu-Midas-Journal-800/bestData/pelvisDRRG90PsrCenter.mha -1990 0 0 0.01 2.0 4 6 4 2 1 ../Cpu-Midas-Journal-800/bestData/outDirNewUmbral</value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory"></value>
-    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/Users/student/Frameworks/InitCpuMidasJournal800/build-Cpu-midas-journal-800-MyCmake-Default</value>
+    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/home/citesoft01/Frameworks/Qt-Frameworks1/build-Cpu-midas-journal-800-Desktop_Qt_5_11_0_GCC_64bit-Default</value>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">MultiImageRegistration</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">ReadCmd</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.MultiImageRegistration
-/Users/student/Frameworks/InitCpuMidasJournal800/Cpu-midas-journal-800/</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.ReadCmd</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
