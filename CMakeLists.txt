@@ -34,7 +34,7 @@ file(GLOB TXX_FILES *.txx)
 #set(TXX_DIR "/home/cris/Gpu-Midas-Journal-800")
 #set(FILES_TXX ${TXX_DIR}/itkNormalizedGradientCorrelationImageToImageMetric.txx)
 
-set(GPU_DIR "/Users/student/BasePrograms/InsightToolkit-4.13.0/Modules/Filtering/GPUImageFilterBase/include")
+set(GPU_DIR "/home/chris/BasicPrograms/InsightToolkit-4.13.0/Modules/Filtering/GPUImageFilterBase/include")
 set(FILES_GPU ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.hxx ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.h)
 
 set(HeaderFiles
