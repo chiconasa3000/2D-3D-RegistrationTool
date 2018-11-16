@@ -286,6 +286,8 @@ MultiImageToImageMetric<TFixedImage,TMovingImage>
     {
         itkExceptionMacro( << "Fixed Images vector is empty" );
     }
+    
+    // CLEANING
 
     // Allocate the individual metrics
     const unsigned int OldMetricTotal = m_MultiMetric.size();
@@ -302,6 +304,8 @@ MultiImageToImageMetric<TFixedImage,TMovingImage>
 
     // Now check the number of objects by calling DoNumberRevision()
     DoNumberRevision();
+	
+    //INITIALIZATION
 
     // If the images are provided by different sources, update them.
     if( m_MovingImage->GetSource() )
@@ -329,7 +333,9 @@ MultiImageToImageMetric<TFixedImage,TMovingImage>
     //      }
 
     /** It should print with index*/
-
+	
+    //I suppose that transform is applied first according to the first image then the second image is applied
+    //PARAMETRIZATION (fixed, moving, interpolator, transform)
     for( unsigned int fImg=0; fImg < FImgTotal; fImg++ )
     {
 

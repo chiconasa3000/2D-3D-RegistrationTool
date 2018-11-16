@@ -12,7 +12,6 @@
 #include "../itkPatchedRayCastInterpolateImageFunction.h"
 // funcion de menu principal 
 
-
 void menu(){
 	std::cout<<"Generador de imagenes virtuales : Parametros necesitados"<< std::endl;
 }
@@ -23,7 +22,10 @@ int main(int argc, char *argv[]){
 	char *input_name = NULL;		//input volume
         char *output_name = NULL;		//virtual image
 
-	float scd = 1000.0			//distance from source to isocenter
+	float scd = 1000.0;			//distance from source to isocenter
+
+	bool customized_iso  = false; 		//flag for iso given by user
+	bool customized_2DCX = false;		//flag for central of 2d image
 	
 	float cx = 0.;				//virtual image isocenter in x
 	float cy = 0.;				//virtual image isocenter in y
@@ -35,11 +37,13 @@ int main(int argc, char *argv[]){
 	int dy = 512;				//pixels number virtual image in y
 	
 	float im_sx = 0.51;			//virtual image spacing in x
-	float im_st = 0.51;			//virtual image spacing in y
+	float im_sy = 0.51;			//virtual image spacing in y
 	
 	float o2Dx;				//virtual image origin in x
 	float o2Dy;				//virtual image origin in y
 
+	
+	
 	bool ok;				//sanity of parameters
 	float rprojection = 0.; 		//projection angle: AP view by default
 	bool verbose = false;			//information flag
@@ -120,7 +124,16 @@ int main(int argc, char *argv[]){
 			argc--; argv++;
 		}
 
-	
+		if((ok == false) && (strcmp(argv[1], "-2dcx")==0))
+		{
+			argc--; argv++;
+			ok = true;
+			o2Dx = atof(argv[1]);
+			argc--; argv++;
+			o2Dy = atof(argv[1]);
+			argc--; argv++;
+			customized_2DCX = true;		
+		}
 		if ((ok == false) && (strcmp(argv[1], "-o") == 0))
 		{
 			argc--; argv++;
@@ -155,7 +168,10 @@ int main(int argc, char *argv[]){
 	//function con las terceras parte
 	menu();	
 	const unsigned int Dimension = 3;
-
+	
+	//Parameters of fixed image
+	
+	
 	//tipo de pixel by default para las imagenes
 	typedef short int InputPixelType;
 	typedef unsigned char OutputPixelType;
@@ -194,6 +210,14 @@ int main(int argc, char *argv[]){
 		return EXIT_FAILURE;
 	}
 
+	
+	//force origin to cero position
+	MovingImageType::PointType ctOrigin;
+	ctOrigin[0] = 0.0;
+	ctOrigin[1] = 0.0;
+	ctOrigin[2] = 0.0;
+	image->SetOrigin(ctOrigin);
+
 	if (verbose) 
 	{
 		unsigned int i;
@@ -219,8 +243,8 @@ int main(int argc, char *argv[]){
 			if (i < Dimension-1) std::cout << ", ";
 		}
 		std::cout << "]" << std::endl<< std::endl;
-		std::cout<< "Isocenter: " <<isocenter[0] <<", "<< isocenter[1] << ", "<< isocenter[2] << std::endl;
-		std::cout << "Transform: " << transform << std::endl;
+		//std::cout<< "Isocenter: " <<isocenter[0] <<", "<< isocenter[1] << ", "<< isocenter[2] << std::endl;
+		//std::cout << "Transform: " << transform << std::endl;
 	}
 
 	//The resample filter enables coordinates for each of the pixels in DRR image.
@@ -247,7 +271,7 @@ int main(int argc, char *argv[]){
 	typedef MovingImageType::SizeType InputImageSizeType;
 
 	InputImageRegionType imRegion = image->GetBufferedRegion();
-	InputImageSizeType imSize = imRegion->GetSize();
+	InputImageSizeType imSize = imRegion.GetSize();
 
 	TransformType::InputPointType isocenter;
 	
@@ -268,7 +292,7 @@ int main(int argc, char *argv[]){
 		isocenter[2] = imOrigin[2] + imRes[2] * static_cast<double>( imSize[2] ) / 2.0;
 	}
 	
-	transform->setCenter(isocenter);
+	transform->SetCenter(isocenter);
 	
 	//Instance of the interpolator
 	typedef itk::PatchedRayCastInterpolateImageFunction<MovingImageType, double> InterpolatorType;
@@ -276,10 +300,13 @@ int main(int argc, char *argv[]){
 	
 	//REMEMBER: It is according to Interpolator Class
 	//take care about this
-	interpolator->SetThreshold(interpolator);
-	inteporlator->SetProjectionAngle( dtr * rprojection );
+	interpolator->SetThreshold(threshold);
+	//TODO: class need this function
+	//interpolator->SetProjectionAngle( dtr * rprojection );
+
 	interpolator->SetTransform(transform);
-	interpolator->Initialize();
+	//TODO: class need this function
+	//interpolator->Initialize();
 	
 	//insert the interpolator into the filter
 	filter->SetInterpolator(interpolator);
@@ -288,6 +315,7 @@ int main(int argc, char *argv[]){
 	
 	MovingImageType::SizeType size;
 	double spacing[Dimension];
+	double origin[Dimension];
 	
 	//Number of pixels of Fixed Image
 	size[0] = dx;
@@ -298,7 +326,13 @@ int main(int argc, char *argv[]){
 	spacing[0] = im_sx;
 	spacing[1] = im_sy;
 	spacing[2] = 1.0;
-	
+
+	if(!customized_2DCX)
+	{
+		//center virtual image by default
+		o2Dx = ((double) dx - 1.)/2.;
+		o2Dy = ((double) dy - 1.)/2.;
+	}
 	// Compute the origin (in mm) of the 2D Image
 	origin[0] = - im_sx * o2Dx; 
 	origin[1] = - im_sy * o2Dy;
@@ -306,7 +340,7 @@ int main(int argc, char *argv[]){
 
 	//set properties of the virtual image
 	filter->SetSize(size);
-	filter->SetOutSpacing(spacing);
+	filter->SetOutputSpacing(spacing);
 	filter->SetOutputOrigin(origin);
 
 	//Virtual Image Properties information
@@ -340,15 +374,15 @@ int main(int argc, char *argv[]){
 		// save the DRR image to a file.
 
 		typedef itk::RescaleIntensityImageFilter< 
-			InputImageType, OutputImageType > RescaleFilterType;
+			MovingImageType, OutputImageType > RescaleFilterType;
 		RescaleFilterType::Pointer rescaler = RescaleFilterType::New();
 		rescaler->SetOutputMinimum(   0 );
 		rescaler->SetOutputMaximum( 255 );
 		rescaler->SetInput( filter->GetOutput() );
-
-		timer.Start("DRR post-processing");
 		rescaler->Update();
 
+		/*timer.Start("DRR post-processing");
+	
 		// Out of some reason, the computed projection is upsided-down.
 		// Here we use a FilpImageFilter to flip the images in y direction.
 		typedef itk::FlipImageFilter< OutputImageType > FlipFilterType;
@@ -364,13 +398,13 @@ int main(int argc, char *argv[]){
 		flipFilter->Update();
 
 		timer.Stop("DRR post-processing");
-
+		*/
 		typedef itk::ImageFileWriter< OutputImageType >  WriterType;
 		WriterType::Pointer writer = WriterType::New();
 
 		// Now we are ready to write the projection image.
 		writer->SetFileName( output_name );
-		writer->SetInput( flipFilter->GetOutput() );
+		writer->SetInput( rescaler->GetOutput() );
 
 		try 
 		{ 

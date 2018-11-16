@@ -218,6 +218,7 @@ MultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
       "elements. Allowed values are 0 or the amount of fixed images");
     }
 
+  //It only consider the current moving image and the current fixed images
   // Setup the metric
   m_MultiMetric->SetMovingImage( m_MovingImage );
   m_MultiMetric->SetFixedMultiImage( m_FixedMultiImage );

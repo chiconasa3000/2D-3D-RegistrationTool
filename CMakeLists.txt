@@ -34,8 +34,8 @@ file(GLOB TXX_FILES *.txx)
 #set(TXX_DIR "/home/cris/Gpu-Midas-Journal-800")
 #set(FILES_TXX ${TXX_DIR}/itkNormalizedGradientCorrelationImageToImageMetric.txx)
 
-set(GPU_DIR "/home/chris/BasicPrograms/InsightToolkit-4.13.0/Modules/Filtering/GPUImageFilterBase/include")
-set(FILES_GPU ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.hxx ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.h)
+#set(GPU_DIR "/home/chris/BasicPrograms/InsightToolkit-4.13.0/Modules/Filtering/GPUImageFilterBase/include")
+#set(FILES_GPU ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.hxx ${GPU_DIR}/itkGPUNeighborhoodOperatorImageFilter.h)
 
 set(HeaderFiles
 itkGradientDifferenceMultiImageToImageMetric.h
@@ -70,7 +70,7 @@ itkPatternIntensityMultiImageToImageMetric.txx
 add_executable(ReadCmd Examples/readCmd.cpp)
 target_link_libraries(ReadCmd ${Libraries})
 
-add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx  ${FILES_GPU} ${HeaderFiles})
+add_executable(MultiImageRegistration ../Examples/MultiImageRegistration.cxx  ${HeaderFiles})
 target_link_libraries(MultiImageRegistration ${Libraries})
 
 
