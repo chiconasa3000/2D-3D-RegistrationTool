@@ -259,7 +259,7 @@ int main(int argc, char *argv[]){
 
 	typedef itk::Similarity3DTransform< double > TransformType;
 	TransformType::Pointer transform = TransformType::New();
-	
+	transform->SetIdentity();	
 	//constant for casting degrees into radians format of rotation projection
 	const double dtr = ( atan(1.0) * 4.0 ) / 180.0;
 
@@ -296,11 +296,22 @@ int main(int argc, char *argv[]){
 	
 	//Instance of the interpolator
 	typedef itk::PatchedRayCastInterpolateImageFunction<MovingImageType, double> InterpolatorType;
+	typedef InterpolatorType::InputPointType FocalPointType;
+
 	InterpolatorType::Pointer interpolator = InterpolatorType::New();
 	
 	//REMEMBER: It is according to Interpolator Class
 	//take care about this
 	interpolator->SetThreshold(threshold);
+
+	//FocalPoint
+	FocalPointType focalPoint;
+	focalPoint[0] = 0;
+	focalPoint[1] = 1000;
+	focalPoint[2] = 0;
+	//Set the focal point in interpolator
+	interpolator->SetFocalPoint(focalPoint);
+
 	//TODO: class need this function
 	//interpolator->SetProjectionAngle( dtr * rprojection );
 
