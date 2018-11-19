@@ -10,6 +10,7 @@
 #include "itkFlipImageFilter.h"
 #include "itkImageFileWriter.h"
 #include "../itkPatchedRayCastInterpolateImageFunction.h"
+#include "itkMatrix.h"
 // funcion de menu principal 
 
 void menu(){
@@ -41,8 +42,11 @@ int main(int argc, char *argv[]){
 	
 	float o2Dx;				//virtual image origin in x
 	float o2Dy;				//virtual image origin in y
-
 	
+	float focalPointx = 0.;			//focalPoint in x
+	float focalPointy = 1000.0;		//focalPoint in y
+	float focalPointz = 0.;			//focalPoint in z
+
 	
 	bool ok;				//sanity of parameters
 	float rprojection = 0.; 		//projection angle: AP view by default
@@ -88,6 +92,18 @@ int main(int argc, char *argv[]){
 			customized_iso = true;
 		}
 		
+		if ((ok == false) && (strcmp(argv[1], "-foc") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			focalPointx = atof(argv[1]);
+			argc--; argv++;
+			focalPointy = atof(argv[1]);
+			argc--; argv++;
+			focalPointz = atof(argv[1]);
+			argc--; argv++;
+		}
+
 		if ((ok == false) && (strcmp(argv[1], "-threshold") == 0))
 		{
 			argc--; argv++;
@@ -212,12 +228,12 @@ int main(int argc, char *argv[]){
 
 	
 	//force origin to cero position
-	MovingImageType::PointType ctOrigin;
+/*	MovingImageType::PointType ctOrigin;
 	ctOrigin[0] = 0.0;
 	ctOrigin[1] = 0.0;
 	ctOrigin[2] = 0.0;
 	image->SetOrigin(ctOrigin);
-
+*/
 	if (verbose) 
 	{
 		unsigned int i;
@@ -292,7 +308,7 @@ int main(int argc, char *argv[]){
 		isocenter[2] = imOrigin[2] + imRes[2] * static_cast<double>( imSize[2] ) / 2.0;
 	}
 	
-	transform->SetCenter(isocenter);
+	//transform->SetCenter(isocenter);
 	
 	//Instance of the interpolator
 	typedef itk::PatchedRayCastInterpolateImageFunction<MovingImageType, double> InterpolatorType;
@@ -306,9 +322,9 @@ int main(int argc, char *argv[]){
 
 	//FocalPoint
 	FocalPointType focalPoint;
-	focalPoint[0] = 0;
-	focalPoint[1] = 1000;
-	focalPoint[2] = 0;
+	focalPoint[0] = focalPointx;
+	focalPoint[1] = focalPointy;
+	focalPoint[2] = focalPointz;
 	//Set the focal point in interpolator
 	interpolator->SetFocalPoint(focalPoint);
 
@@ -349,10 +365,17 @@ int main(int argc, char *argv[]){
 	origin[1] = - im_sy * o2Dy;
 	origin[2] = - scd;
 
+	//set identity in direction cosine
+	OutputImageType::DirectionType direction;
+	direction.SetIdentity();
+	filter->SetOutputDirection(direction);
 	//set properties of the virtual image
 	filter->SetSize(size);
 	filter->SetOutputSpacing(spacing);
 	filter->SetOutputOrigin(origin);
+	
+	//transform in the filter
+	filter->SetTransform(transform);
 
 	//Virtual Image Properties information
 	if(verbose)
