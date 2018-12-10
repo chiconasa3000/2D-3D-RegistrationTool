@@ -14,7 +14,7 @@
 // funcion de menu principal 
 
 void menu(){
-	std::cout<<"Generador de imagenes virtuales : Parametros necesitados"<< std::endl;
+	std::cout<<"Generador de imagenes virtuales PATCHED GENERATOR"<< std::endl;
 }
 
 int main(int argc, char *argv[]){
@@ -24,6 +24,17 @@ int main(int argc, char *argv[]){
         char *output_name = NULL;		//virtual image
 
 	float scd = 1000.0;			//distance from source to isocenter
+	
+	// CT volume rotation around isocenter along x,y,z axis in degrees
+	float rx = 0.;
+	float ry = 0.;
+	float rz = 0.;
+
+	// Translation parameter of the isocenter in mm
+	float tx = 0.;
+	float ty = 0.;
+	float tz = 0.;
+
 
 	bool customized_iso  = false; 		//flag for iso given by user
 	bool customized_2DCX = false;		//flag for central of 2d image
@@ -34,11 +45,11 @@ int main(int argc, char *argv[]){
 	
 	float threshold = 0.;			//virtual image threshold
 
-	int dx = 512;				//pixels number virtual image in x
-	int dy = 512;				//pixels number virtual image in y
+	int dxx = 452;				//pixels number virtual image in x
+	int dyy = 225;				//pixels number virtual image in y
 	
-	float im_sx = 0.51;			//virtual image spacing in x
-	float im_sy = 0.51;			//virtual image spacing in y
+	float im_sx = 1;			//virtual image spacing in x
+	float im_sy = 1;			//virtual image spacing in y
 	
 	float o2Dx;				//virtual image origin in x
 	float o2Dy;				//virtual image origin in y
@@ -71,6 +82,43 @@ int main(int argc, char *argv[]){
 			verbose = true;
 		}
 		
+		if ((ok == false) && (strcmp(argv[1], "-t") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			tx=atof(argv[1]);
+			argc--; argv++;
+			ty=atof(argv[1]);
+			argc--; argv++;
+			tz=atof(argv[1]);
+			argc--; argv++;
+		}
+
+		if ((ok == false) && (strcmp(argv[1], "-rx") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			rx=atof(argv[1]);
+			argc--; argv++;
+		}
+
+		if ((ok == false) && (strcmp(argv[1], "-ry") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			ry=atof(argv[1]);
+			argc--; argv++;
+		}
+
+		if ((ok == false) && (strcmp(argv[1], "-rz") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			rz=atof(argv[1]);
+			argc--; argv++;
+		}
+
+
 		if ((ok == false) && (strcmp(argv[1], "-rp") == 0))
 		{
 			argc--; argv++;
@@ -126,9 +174,9 @@ int main(int argc, char *argv[]){
 		{
 			argc--; argv++;
 			ok = true;
-			dx=atoi(argv[1]);
+			dxx = atoi(argv[1]);
 			argc--; argv++;
-			dy=atoi(argv[1]);
+			dyy = atoi(argv[1]);
 			argc--; argv++;
 		}
 		
@@ -139,7 +187,7 @@ int main(int argc, char *argv[]){
 			scd = atof(argv[1]);
 			argc--; argv++;
 		}
-
+	
 		if((ok == false) && (strcmp(argv[1], "-2dcx")==0))
 		{
 			argc--; argv++;
@@ -279,6 +327,21 @@ int main(int argc, char *argv[]){
 	//constant for casting degrees into radians format of rotation projection
 	const double dtr = ( atan(1.0) * 4.0 ) / 180.0;
 
+	//set general transformations transform
+	TransformType::OutputVectorType translation;
+
+	translation[0] = tx;
+	translation[1] = ty;
+	translation[2] = tz;
+
+	transform->SetTranslation( translation );
+	
+
+	itk::Versor<double> vectRot;
+	vectRot.SetRotationAroundX(dtr*(-90.0));	
+	transform->SetRotation(vectRot );
+	
+
 	//Read image properties in order to build our isocenter
 	MovingImageType::PointType imOrigin = image->GetOrigin();
 	MovingImageType::SpacingType imRes = image->GetSpacing();
@@ -345,8 +408,8 @@ int main(int argc, char *argv[]){
 	double origin[Dimension];
 	
 	//Number of pixels of Fixed Image
-	size[0] = dx;
-	size[1] = dy;
+	size[0] = dxx;
+	size[1] = dyy;
 	size[2] = 1;
 	
 	//Resolution of Fixed Image
@@ -357,8 +420,8 @@ int main(int argc, char *argv[]){
 	if(!customized_2DCX)
 	{
 		//center virtual image by default
-		o2Dx = ((double) dx - 1.)/2.;
-		o2Dy = ((double) dy - 1.)/2.;
+		o2Dx = ((double) dxx - 1.)/2.;
+		o2Dy = ((double) dyy - 1.)/2.;
 	}
 	// Compute the origin (in mm) of the 2D Image
 	origin[0] = - im_sx * o2Dx; 
@@ -366,9 +429,9 @@ int main(int argc, char *argv[]){
 	origin[2] = - scd;
 
 	//set identity in direction cosine
-	OutputImageType::DirectionType direction;
-	direction.SetIdentity();
-	filter->SetOutputDirection(direction);
+	//OutputImageType::DirectionType direction;
+	//direction.SetIdentity();
+	//filter->SetOutputDirection(direction);
 	//set properties of the virtual image
 	filter->SetSize(size);
 	filter->SetOutputSpacing(spacing);
@@ -380,6 +443,17 @@ int main(int argc, char *argv[]){
 	//Virtual Image Properties information
 	if(verbose)
 	{
+		std::cout << "Rotation: " 
+			<< rx << ", " 
+			<< ry << ", " 
+			<< rz << std::endl;
+
+		std::cout << "Traslation: " 
+			<< tx << ", " 
+			<< ty << ", " 
+			<< tz << std::endl;
+
+
 		std::cout << "Output image size: " 
 			<< size[0] << ", " 
 			<< size[1] << ", " 
@@ -394,6 +468,11 @@ int main(int argc, char *argv[]){
 			<< origin[0] << ", " 
 			<< origin[1] << ", " 
 			<< origin[2] << std::endl;
+	        std::cout << "Focal point image: "
+			<< focalPoint[0] << ", " 
+			<< focalPoint[1] << ", " 
+			<< focalPoint[2] << std::endl;
+
 	}
 	
 	//applying the resample filter (generation)
