@@ -17,10 +17,11 @@ file(GLOB TXX_FILES *.txx)
 #setting the headers
 set(HeaderFiles 
 ../itkPatchedRayCastInterpolateImageFunction.h
-../itkPatchedRayCastInterpolateImageFunction.txx)
+../itkPatchedRayCastInterpolateImageFunction.txx
+gestorMatrixRot.h)
 
 #generacion del ejeutable
-add_executable(genVirtualImage genVirtualImage.cxx)
+add_executable(genVirtualImage genVirtualImage.cxx gestorMatrixRot.cxx)
 
 #Vinvulo del ejecutable con la libreria ITK
 target_link_libraries(genVirtualImage ${ITK_LIBRARIES})

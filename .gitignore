@@ -7,3 +7,9 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
+bestData
+GenDRRs/build
+build
+.DS_Store
+GenDRRs/.DS_Store
+*.swp

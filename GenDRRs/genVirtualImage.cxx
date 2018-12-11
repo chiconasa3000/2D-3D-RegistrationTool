@@ -11,6 +11,8 @@
 #include "itkImageFileWriter.h"
 #include "../itkPatchedRayCastInterpolateImageFunction.h"
 #include "itkMatrix.h"
+#include "gestorMatrixRot.h"
+
 // funcion de menu principal 
 
 void menu(){
@@ -38,7 +40,6 @@ int main(int argc, char *argv[]){
 
 	bool customized_iso  = false; 		//flag for iso given by user
 	bool customized_2DCX = false;		//flag for central of 2d image
-	
 	float cx = 0.;				//virtual image isocenter in x
 	float cy = 0.;				//virtual image isocenter in y
 	float cz = 0.;				//virtual image isocenter in z
@@ -313,6 +314,7 @@ int main(int argc, char *argv[]){
 
 	//The resample filter enables coordinates for each of the pixels in DRR image.
 	//these coordinates are used by interpolator to determine the equatio of each
+
 	//ray which trough the volume
 
 	typedef itk::ResampleImageFilter<MovingImageType, MovingImageType> FilterType;
@@ -335,11 +337,19 @@ int main(int argc, char *argv[]){
 	translation[2] = tz;
 
 	transform->SetTranslation( translation );
-	
+ 
 
-	itk::Versor<double> vectRot;
-	vectRot.SetRotationAroundX(dtr*(-90.0));	
-	transform->SetRotation(vectRot );
+	HelperRot helperRot; 
+	
+	helperRot.initRotX(dtr*(-90.0));
+	helperRot.initRotY(dtr*(-90.0));
+	helperRot.initRotZ(dtr*(rz));
+
+	helperRot.composeMatrixRot();
+
+	//itk::Versor<double> vectRot;
+	//vectRot.SetRotationAroundX(dtr*(-90.0));	
+	transform->SetMatrix(helperRot.getRotg());
 	
 
 	//Read image properties in order to build our isocenter
@@ -424,7 +434,7 @@ int main(int argc, char *argv[]){
 		o2Dy = ((double) dyy - 1.)/2.;
 	}
 	// Compute the origin (in mm) of the 2D Image
-	origin[0] = - im_sx * o2Dx; 
+	origin[0] = - im_sx * o2Dx;
 	origin[1] = - im_sy * o2Dy;
 	origin[2] = - scd;
 
