@@ -12,7 +12,7 @@
 #include "../itkPatchedRayCastInterpolateImageFunction.h"
 #include "itkMatrix.h"
 #include "gestorMatrixRot.h"
-
+#include "itkVersor.h"
 // funcion de menu principal 
 
 void menu(){
@@ -341,15 +341,16 @@ int main(int argc, char *argv[]){
 
 	HelperRot helperRot; 
 	
-	helperRot.initRotX(dtr*(-90.0));
-	helperRot.initRotY(dtr*(-90.0));
+	helperRot.initRotX(dtr*(-180.0));
+	helperRot.initRotY(dtr*(90.0));
 	helperRot.initRotZ(dtr*(rz));
 
 	helperRot.composeMatrixRot();
+	
 
 	//itk::Versor<double> vectRot;
 	//vectRot.SetRotationAroundX(dtr*(-90.0));	
-	transform->SetMatrix(helperRot.getRotg());
+	//transform->SetMatrix(helperRot.getRotg());
 	
 
 	//Read image properties in order to build our isocenter
@@ -434,14 +435,20 @@ int main(int argc, char *argv[]){
 		o2Dy = ((double) dyy - 1.)/2.;
 	}
 	// Compute the origin (in mm) of the 2D Image
-	origin[0] = - im_sx * o2Dx;
-	origin[1] = - im_sy * o2Dy;
-	origin[2] = - scd;
+	origin[0] =    scd;
+	origin[1] =    im_sx * o2Dx;
+	origin[2] = -   im_sy * o2Dy;
 
 	//set identity in direction cosine
+	itk::Versor< double > rotationDirect;
+	const double angleRadians = (-180.0) * vnl_math::pi/180.0;
+	rotationDirect.SetRotationAroundX(angleRadians);
+	const OutputImageType::DirectionType direction = image->GetDirection();
+	const OutputImageType::DirectionType newDirection = direction * helperRot.getRotg();
 	//OutputImageType::DirectionType direction;
 	//direction.SetIdentity();
-	//filter->SetOutputDirection(direction);
+ 
+	filter->SetOutputDirection(newDirection);
 	//set properties of the virtual image
 	filter->SetSize(size);
 	filter->SetOutputSpacing(spacing);
