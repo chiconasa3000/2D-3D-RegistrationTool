@@ -340,17 +340,23 @@ int main(int argc, char *argv[]){
  
 
 	HelperRot helperRot; 
-	
+	HelperRot helperRotInit;
+
 	helperRot.initRotX(dtr*(180.0));
-	helperRot.initRotY(dtr*(0.0));
+	helperRot.initRotY(dtr*(90.0));
 	helperRot.initRotZ(dtr*(0.0));
+	
+	helperRotInit.initRotX(dtr*(0.0));
+	helperRotInit.initRotY(dtr*(90.0));
+	helperRotInit.initRotZ(dtr*(-90.0));
+
 
 	helperRot.composeMatrixRot();
-	
+	helperRotInit.composeMatrixRot();
 
 	//itk::Versor<double> vectRot;
 	//vectRot.SetRotationAroundX(dtr*(-90.0));	
-	//transform->SetMatrix(helperRot.getRotg());
+	transform->SetMatrix(helperRotInit.getRotg());
 	
 
 	//Read image properties in order to build our isocenter
@@ -435,9 +441,9 @@ int main(int argc, char *argv[]){
 		o2Dy = ((double) dyy - 1.)/2.;
 	}
 	// Compute the origin (in mm) of the 2D Image
-	origin[0] =  -im_sx * o2Dx;
-	origin[1] =   im_sy * o2Dy;
-	origin[2] =  scd;
+	origin[0] =   scd;
+	origin[1] =  -im_sy * o2Dy;
+	origin[2] =  -im_sx * o2Dx;
 
 	//set identity in direction cosine
 	itk::Versor< double > rotationDirect;
