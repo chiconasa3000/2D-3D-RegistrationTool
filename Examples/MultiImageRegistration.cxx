@@ -434,7 +434,7 @@ int main(int argc, char* argv[] )
         WriterType::Pointer subtractionWriter = WriterType::New();
         subtractionWriter->SetFileName( strStream2.str().c_str() );
         subtractionWriter->SetInput( subtracter->GetOutput() );
-
+	
         std::cout << "Attempting to write subtraction file " <<
                      subtractionWriter->GetFileName() << std::endl;
         try
@@ -445,6 +445,28 @@ int main(int argc, char* argv[] )
         {
             std::cerr << e.GetDescription() << std::endl;
         }
+
+	std::stringstream strStream3;
+        strStream3 << outDir << "/fixedImage";
+        strStream3 << f;
+	strStream3.width(0);
+        strStream3 << ".mha";
+
+        WriterType::Pointer fixedWriter = WriterType::New();
+        fixedWriter->SetFileName( strStream3.str().c_str() );
+        fixedWriter->SetInput( registration->GetFixedMultiImage()[f] );
+	
+        std::cout << "Attempting to write subtraction file " <<
+                     fixedWriter->GetFileName() << std::endl;
+        try
+        {
+            fixedWriter->Update();
+        }
+        catch( itk::ExceptionObject & e )
+        {
+            std::cerr << e.GetDescription() << std::endl;
+        }
+
 
     }
 
