@@ -342,8 +342,8 @@ int main(int argc, char *argv[]){
 	HelperRot helperRot; 
 	HelperRot helperRotInit;
 
-	helperRot.initRotX(dtr*(90.0));
-	helperRot.initRotY(dtr*(-90.0));
+	helperRot.initRotX(dtr*(-90.0));
+	helperRot.initRotY(dtr*(90.0));
 	helperRot.initRotZ(dtr*(0.0));
 	
 	helperRotInit.initRotX(dtr*(0.0));
@@ -443,7 +443,7 @@ int main(int argc, char *argv[]){
 	// Compute the origin (inmm) of the 2D Image
 	origin[0] = -scd;
 	origin[1] = -im_sx * o2Dx;
-	origin[2] = -im_sy * o2Dy;
+	origin[2] = im_sy * o2Dy;
 
 	//set identity in direction cosine
 	itk::Versor< double > rotationDirect;

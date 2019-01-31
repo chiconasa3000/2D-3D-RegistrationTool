@@ -248,7 +248,7 @@ int main(int argc, char* argv[] )
         vfocalPoint[f][2] = focalPoint[2] = atof( argv[ 3 ] );
         interpolator->SetFocalPoint( focalPoint );
         interpolator->SetTransform( transform );
-        interpolator->SetThreshold( 0.0 );
+        interpolator->SetThreshold( 100.0 );
         registration->AddInterpolator( interpolator );
 
         FixedImagePyramidType::Pointer fixedPyramidFilter = FixedImagePyramidType::New();
