@@ -595,9 +595,9 @@ int main(int argc, char *argv[]){
 	        typedef itk::ImageFileWriter< OutputImageType >  WriterType;
 		  WriterType::Pointer writer = WriterType::New();
 
-		itksys::SystemTools::MakeDirectory( (fname + "../bestData"+"/virtualImages/").c_str() );
+		itksys::SystemTools::MakeDirectory( (fname + "../outputData"+"/virtualImages/").c_str() );
 
-		fname = fname + "../bestData" + "/virtualImages/" + output_name;
+		fname = fname + "../outputData" + "/virtualImages/" + output_name;
 		if(Dimension == 2)
 		{
 			fname += ".png";

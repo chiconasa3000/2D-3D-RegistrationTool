@@ -358,12 +358,10 @@ int main(int argc, char* argv[] )
     // Get the output directory
     //----------------------------------------------------------------------------
     std::string outDir = argv[0];
-    //crear el directorio uno existe otro no - 
+    //crear el directorio de SALIDA
     //el directorio donde estaran los resultados del registro
     std::string fname;
     itksys::SystemTools::MakeDirectory((fname + outDir));
-
-
 
     argc--;
     argv++;
