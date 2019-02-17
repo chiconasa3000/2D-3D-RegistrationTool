@@ -58,6 +58,9 @@ itkPatternIntensityImageToImageMetric.h
 itkPatternIntensityImageToImageMetric.txx
 itkPatternIntensityMultiImageToImageMetric.h
 itkPatternIntensityMultiImageToImageMetric.txx
+BSplineDeformableTransformOpt.h
+BSplineDeformableTransformOpt.txx
+GenDRRs/gestorMatrixRot.h
 )
 
 #Add project's executables
@@ -67,9 +70,30 @@ itkPatternIntensityMultiImageToImageMetric.txx
 #add_executable(MultiImageSearch Examples/MultiImageSearch.cxx)
 #target_link_libraries(MultiImageSearch ${Libraries})
 
+#Ambiente de lectura en mac
 add_executable(ReadCmd Examples/readCmd.cpp)
 target_link_libraries(ReadCmd ${Libraries})
 
+#Ambiente de lectura en linux
+add_executable(doRegistration Examples/doRegistration.cpp)
+target_link_libraries(doRegistration ${Libraries})
+
+#Generador de imagenes Virtuales
+add_executable(genVirtualImage GenDRRs/genVirtualImage.cxx GenDRRs/gestorMatrixRot.cxx)
+target_link_libraries(genVirtualImage ${Libraries})
+
+#Creacion de Deformaciones Aleatorias
+add_executable(CreateImageSetAffine DeformacionesAleatorias/CreateImageSetAffine.cxx)
+target_link_libraries(CreateImageSetAffine ${Libraries})
+
+add_executable(CreateImageSetBspline DeformacionesAleatorias/CreateImageSetBspline.cxx)
+target_link_libraries(CreateImageSetBspline ${Libraries})
+
+add_executable(CreateImageSetSimilarity DeformacionesAleatorias/CreateImageSetSimilarity.cxx)
+target_link_libraries(CreateImageSetSimilarity ${Libraries})
+
+
+#Registro de Imagenes
 add_executable(MultiImageRegistration ../Examples/MultiImageRegistration.cxx  ${HeaderFiles})
 target_link_libraries(MultiImageRegistration ${Libraries})
 
