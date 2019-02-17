@@ -24,6 +24,7 @@ int main(int argc, char *argv[]){
 	//variable definition
 	char *input_name = NULL;		//input volume
         char *output_name = NULL;		//virtual image
+	char *type_projection = NULL;		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
 
 	float scd = 1000.0;			//distance from source to isocenter
 	
@@ -31,12 +32,16 @@ int main(int argc, char *argv[]){
 	float rx = 0.;
 	float ry = 0.;
 	float rz = 0.;
+	
+	//Direction Cosines (rotation for orientation volume)
+	float dcx = 0.;
+	float dcy = 0.;
+	float dcz = 0.;
 
 	// Translation parameter of the isocenter in mm
 	float tx = 0.;
 	float ty = 0.;
 	float tz = 0.;
-
 
 	bool customized_iso  = false; 		//flag for iso given by user
 	bool customized_2DCX = false;		//flag for central of 2d image
@@ -83,6 +88,14 @@ int main(int argc, char *argv[]){
 			verbose = true;
 		}
 		
+		if ((ok == false) && (strcmp(argv[1], "-p") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			type_projection = argv[1];
+			argc--; argv++;
+		}
+
 		if ((ok == false) && (strcmp(argv[1], "-t") == 0))
 		{
 			argc--; argv++;
@@ -94,7 +107,19 @@ int main(int argc, char *argv[]){
 			tz=atof(argv[1]);
 			argc--; argv++;
 		}
-
+		
+		if ((ok == false) && (strcmp(argv[1], "-dc") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			dcx=atof(argv[1]);
+			argc--; argv++;
+			dcy=atof(argv[1]);
+			argc--; argv++;
+			dcz=atof(argv[1]);
+			argc--; argv++;
+		}
+		
 		if ((ok == false) && (strcmp(argv[1], "-rx") == 0))
 		{
 			argc--; argv++;
@@ -342,9 +367,9 @@ int main(int argc, char *argv[]){
 	HelperRot helperRot; 
 	HelperRot helperRotInit;
 
-	helperRot.initRotX(dtr*(90.0));
-	helperRot.initRotY(dtr*(-90.0));
-	helperRot.initRotZ(dtr*(0.0));
+	helperRot.initRotX(dtr*(dcx));
+	helperRot.initRotY(dtr*(dcy));
+	helperRot.initRotZ(dtr*(dcz));
 	
 	helperRotInit.initRotX(dtr*(0.0));
 	helperRotInit.initRotY(dtr*(0.0));
@@ -440,10 +465,21 @@ int main(int argc, char *argv[]){
 		o2Dx = ((double) dxx - 1.)/2.;
 		o2Dy = ((double) dyy - 1.)/2.;
 	}
-	// Compute the origin (inmm) of the 2D Image
-	origin[0] = -scd;
-	origin[1] = -im_sx * o2Dx;
-	origin[2] = -im_sy * o2Dy;
+	
+	//TODO: Need to classify orientation types (sign and scd)
+	//Hint: consider the origin like a other input parameter
+	if(strcmp(type_projection,"AP")==0){
+		// Compute the origin (inmm) of the 2D Image
+		origin[0] = im_sx * o2Dx;
+		origin[1] = -scd;
+		origin[2] = im_sy * o2Dy;
+	}else if(strcmp(type_projection,"ML")==0){
+		// Compute the origin (inmm) of the 2D Image
+		origin[0] = -scd;
+		origin[1] = -im_sx * o2Dx;
+		origin[2] = im_sy * o2Dy;
+	}
+
 
 	//set identity in direction cosine
 	itk::Versor< double > rotationDirect;
