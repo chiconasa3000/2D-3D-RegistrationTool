@@ -188,7 +188,7 @@ int main( int argc, char * argv[] )
     itk::TransformFileWriterTemplate<double>::Pointer transformFileWriter =  itk::TransformFileWriterTemplate<double>::New();
     itksys::SystemTools::MakeDirectory( (fname + argv[2] + "/TransformFiles/").c_str() );
 
-    string fileName = fname + argv[2] + "/TransformFiles/" + fnameStream.str() + ".txt";
+    string fileName = fname + argv[2] + "/TransformFiles/" + "transfSim_" +fnameStream.str() + ".txt";
     transformFileWriter->SetFileName(fileName.c_str());
     //transformFileWriter->SetPrecision(12);
     transformFileWriter->SetInput(similarityTransform);
@@ -196,14 +196,14 @@ int main( int argc, char * argv[] )
 
     itksys::SystemTools::MakeDirectory( (fname+argv[2]+"/Images/").c_str() );
     
-    fname = fname + argv[2] + "/Images/" + fnameStream.str();
+    fname = fname + argv[2] + "/Images/" + "imagenDef_"+ fnameStream.str();
     if(Dimension == 2)
     {
       fname += ".png";
     }
     else
     {
-      fname += ".mhd";
+      fname += ".mha";
     }
     
     writer->SetFileName( fname.c_str() );
