@@ -10,6 +10,6 @@ CTestTestfile.cmake
 bestData
 GenDRRs/build
 build
-.DS_Store
-GenDRRs/.DS_Store
+*.DS_Store
+GenDRRs/*.DS_Store
 *.swp
