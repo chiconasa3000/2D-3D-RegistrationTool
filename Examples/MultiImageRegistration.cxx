@@ -3,9 +3,13 @@
 #endif
 
 #include <itkCommand.h>
-//#include <itkEuler3DTransform.h>
-#include <itkSimilarity3DTransform.h>
-#include <itkFRPROptimizer.h>
+#include <itkEuler3DTransform.h>
+//#include <itkSimilarity3DTransform.h>
+
+//#include <itkFRPROptimizer.h>
+
+#include "itkPowellOptimizer.h"
+
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -56,7 +60,7 @@ protected:
 public:
     typedef itk::MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage> RegistrationType;
     typedef RegistrationType*   RegistrationPointer;
-    typedef itk::FRPROptimizer  OptimizerType;
+    typedef itk::PowellOptimizer  OptimizerType;
 
     void Execute(itk::Object *caller, const itk::EventObject & event)
     {
@@ -97,7 +101,7 @@ protected:
     OptimizerObserver() {};
 
 public:
-    typedef itk::FRPROptimizer  OptimizerType;
+    typedef itk::PowellOptimizer  OptimizerType;
     typedef OptimizerType*      OptimizerPointer;
 
     void Execute(itk::Object *caller, const itk::EventObject & event)
@@ -110,6 +114,7 @@ public:
                       << "/" << optimizer->GetMaximumIteration() << " Position: " <<
                          optimizer->GetCurrentPosition() << " Value: " <<
                          optimizer->GetCurrentCost() << std::endl;
+	    std::cout << "Similarity: " << optimizer->GetValue() << std::endl;
         }
         else if( itk::StartEvent().CheckEvent( & event ) )
         {
@@ -167,7 +172,7 @@ int main(int argc, char* argv[] )
     //----------------------------------------------------------------------------
     // Create the transform
     //----------------------------------------------------------------------------
-    typedef itk::Similarity3DTransform< double> TransformType;
+    typedef itk::Euler3DTransform< double> TransformType;
 
     TransformType::Pointer transform = TransformType::New();
     transform->SetIdentity();
@@ -274,7 +279,7 @@ int main(int argc, char* argv[] )
     //----------------------------------------------------------------------------
     // Create the optimizer
     //----------------------------------------------------------------------------
-    typedef itk::FRPROptimizer OptimizerType;
+    typedef itk::PowellOptimizer OptimizerType;
 
     OptimizerType::Pointer optimizer = OptimizerType::New();
 
@@ -287,14 +292,14 @@ int main(int argc, char* argv[] )
     scales[2] = 25.0;
     optimizer->SetScales( scales );
 
-    optimizer->SetMaximize( true );
-    optimizer->SetMaximumIteration( 100 );
-    optimizer->SetMaximumLineIteration( 10 );
+    optimizer->SetMaximize( false ); //true
+    optimizer->SetMaximumIteration( 10 ); //100
+    optimizer->SetMaximumLineIteration( 4 ); //10
     optimizer->SetValueTolerance( 1e-3 );
-    optimizer->SetUseUnitLengthGradient( true );
-    optimizer->SetToPolakRibiere();
-    optimizer->SetCatchGetValueException( true );
-    optimizer->SetMetricWorstPossibleValue(-itk::NumericTraits<MultiMetricType::MeasureType>::infinity() );
+    //optimizer->SetUseUnitLengthGradient( true );
+    //optimizer->SetToPolakRibiere();
+    //optimizer->SetCatchGetValueException( true );
+    //optimizer->SetMetricWorstPossibleValue(-itk::NumericTraits<MultiMetricType::MeasureType>::infinity() );
 
     //These parameters will be halved at the begginng of each resolution level
     float steptolerance=atof(argv[0]); float steplength=atof(argv[1]);
@@ -511,9 +516,9 @@ int main(int argc, char* argv[] )
 
         //the transformation file has a specify format
         std::string className = baseTransform->GetNameOfClass();
-        if( className.compare("Similarity3DTransform") != 0 )
+        if( className.compare("Euler3DTransform") != 0 )
         {
-            std::cerr << "Transform class must be Similarity3DTransform." << std::endl;
+            std::cerr << "Transform class must be Euler3DTransform." << std::endl;
             std::cerr << "Found " << className << " instead."
                       << std::endl;
             return EXIT_FAILURE;

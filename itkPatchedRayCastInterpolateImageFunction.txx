@@ -6,7 +6,7 @@
 #include "vnl/vnl_math.h"
 
 //----------------------------------------------------------------------------
-#include "itkRigid3DTransform.h"
+//#include "itkRigid3DTransform.h"
 //----------------------------------------------------------------------------
 
 // Put the helper class in an anonymous namespace so that it is not
