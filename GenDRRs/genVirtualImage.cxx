@@ -5,7 +5,7 @@
 #include "itkTimeProbesCollectorBase.h"
 #include "itkImageFileReader.h"
 #include "itkResampleImageFilter.h"
-#include "itkEuler3DTransform.h"
+#include "itkSimilarity3DTransform.h"
 #include "itkRescaleIntensityImageFilter.h"
 #include "itkFlipImageFilter.h"
 #include "itkImageFileWriter.h"
@@ -350,7 +350,7 @@ int main(int argc, char *argv[]){
 	filter->SetInput(image);
 	filter->SetDefaultPixelValue(0);
 
-	typedef itk::Euler3DTransform< double > TransformType;
+	typedef itk::Similarity3DTransform< double > TransformType;
 	TransformType::Pointer transform = TransformType::New();
 	transform->SetIdentity();	
 	//constant for casting degrees into radians format of rotation projection

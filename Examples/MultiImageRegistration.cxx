@@ -3,8 +3,8 @@
 #endif
 
 #include <itkCommand.h>
-#include <itkEuler3DTransform.h>
-//#include <itkSimilarity3DTransform.h>
+//#include <itkEuler3DTransform.h>
+#include <itkSimilarity3DTransform.h>
 
 //#include <itkFRPROptimizer.h>
 
@@ -19,7 +19,9 @@
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
 #include "itkTimeProbe.h"
+
 #include "itkNormalizedGradientCorrelationMultiImageToImageMetric.h"
+
 #include "itkMultiResolutionMultiImageToImageRegistrationMethod.h"
 #include "itkPatchedRayCastInterpolateImageFunction.h"
 #include <stdlib.h>
@@ -172,7 +174,7 @@ int main(int argc, char* argv[] )
     //----------------------------------------------------------------------------
     // Create the transform
     //----------------------------------------------------------------------------
-    typedef itk::Euler3DTransform< double> TransformType;
+    typedef itk::Similarity3DTransform< double> TransformType;
 
     TransformType::Pointer transform = TransformType::New();
     transform->SetIdentity();
@@ -255,7 +257,7 @@ int main(int argc, char* argv[] )
         vfocalPoint[f][2] = focalPoint[2] = atof( argv[ 3 ] );
         interpolator->SetFocalPoint( focalPoint );
         interpolator->SetTransform( transform );
-        interpolator->SetThreshold( 100.0 );
+        interpolator->SetThreshold( 0.0 );
         registration->AddInterpolator( interpolator );
 
         FixedImagePyramidType::Pointer fixedPyramidFilter = FixedImagePyramidType::New();
@@ -516,9 +518,9 @@ int main(int argc, char* argv[] )
 
         //the transformation file has a specify format
         std::string className = baseTransform->GetNameOfClass();
-        if( className.compare("Euler3DTransform") != 0 )
+        if( className.compare("Similarity3DTransform") != 0 )
         {
-            std::cerr << "Transform class must be Euler3DTransform." << std::endl;
+            std::cerr << "Transform class must be Similarity3DTransform." << std::endl;
             std::cerr << "Found " << className << " instead."
                       << std::endl;
             return EXIT_FAILURE;

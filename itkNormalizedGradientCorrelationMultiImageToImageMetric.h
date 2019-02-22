@@ -2,7 +2,7 @@
 #define __itkNormalizedGradientCorrelationMultiImageToImageMetric_h
 
 #include "itkMultiImageToImageMetric.h"
-#include "itkNormalizedGradientCorrelationImageToImageMetric.h"
+#include "itkNormalizedCorrelationTwoImageToOneImageMetric.h"
 
 namespace itk{
 
@@ -28,7 +28,8 @@ namespace itk{
     itkTypeMacro(NormalizedGradientCorrelationMultiImageToImageMetric, MultiImageToImageMetric);
 
 /** Types defined by this class */
-    typedef NormalizedGradientCorrelationImageToImageMetric< TFixedImage, TMovingImage > MetricType;
+
+    typedef NormalizedCorrelationTwoImageToOneImageMetric< TFixedImage, TMovingImage > MetricType;
 
   protected:
     NormalizedGradientCorrelationMultiImageToImageMetric() {  itkDebugMacro("Constructor"); }
