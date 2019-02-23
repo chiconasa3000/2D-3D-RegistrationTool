@@ -606,7 +606,6 @@ int main(int argc, char *argv[]){
 		{
 			fname += ".mha";
 		}
-		
 		writer->SetFileName( fname.c_str() );
 		writer->SetInput(rescaler->GetOutput());
 		try{

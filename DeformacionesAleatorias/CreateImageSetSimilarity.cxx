@@ -105,8 +105,8 @@ int main( int argc, char * argv[] )
 		//Get the spacing
 		InputImageType::SpacingType spacing = reader->GetOutput()->GetSpacing();
 		//Get the origin
-		BSplineTransformType::OriginType origin;
-		origin = reader->GetOutput()->GetOrigin();
+		//BSplineTransformType::OriginType origin;
+		//origin = reader->GetOutput()->GetOrigin();
 
 		InputImageType::SizeType size = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
@@ -140,7 +140,7 @@ int main( int argc, char * argv[] )
 		//similarityParameters[0] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[1] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[2] = dtr*(rand()%(5 - (-5) + 1) +(-5));
-		similarityParameters[0] = dtr*(20);
+		similarityParameters[0] = dtr*(0);
 		similarityParameters[1] = dtr*(0);
 		similarityParameters[2] = dtr*(0);
 
@@ -171,11 +171,11 @@ int main( int argc, char * argv[] )
 		size = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
 		resample->SetSize(size);
-		resample->SetOutputOrigin(origin);
+		resample->SetOutputOrigin(reader->GetOutput()->GetOrigin());
 		resample->SetOutputSpacing(spacing);
 		resample->SetDefaultPixelValue( 0 );
 		resample->SetOutputDirection( reader->GetOutput()->GetDirection());
-		resample->SetInput( reader->GetOutput() );
+		resample->SetInput( rescaleFilter->GetOutput() );
 		writer->SetInput( resample->GetOutput() );
 
 		
