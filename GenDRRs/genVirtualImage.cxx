@@ -547,13 +547,13 @@ int main(int argc, char *argv[]){
 		// The output of the filter can then be passed to a writer to
 		// save the DRR image to a file.
 
-		typedef itk::RescaleIntensityImageFilter< 
-			MovingImageType, OutputImageType > RescaleFilterType;
+		/*typedef itk::RescaleIntensityImageFilter< 
+		MovingImageType, OutputImageType > RescaleFilterType;
 		RescaleFilterType::Pointer rescaler = RescaleFilterType::New();
 		rescaler->SetOutputMinimum(   0 );
 		rescaler->SetOutputMaximum( 255 );
 		rescaler->SetInput( filter->GetOutput() );
-		rescaler->Update();
+		rescaler->Update();*/
 
 		/*timer.Start("DRR post-processing");
 
@@ -592,7 +592,7 @@ int main(int argc, char *argv[]){
 		std::cerr << err << std::endl; 
 		} */
 		std::string fname;
-	        typedef itk::ImageFileWriter< OutputImageType >  WriterType;
+	        typedef itk::ImageFileWriter< MovingImageType >  WriterType;
 		  WriterType::Pointer writer = WriterType::New();
 
 		itksys::SystemTools::MakeDirectory( (fname + "../outputData"+"/virtualImages/").c_str() );
@@ -607,7 +607,7 @@ int main(int argc, char *argv[]){
 			fname += ".mha";
 		}
 		writer->SetFileName( fname.c_str() );
-		writer->SetInput(rescaler->GetOutput());
+		writer->SetInput(dynamic_cast<const MovingImageType *>(filter->GetOutput()));
 		try{
 			std::cout << "Writing Virtual Image" << fname.c_str() << std::endl;
 			writer->Update();

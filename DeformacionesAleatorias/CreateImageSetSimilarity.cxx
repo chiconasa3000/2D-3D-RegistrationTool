@@ -68,12 +68,12 @@ int main( int argc, char * argv[] )
 	reader->Update();
 
 	// Rescale the input image to 0-255
-	typedef itk::RescaleIntensityImageFilter<InputImageType, InputImageType >  RescaleFilterType;
+	/*typedef itk::RescaleIntensityImageFilter<InputImageType, InputImageType >  RescaleFilterType;
 	RescaleFilterType::Pointer    rescaleFilter    = RescaleFilterType::New();
 	rescaleFilter->SetInput(    reader->GetOutput() );
 	rescaleFilter->SetOutputMinimum(0);
 	rescaleFilter->SetOutputMaximum(255);
-	rescaleFilter->Update();
+	rescaleFilter->Update();*/
 
 	int numberOfImages = atoi(argv[3]);
 
@@ -140,7 +140,7 @@ int main( int argc, char * argv[] )
 		//similarityParameters[0] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[1] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[2] = dtr*(rand()%(5 - (-5) + 1) +(-5));
-		similarityParameters[0] = dtr*(0);
+		similarityParameters[0] = dtr*(20);
 		similarityParameters[1] = dtr*(0);
 		similarityParameters[2] = dtr*(0);
 
@@ -175,7 +175,7 @@ int main( int argc, char * argv[] )
 		resample->SetOutputSpacing(spacing);
 		resample->SetDefaultPixelValue( 0 );
 		resample->SetOutputDirection( reader->GetOutput()->GetDirection());
-		resample->SetInput( rescaleFilter->GetOutput() );
+		resample->SetInput( reader->GetOutput() );
 		writer->SetInput( resample->GetOutput() );
 
 		

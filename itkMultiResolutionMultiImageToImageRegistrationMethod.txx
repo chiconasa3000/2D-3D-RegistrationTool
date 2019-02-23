@@ -87,7 +87,7 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
         typename WriterType::Pointer projectionWriter = WriterType::New();
         projectionWriter->SetFileName( strStream.str().c_str() );
         //projectionWriter->SetInput( resampler->GetOutput() );
-        projectionWriter->SetInput( rescaler1->GetOutput() );
+        projectionWriter->SetInput( resampler->GetOutput() );
 
         std::cout << "Attempting to write projection file " << projectionWriter->GetFileName() << std::endl;
         try
