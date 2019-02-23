@@ -140,7 +140,7 @@ int main( int argc, char * argv[] )
 		//similarityParameters[0] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[1] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[2] = dtr*(rand()%(5 - (-5) + 1) +(-5));
-		similarityParameters[0] = dtr*(20);
+		similarityParameters[0] = dtr*(0);
 		similarityParameters[1] = dtr*(0);
 		similarityParameters[2] = dtr*(0);
 
