@@ -6,6 +6,7 @@
 #include <itkSobelOperator.h>
 #include <itkNeighborhoodOperatorImageFilter.h>
 #include <itkResampleImageFilter.h>
+#include <itkRescaleIntensityImageFilter.h>
 
 namespace itk
 {
@@ -91,6 +92,9 @@ namespace itk
 			typedef itk::ResampleImageFilter< MovingImageType,
 				FixedImageType >  ResampleImageFilterType;
 
+			typedef itk::RescaleIntensityImageFilter< MovingImageType, MovingImageType > RescaleIntImageFilterType;
+
+
 			itkStaticConstMacro(FixedImageDimension, unsigned int,
 					TFixedImage::ImageDimension);
 
@@ -137,6 +141,10 @@ namespace itk
 
 			/** The filter for transforming the moving images. */
 			typename ResampleImageFilterType::Pointer m_ResampleImageFilter;
+			
+
+			/* Este sera el filtro que rescalara el umbral de 0 a 255*/
+			typename RescaleIntImageFilterType::Pointer m_RescaleIntImageFilter;
 
 			/** The Sobel gradients of the fixed image */
 			SobelOperator<RealType,

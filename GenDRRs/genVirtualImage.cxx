@@ -376,10 +376,13 @@ int main(int argc, char *argv[]){
 	helperRotInit.initRotX(dtr*(rx));
 	helperRotInit.initRotY(dtr*(ry));
 	helperRotInit.initRotZ(dtr*(rz));
-
-
+	
 	helperRot.composeMatrixRot();
 	helperRotInit.composeMatrixRot();
+
+	std::cout<<"Matriz de Rotacion para la imagen Movible"<<std::endl;
+	helperRotInit.printRotg();
+	std::cout<<std::endl;
 
 	//itk::Versor<double> vectRot;
 	//vectRot.SetRotationAroundX(dtr*(-90.0));	
@@ -543,36 +546,36 @@ int main(int argc, char *argv[]){
 
 	if (output_name) 
 	{
+		timer.Start("DRR post-processing");
 
 		// The output of the filter can then be passed to a writer to
 		// save the DRR image to a file.
 
-		/*typedef itk::RescaleIntensityImageFilter< 
+		typedef itk::RescaleIntensityImageFilter< 
 		MovingImageType, OutputImageType > RescaleFilterType;
 		RescaleFilterType::Pointer rescaler = RescaleFilterType::New();
 		rescaler->SetOutputMinimum(   0 );
 		rescaler->SetOutputMaximum( 255 );
 		rescaler->SetInput( filter->GetOutput() );
-		rescaler->Update();*/
+		rescaler->Update();
 
-		/*timer.Start("DRR post-processing");
-
+		
 		// Out of some reason, the computed projection is upsided-down.
 		// Here we use a FilpImageFilter to flip the images in y direction.
-		typedef itk::FlipImageFilter< OutputImageType > FlipFilterType;
+		/*typedef itk::FlipImageFilter< OutputImageType > FlipFilterType;
 		FlipFilterType::Pointer flipFilter = FlipFilterType::New();
 
 		typedef FlipFilterType::FlipAxesArrayType FlipAxesArrayType;
 		FlipAxesArrayType flipArray;
 		flipArray[0] = 0;
-		flipArray[1] = 1;
+		flipArray[1] = 0;
 
 		flipFilter->SetFlipAxes( flipArray );
 		flipFilter->SetInput( rescaler->GetOutput() );
 		flipFilter->Update();
-
-		timer.Stop("DRR post-processing");
 		*/
+		timer.Stop("DRR post-processing");
+		
 
 		/*typedef itk::ImageFileWriter< OutputImageType >  WriterType;
 		  WriterType::Pointer writer = WriterType::New();
@@ -592,7 +595,7 @@ int main(int argc, char *argv[]){
 		std::cerr << err << std::endl; 
 		} */
 		std::string fname;
-	        typedef itk::ImageFileWriter< MovingImageType >  WriterType;
+	        typedef itk::ImageFileWriter< OutputImageType >  WriterType;
 		  WriterType::Pointer writer = WriterType::New();
 
 		itksys::SystemTools::MakeDirectory( (fname + "../outputData"+"/virtualImages/").c_str() );
@@ -607,7 +610,9 @@ int main(int argc, char *argv[]){
 			fname += ".mha";
 		}
 		writer->SetFileName( fname.c_str() );
-		writer->SetInput(dynamic_cast<const MovingImageType *>(filter->GetOutput()));
+		//writer->SetInput(dynamic_cast<const MovingImageType *>(filter->GetOutput()));
+		writer->SetInput(rescaler->GetOutput());
+
 		try{
 			std::cout << "Writing Virtual Image" << fname.c_str() << std::endl;
 			writer->Update();

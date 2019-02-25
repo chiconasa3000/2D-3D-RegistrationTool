@@ -6,7 +6,6 @@
 #include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkNumericTraits.h>
 
-
 namespace itk
 {
 
@@ -65,11 +64,27 @@ namespace itk
 			m_ResampleImageFilter->SetInput( this->m_MovingImage );
 			m_ResampleImageFilter->SetDefaultPixelValue(
 					itk::NumericTraits<FixedImagePixelType>::Zero );
+		
+			//Copia de Datos provenientes de la Imagen Fija
 			m_ResampleImageFilter->UseReferenceImageOn();
 			m_ResampleImageFilter->SetReferenceImage( this->m_FixedImage );
-			m_ResampleImageFilter->GetOutput()->SetRequestedRegion(
-					this->GetFixedImageRegion() );
+			m_ResampleImageFilter->GetOutput()->SetRequestedRegion(this->GetFixedImageRegion() );
+
+
 			m_ResampleImageFilter->Update();
+			
+			m_RescaleIntImageFilter = RescaleIntImageFilterType::New();
+			m_RescaleIntImageFilter->SetOutputMinimum(   0 );
+			m_RescaleIntImageFilter->SetOutputMaximum( 255 );
+			m_RescaleIntImageFilter->SetInput( m_ResampleImageFilter->GetOutput());
+			m_RescaleIntImageFilter->Update(); //Imagen movible proyeccion con  0-255 y threshold 0 por el interpolador
+
+
+
+			//Para establecer correctamente las comparaciones la proyeccion de la imagen
+			//movible sera rescalada en umbral de 0  a 255 y con esta recien ser comparada
+			//con la respectiva imagen fija que tambien esta de 0 a 255
+				
 
 
 			for (unsigned int dim=0; dim < m_MaxDimension; dim++)
@@ -78,7 +93,7 @@ namespace itk
 				m_MovingSobelFilters[dim]->OverrideBoundaryCondition(
 						&m_MovingBoundaryCondition );
 				m_MovingSobelFilters[dim]->SetOperator( m_SobelOperators[dim] );
-				m_MovingSobelFilters[dim]->SetInput(m_ResampleImageFilter->GetOutput());
+				m_MovingSobelFilters[dim]->SetInput(m_RescaleIntImageFilter->GetOutput());
 				m_MovingSobelFilters[dim]->GetOutput()->SetRequestedRegion(
 						this->GetFixedImageRegion() );
 			}
@@ -118,9 +133,9 @@ namespace itk
 			MeasureType val = NumericTraits< MeasureType >::Zero;
 
 			/*
-cc: cross corrrelation
-fac: fixed auto correlation, this is, auto correlation of the fixed image
-mac: moving auto correlation, this is, moving image auto correlation
+			* cc: cross corrrelation
+			* fac: fixed auto correlation, this is, auto correlation of the fixed image
+			* mac: moving auto correlation, this is, moving image auto correlation
 			 */
 			MeasureType cc[FixedImageDimension];
 			MeasureType fac[FixedImageDimension];

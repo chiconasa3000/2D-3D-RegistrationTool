@@ -22,6 +22,7 @@ public:
 	void printRotx();
 	void printRoty();
 	void printRotz();
+	void printRotg();
 	MatrixType getRotx(){return matrixRotX;};
 	MatrixType getRoty(){return matrixRotY;};
 	MatrixType getRotz(){return matrixRotZ;};

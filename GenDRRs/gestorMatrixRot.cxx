@@ -47,6 +47,10 @@ void HelperRot::initRotZ(float angle){
 
 }
 
+void HelperRot::printRotg(){
+	std::cout<<getRotg();
+}
+
 void HelperRot::printRotx(){
 	std::cout<<getRotx();
 }

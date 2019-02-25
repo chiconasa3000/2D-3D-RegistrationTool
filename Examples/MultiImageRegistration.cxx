@@ -205,7 +205,7 @@ int main(int argc, char* argv[] )
 	}
 	
 	
-	registration->SetMovingImage( movingReader->GetOutput() ); //Imagen Movible con si o si (cuando tratamos otros volumenes) 0 a 255 sin threshold 
+	registration->SetMovingImage( movingReader->GetOutput() ); //Imagen Movible consu informacion de intensidad completa 
 
 	MovingImagePyramidType::Pointer movingPyramidFilter = MovingImagePyramidType::New();
 	//it is only the allocate movin pyramid and given to the registration
@@ -249,7 +249,7 @@ int main(int argc, char* argv[] )
 		}
 
 		FixedImageConstPointer fixedImage = fixedReader->GetOutput();
-		registration->AddFixedImage( fixedImage ); //Imagen Fija leida con threhosld 100 con 0 255 seteado en el generador
+		registration->AddFixedImage( fixedImage ); //Imagen Fija leida con threhosld 0 con 0 255 seteado en el generador
 
 		registration->AddFixedImageRegion( fixedImage->GetBufferedRegion() );
 
@@ -262,6 +262,8 @@ int main(int argc, char* argv[] )
 		interpolator->SetFocalPoint( focalPoint );
 		interpolator->SetTransform( transform );
 		interpolator->SetThreshold( 0.0 );
+		
+	
 		registration->AddInterpolator( interpolator );
 
 		FixedImagePyramidType::Pointer fixedPyramidFilter = FixedImagePyramidType::New();
@@ -393,20 +395,19 @@ int main(int argc, char* argv[] )
 	{
 		//the moving image is updating with the last transformation
 		ResamplerType::Pointer resampler = ResamplerType::New();
-		resampler->SetInput( registration->GetMovingImage() ); //Input Imagen movible sin 0-255 ya que esta por defecto en la imagen
+		resampler->SetInput( registration->GetMovingImage() ); //Input Imagen movible con toda su informacion de intensidad
 		resampler->SetInterpolator( registration->GetMultiInterpolator()[f] );
 		resampler->SetTransform( transform );
 		resampler->SetUseReferenceImage( true );
 		resampler->SetReferenceImage( registration->GetFixedMultiImage()[f] );
 
 		
-		//No es necesario
 		//threshold the image with the correct intensity values
-		/*RescaleFilterType::Pointer rescaler1 = RescaleFilterType::New();
+		RescaleFilterType::Pointer rescaler1 = RescaleFilterType::New();
 		rescaler1->SetOutputMinimum(   0 );
 		rescaler1->SetOutputMaximum( 255 );
 		rescaler1->SetInput( resampler->GetOutput());
-		rescaler1->Update();*/ //Imagen movible proyeccion sin  0-255 ya que esta por defecto en la imagen y threshold 100 por el interpolador
+		rescaler1->Update(); //Imagen movible proyeccion con  0-255 y threshold 0 por el interpolador
 
 	
 		
@@ -424,8 +425,7 @@ int main(int argc, char* argv[] )
 		//the projection is condition
 		WriterType::Pointer projectionWriter = WriterType::New();
 		projectionWriter->SetFileName( strStream.str().c_str() );
-		//projectionWriter->SetInput( resampler->GetOutput() );
-		projectionWriter->SetInput( resampler->GetOutput() );
+		projectionWriter->SetInput( rescaler1->GetOutput() );
 
 		std::cout << "Attempting to write projection file " <<
 			projectionWriter->GetFileName() << std::endl;
@@ -440,9 +440,8 @@ int main(int argc, char* argv[] )
 
 		//the difference is between the projection and the current fixed image in this case the last level
 		SubtracterType::Pointer subtracter = SubtracterType::New();
-		subtracter->SetInput1( registration->GetFixedMultiImage()[f] ); //imagen fija generada con threhsold 100 (por ser virtual viene de un volumen  0 255) 
-		//subtracter->SetInput2( resampler->GetOutput() );
-		subtracter->SetInput2( resampler->GetOutput() ); //Imagen movible proyeccion sin  0-255 ya que esta por defecto en la imagen y threshold 100 por el interpolador
+		subtracter->SetInput1( registration->GetFixedMultiImage()[f] ); //imagen fija generada con threhsold 0 y ya rescalado previamente de 0 255 en el generador 
+		subtracter->SetInput2( rescaler1->GetOutput() ); //Imagen movible proyeccion con rescala de  0-255 y threshold 0 por el interpolador
 
 
 		std::stringstream strStream2;
@@ -622,7 +621,7 @@ int main(int argc, char* argv[] )
 	const double TranslationAlongX = finalParameters[3];
 	const double TranslationAlongY = finalParameters[4];
 	const double TranslationAlongZ = finalParameters[5];
-
+	const double EscalaXYZ = finalParameters[6];
 	const int numberOfIterations = optimizer->GetCurrentIteration();
 
 	const double bestValue = optimizer->GetValue();
@@ -636,7 +635,7 @@ int main(int argc, char* argv[] )
 	std::cout << " Translation Z = " << TranslationAlongZ  << " mm" << std::endl;
 	std::cout << " Number Of Iterations = " << numberOfIterations << std::endl;
 	std::cout << " Metric value  = " << bestValue          << std::endl;
-
+	std::cout << " Escala value = " << EscalaXYZ << std::endl;
 
 
 
@@ -699,18 +698,17 @@ int main(int argc, char* argv[] )
 	{
 		//the moving image is updating with the last transformation
 		ResamplerType::Pointer resampler = ResamplerType::New();
-		resampler->SetInput( registration->GetMovingImage() ); //Imagen Movible no cambia su 0-255 (porque proviene de la imagen deformada)
+		resampler->SetInput( registration->GetMovingImage() ); //Imagen Movible entra con toda su informacion de intensidad
 		resampler->SetInterpolator( registration->GetMultiInterpolator()[f] );
 		resampler->SetTransform( transform );
 		resampler->SetUseReferenceImage( true );
 		resampler->SetReferenceImage( registration->GetFixedMultiImage()[f] );
 
-		//threshold the image with the correct intensity values
-		/*RescaleFilterType::Pointer rescaler1 = RescaleFilterType::New();
+		RescaleFilterType::Pointer rescaler1 = RescaleFilterType::New();
 		rescaler1->SetOutputMinimum(   0 );
 		rescaler1->SetOutputMaximum( 255 );
 		rescaler1->SetInput( resampler->GetOutput());
-		rescaler1->Update();*/ //Imagen movible proyeccion sin  0-255 ya que esta por defecto en la imagen y threshold 100 por el interpolador
+		rescaler1->Update(); //Imagen movible proyeccion sin  0-255 ya que esta por defecto en la imagen y threshold 100 por el interpolador
 
 
 		std::stringstream strStream;
@@ -733,7 +731,7 @@ int main(int argc, char* argv[] )
 		WriterType::Pointer projectionWriter = WriterType::New();
 		projectionWriter->SetFileName( strStream.str().c_str() );
 		//projectionWriter->SetInput( resampler->GetOutput() );
-		projectionWriter->SetInput( resampler->GetOutput() ); //Imagen Movible proyeccion de 0 a 255 (por deformada) y threshold 100 por ser rescalada
+		projectionWriter->SetInput( rescaler1->GetOutput() ); //Imagen Movible proyeccion de 0 a 255 (por deformada) y threshold 100 por ser rescalada
 
 		std::cout << "Attempting to write projection file " <<
 			projectionWriter->GetFileName() << std::endl;
@@ -749,10 +747,9 @@ int main(int argc, char* argv[] )
 		//the difference is between the projection and the current fixed image in this case the last level
 		SubtracterType::Pointer subtracter = SubtracterType::New();
 		subtracter->SetInput1( registration->GetFixedMultiImage()[f] ); //Imagen Fija despues del registro sigue siendo la misma de entrada 
-										//imagen fija generada con threhsold 100 (por ser virtual viene de un volumen  0 255) 
+										//imagen fija generada con rescale de 0 a 255 y threshold 0 
  
-		//subtracter->SetInput2( resampler->GetOutput() );
-		subtracter->SetInput2( resampler->GetOutput() ); //Imagen movible proyeccion sin  0-255 ya que esta por defecto en la imagen y threshold 100 por el interpolador
+		subtracter->SetInput2( rescaler1->GetOutput() ); //Imagen movible proyeccion con rescale de  0-255 y threshold 0 por el interpolador
 
 
 		std::stringstream strStream2;
