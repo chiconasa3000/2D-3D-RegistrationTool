@@ -6,7 +6,7 @@
 //#include <itkEuler3DTransform.h>
 #include <itkSimilarity3DTransform.h>
 
-//#include <itkFRPROptimizer.h>
+#include <itkFRPROptimizer.h>
 
 #include "itkPowellOptimizer.h"
 
@@ -103,7 +103,7 @@ class OptimizerObserver : public itk::Command
 		OptimizerObserver() {};
 
 	public:
-		typedef itk::PowellOptimizer  OptimizerType;
+		typedef itk::FRPROptimizer  OptimizerType;
 		typedef const OptimizerType*      OptimizerPointer;
 
 		void Execute(itk::Object *caller, const itk::EventObject & event)
@@ -295,7 +295,7 @@ int main(int argc, char* argv[] )
 	//----------------------------------------------------------------------------
 	// Create the optimizer
 	//----------------------------------------------------------------------------
-	typedef itk::PowellOptimizer OptimizerType;
+	typedef itk::FRPROptimizer OptimizerType;
 
 	OptimizerType::Pointer optimizer = OptimizerType::New();
 
@@ -310,14 +310,14 @@ int main(int argc, char* argv[] )
 	scales[2] = 25.;
 	optimizer->SetScales( scales );
 
-	optimizer->SetMaximize( false ); //true
+	optimizer->SetMaximize( true ); //true
 	optimizer->SetMaximumIteration( 10 ); //100
 	optimizer->SetMaximumLineIteration( 4 ); //10 - 4
 	optimizer->SetValueTolerance( 1e-3 );
-	//optimizer->SetUseUnitLengthGradient( true );
-	//optimizer->SetToPolakRibiere();
-	//optimizer->SetCatchGetValueException( true );
-	//optimizer->SetMetricWorstPossibleValue(-itk::NumericTraits<MultiMetricType::MeasureType>::infinity() );
+	optimizer->SetUseUnitLengthGradient( true );
+	optimizer->SetToPolakRibiere();
+	optimizer->SetCatchGetValueException( true );
+	optimizer->SetMetricWorstPossibleValue(-itk::NumericTraits<MultiMetricType::MeasureType>::infinity() );
 
 	//These parameters will be halved at the begginng of each resolution level
 	float steptolerance=atof(argv[0]); float steplength=atof(argv[1]);
