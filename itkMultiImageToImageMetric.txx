@@ -460,7 +460,7 @@ MultiImageToImageMetric<TFixedImage,TMovingImage>
     {
         measure += m_MultiMetric[fImgNum]->GetValue( parameters );
     }
-    return measure/2.;
+    return measure;
 }
 
 } //namespace itk

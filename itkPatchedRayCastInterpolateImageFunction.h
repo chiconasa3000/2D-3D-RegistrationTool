@@ -63,6 +63,8 @@ public:
   typedef typename Superclass::InputPixelType        PixelType;
 
   typedef typename TInputImage::SizeType             SizeType;
+/* Direction a partir del tipo de imagen de entrada (volumen)*/
+typedef typename TInputImage::DirectionType DirectionMovingType;
 
   typedef Vector<TCoordRep, 3>                       DirectionType;
 
@@ -70,6 +72,10 @@ public:
   typedef InterpolateImageFunction<TInputImage,TCoordRep> InterpolatorType;
 
   typedef typename InterpolatorType::Pointer         InterpolatorPointer;
+
+/* Direction Volume according to Direction Fixed */
+typedef DirectionMovingType DirectionFixedType;
+//typedef typename DirectionFixedType::Pointer DirectionFixedPointer;
 
 
   /** Run-time type information (and related methods). */
@@ -150,6 +156,10 @@ public:
   /** Get a pointer to the Transform.  */
   itkGetConstMacro( Threshold, double );
 
+/** Connect the new Direction of the Volume according to Fixed Image **/
+itkSetMacro(DirectionFixed, DirectionFixedType);
+itkGetConstMacro(DirectionFixed, DirectionFixedType);
+
   /** Connect the Image */
   virtual void SetInputImage( const InputImageType* );
 
@@ -183,6 +193,9 @@ protected:
   /// Transformation used to calculate the new focal point position
   TransformPointer m_Transform;
 
+/// New Direction Volume according to Fixed Direction
+DirectionFixedType m_DirectionFixed;
+ 
   /// The focal point or position of the ray source
   InputPointType m_FocalPoint;
 

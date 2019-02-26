@@ -262,6 +262,14 @@ int main(int argc, char* argv[] )
 		interpolator->SetFocalPoint( focalPoint );
 		interpolator->SetTransform( transform );
 		interpolator->SetThreshold( 0.0 );
+	
+
+		/* Fijando al interpolador la nueva direccion para el volumen acorde a la direccion de la imagen fija*/	
+		//typedef MovingImageType::DirectionType directionType;
+		//directionType::Pointer directionPointer = directionType::New();
+		//directionPointer = fixedImage->GetDirection();
+		
+		interpolator->SetDirectionFixed( fixedImage->GetDirection() );
 		
 	
 		registration->AddInterpolator( interpolator );
