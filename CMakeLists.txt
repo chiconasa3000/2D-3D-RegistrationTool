@@ -61,7 +61,7 @@ itkPatternIntensityMultiImageToImageMetric.txx
 BSplineDeformableTransformOpt.h
 BSplineDeformableTransformOpt.txx
 GenDRRs/gestorMatrixRot.h
-Examples/scriptBuilder.h
+#Examples/scriptBuilder.h
 )
 
 #Add project's executables
@@ -80,8 +80,8 @@ add_executable(doRegistration Examples/doRegistration.cpp)
 target_link_libraries(doRegistration ${Libraries})
 
 #MultiPruebas
-add_executable(multiTesting Examples/multiTesting.cpp Examples/scriptBuilder.cpp)
-target_link_libraries(multiTesting ${Libraries})
+#add_executable(multiTesting Examples/multiTesting.cpp Examples/scriptBuilder.cpp)
+#target_link_libraries(multiTesting ${Libraries})
 
 #Generador de imagenes Virtuales
 add_executable(genVirtualImage GenDRRs/genVirtualImage.cxx GenDRRs/gestorMatrixRot.cxx)

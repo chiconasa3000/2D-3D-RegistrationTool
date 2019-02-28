@@ -1605,7 +1605,7 @@ PatchedRayCastInterpolateImageFunction< TInputImage, TCoordRep >
 
     m_PostTransform->SetMatrix(
       itk::Matrix<TCoordRep,3,3>( this->m_Image->GetDirection().GetInverse()) );
-	 //itk::Matrix<TCoordRep,3,3>( this->m_DirectionFixed.GetInverse()) );
+//	 itk::Matrix<TCoordRep,3,3>( this->m_DirectionFixed.GetInverse()) );
 
     m_PostTransform->SetCenter( this->m_Image->GetOrigin() );
     }

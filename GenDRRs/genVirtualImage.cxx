@@ -485,7 +485,6 @@ int main(int argc, char *argv[]){
 		origin[2] = im_sy * o2Dy;
 	}
 
-
 	//set identity in direction cosine
 	itk::Versor< double > rotationDirect;
 	const double angleRadians = (-180.0) * vnl_math::pi/180.0;

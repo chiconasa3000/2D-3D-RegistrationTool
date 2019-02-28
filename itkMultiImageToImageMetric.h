@@ -67,7 +67,8 @@ namespace itk
     typedef TMovingImage                               MovingImageType;
     typedef typename TMovingImage::PixelType           MovingImagePixelType;
     typedef typename MovingImageType::ConstPointer     MovingImageConstPointer;
-
+typedef typename MovingImageType::Pointer MovingImagePointer;
+typedef typename MovingImageType::DirectionType movDirectionType;
 /**  Type of the fixed Images. */
     typedef TFixedImage                             FixedImageType;
     typedef typename FixedImageType::Pointer        FixedImagePointer;
