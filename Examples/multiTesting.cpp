@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
 	ScriptBuilder *scriptbuilder = new ScriptBuilder();
 	scriptbuilder->setNumTests(numImagenes);
 
-/*
+
 	scriptbuilder->asignarScript("CreateImageSetSimilarity");	
 	scriptbuilder->buildScript();	
 
@@ -78,9 +78,27 @@ int main(int argc, char *argv[]){
 		//Generar el registro de imagenes
 		scriptbuilder->asignarScript("MultiImageRegistration");
 		scriptbuilder->buildScript();
-	}*/
-	scriptbuilder->asignarScript("MultiImageRegistration");
-	scriptbuilder->buildScript();
+
+		//Leer Transformacion de Salida
+		
+		//No haremos comprobacion de Tipo de Transformacion
+		//ya que sabemos que es de Similaridad
+
+		//No haremos comprobacion de multiplicidad de transformaciones
+		//ya que sabemos que una sola transformacion es guardada en el archivo
+		itk::TransformFileReader::Pointer transformReader = itk::TransformFileReader::New();
+		transformReader->SetFileName(argv[0]);
+		
+		std::cout<<"Lectura de Archivo de Transformacion del "<<indexTest<<" registro"<<std::endl;
+		try{
+			transformReader->Update();
+		}catch(itk::ExceptionObject &e)
+		{
+			std::cout << e.GesDescription() << std:endl;
+		}
+		itk::TransformFileReader::TransformListType* transformList = transformReader->GetTransformList();	
+		itk::TransformFileReaer::TransformPointer baseTransform = transformList->front();
+	}
 
 	return 0;
 }

@@ -49,7 +49,7 @@ void ScriptBuilder::buildScript(){
 		comman += numImages;
 
 		//1er Imagen 2D Fija (DRR o imagen virtual)
-		string fixed1Image = "../outputData/virtualImages/pelvisHealthy_ap.mha ";
+		string fixed1Image = "../outputData/virtualImages/pelvisHealthy_ap_"+to_string(indexTest)+".mha ";
 		comman += fixed1Image;
 
 		//Punto Focal de la 1era Imagen 2D
@@ -57,7 +57,7 @@ void ScriptBuilder::buildScript(){
 		comman += focal1Point;
 
 		//2da Imagen 2D Fija (DRR o imagen virtual)
-		string fixed2Image = "../outputData/virtualImages/pelvisHealthy_ml.mha ";
+		string fixed2Image = "../outputData/virtualImages/pelvisHealthy_ml_"+to_string(indexTest)+".mha ";
 		comman += fixed2Image;
 
 		//Punto Focal de la 2da Imagen 2D
@@ -65,22 +65,22 @@ void ScriptBuilder::buildScript(){
 		comman += focal2Point;
 
 		//Tolerancia de la metrica para terminar la optimización
-		string stepTolerance = "0.02 ";
+		string stepTolerance = "0.01 ";
 		comman += stepTolerance;
 
 		//Tamanio de Paso
-		string stepSize = "4.0 ";
+		string stepSize = "2.0 ";
 		comman += stepSize;
 
 		//Nro de Niveles de Resolucion y 
 		//sus respectivos factores de escala en cada nivel de resolución
 		//string schedule = "4 6 4 2 1 ";
-		string schedule = "3 4 2 1 ";
+		string schedule = "3 3 2 1 ";
 		comman += schedule;
 
 		//TODO: Create Directory for every test
 		//Directorio de Salida de los resultados del registro
-		string outputDir ="../outputData/resultsReg/ ";
+		string outputDir ="../outputData/resultsReg_"+to_string(indexTest);
 		comman += outputDir;
 
 
@@ -91,7 +91,7 @@ void ScriptBuilder::buildScript(){
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
 		string nameLogRegistro;
-		string cabezera = "LogMultiImageRegistration_";
+		string cabezera = "LogMultiImageRegistration_"+to_string(indexTest);
 		nameLogRegistro += cabezera;
 
 		//datos adicionales en el nombre del archivo a LogRegisterIteration
@@ -159,8 +159,8 @@ void ScriptBuilder::buildScript(){
 
 	}else if(tipoScript.compare("genVirtualImage")==0){
 		//Modo Verbose activado
-		string verboseOn = "-v ";
-		comman += verboseOn;
+		//string verboseOn = "-v ";
+		//comman += verboseOn;
 	
 		//Tipo de Proyeccion
 		string tipoProy = "-p "+inputTipoProy+" ";

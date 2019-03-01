@@ -74,10 +74,10 @@ class RegistrationObserver : public itk::Command
 				//Half step length and tolerance in each level
 				OptimizerType* optimizer = dynamic_cast<OptimizerType*>(registration->GetOptimizer() );
 
-				optimizer->SetStepLength( 0.5 * optimizer->GetStepLength() );
-				std::cout << "StepLength set to " << optimizer->GetStepLength() << std::endl;
-				optimizer->SetStepTolerance( 0.5 * optimizer->GetStepTolerance() );
-				std::cout << "StepTolerance set to " << optimizer->GetStepTolerance() << std::endl;
+				//optimizer->SetStepLength( 0.5 * optimizer->GetStepLength() );
+				//std::cout << "StepLength set to " << optimizer->GetStepLength() << std::endl;
+				//optimizer->SetStepTolerance( 0.5 * optimizer->GetStepTolerance() );
+				//std::cout << "StepTolerance set to " << optimizer->GetStepTolerance() << std::endl;
 			}
 		}
 
@@ -118,10 +118,10 @@ class OptimizerObserver : public itk::Command
 			if( itk::IterationEvent().CheckEvent( & event ) )
 			{
 				//std::cout << optimizer;
-				std::cout << "Iteration " << optimizer->GetCurrentIteration()
+				std::cout /*<< "Iteration " << optimizer->GetCurrentIteration()
 					<< "/" << optimizer->GetMaximumIteration() << " Position: " <<
 					optimizer->GetCurrentPosition() << " Value: " <<
-					optimizer->GetCurrentCost() << std::endl;
+					optimizer->GetCurrentCost() << std::endl;*/
 				std::cout << "Similarity: " << optimizer->GetValue() << std::endl;
 			}
 			else if( itk::StartEvent().CheckEvent( & event ) )
