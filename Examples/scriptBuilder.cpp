@@ -4,6 +4,18 @@ ScriptBuilder::ScriptBuilder(){
 	//TODO: To do something :p
 }
 
+void ScriptBuilder::setIndexTest(int indexTest){
+	this->indexTest = indexTest;
+}
+
+void ScriptBuilder::setNumTests(int numTests){
+	this->numTests = numTests;
+}
+
+void ScriptBuilder::setTipoProy(string tipoProy){
+	this->inputTipoProy = tipoProy;
+}
+
 void ScriptBuilder::asignarScript(string nombreScript){
 
 	if(nombreScript.compare("MultiImageRegistration")==0){
@@ -45,7 +57,7 @@ void ScriptBuilder::buildScript(){
 		comman += focal1Point;
 
 		//2da Imagen 2D Fija (DRR o imagen virtual)
-		string fixed2Image = 	"../outputData/virtualImages/pelvisHealthy_ml.mha ";
+		string fixed2Image = "../outputData/virtualImages/pelvisHealthy_ml.mha ";
 		comman += fixed2Image;
 
 		//Punto Focal de la 2da Imagen 2D
@@ -62,12 +74,13 @@ void ScriptBuilder::buildScript(){
 
 		//Nro de Niveles de Resolucion y 
 		//sus respectivos factores de escala en cada nivel de resolución
-		string schedule = "4 6 4 2 1 ";
+		//string schedule = "4 6 4 2 1 ";
+		string schedule = "3 4 2 1 ";
 		comman += schedule;
 
 		//TODO: Create Directory for every test
 		//Directorio de Salida de los resultados del registro
-		string outputDir ="../outputData/resultsReg";
+		string outputDir ="../outputData/resultsReg/ ";
 		comman += outputDir;
 
 
@@ -78,7 +91,7 @@ void ScriptBuilder::buildScript(){
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
 		string nameLogRegistro;
-		string cabezera = "LogRegisterIteration_";
+		string cabezera = "LogMultiImageRegistration_";
 		nameLogRegistro += cabezera;
 
 		//datos adicionales en el nombre del archivo a LogRegisterIteration
@@ -101,27 +114,160 @@ void ScriptBuilder::buildScript(){
 		nameLogRegistro += ".txt";
 
 		//Escribiendo el archivo con el stream del comando ejecutado
-		char * c_nameLogRegistro = &nameLogRegistro[0];
-		ofstream out(outputDir + nameLogRegistro);
+		ofstream out(outputDir+"/" + nameLogRegistro);
 		out << outputTextRegistration << endl;
 		out.close();
 
 
 	}else if(tipoScript.compare("CreateImageSetSimilarity")==0){
+		//Modelo 3D a registrar
+		string movingImage = "../inputData/pelvisSegmIntensityLPI.mha ";
+		comman += movingImage;
+		
+		//TODO: Create Directory for every test
+		//Directorio de Salida de los resultados del registro
+		string outputDir ="../outputData/ImagesDefs ";
+		comman += outputDir;
+	
+		//Numero de Imagenes a generar
+		string numImagesToGenerate = to_string(numTests);
+		comman += numImagesToGenerate + " ";
+		
+		//Semilla para tener nro aleatorio real
+		string seedRandomOn = "on";
+		comman += seedRandomOn;
+
+		//Ejecución de POPEN
+		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
+		string outputTextRegistration = GetStdoutFromCommand(comman);
+
+		//Construimos un archivo que almacena todo el stream del comando ejecutado
+		string nameLogRegistro;
+		string cabezera = "LogCreateDefImageWithSimilarity_" + to_string(indexTest);
+		nameLogRegistro += cabezera;
+		
+		replace(outputDir.begin(), outputDir.end(), ' ', '/');
+
+		nameLogRegistro += ".txt";
+		
+		//Escribiendo el archivo con el stream del comando ejecutado
+		ofstream out(outputDir + nameLogRegistro);
+		out << outputTextRegistration << endl;
+		out.close();
 
 
 
 	}else if(tipoScript.compare("genVirtualImage")==0){
+		//Modo Verbose activado
+		string verboseOn = "-v ";
+		comman += verboseOn;
+	
+		//Tipo de Proyeccion
+		string tipoProy = "-p "+inputTipoProy+" ";
+		comman += tipoProy;
 
+		//Cosenos Directores
+		string directCosine = "";
+
+		//Posicion de Punto Focal
+		string puntoFocal = "";
+
+		//Tamanio de la Image Virtual
+		string tamanio = "";
+		//Resolucion de la Imagen Virtual
+		string resolucionImagen = "";
+
+		//Nombre de la Imagen Virtual
+		string nameVirtualImage = "";
+
+
+		//Separacion por el tipo de proyeccion
+		if(inputTipoProy.compare("AP")==0){
+			//Cosenos Directores
+			directCosine = "-dc -90 0 0 ";
+			comman += directCosine;
+
+			//Posicion de Punto Focal
+			puntoFocal = "-foc 0 1000 0 ";
+			comman += puntoFocal;
+
+			//Tamanio de la Image Virtual
+			tamanio = "-size 337 250 ";
+			comman += tamanio;
+			//Resolucion de la Imagen Virtual
+			resolucionImagen = "-res 1 1 ";
+			comman += resolucionImagen;
+
+			//Nombre de la Imagen Virtual
+			nameVirtualImage = "-o pelvisHealthy_ap_"+to_string(indexTest)+" ";
+			comman += nameVirtualImage;
+
+
+		}else if(inputTipoProy.compare("ML")==0){
+			//Cosenos Directores
+			directCosine = "-dc -90 90 0 ";
+			comman += directCosine;
+
+			//Posicion de Punto Focal
+			puntoFocal = "-foc 1000 0 0 ";
+			comman += puntoFocal;
+
+			//Tamanio de la Image Virtual
+			tamanio = "-size 182 250 ";
+			comman += tamanio;
+			//Resolucion de la Imagen Virtual
+			resolucionImagen = "-res 1 1 ";
+			comman += resolucionImagen;
+
+			//Nombre de la Imagen Virtual
+			nameVirtualImage = "-o pelvisHealthy_ml_"+to_string(indexTest)+" ";
+			comman += nameVirtualImage;
+
+
+		}
+
+		//Distancia de Fuente a Isocentro
+		string sourceToIsocenterDistance = "-scd 200 ";
+		comman += sourceToIsocenterDistance;
+
+		//Umbral de Hounsfield
+		string threshold = "-threshold 0 ";
+		comman += threshold;
+
+		//Volumen de Entrada
+		string volumenToProject = "../outputData/ImagesDefs/Images/imagenDef_"+to_string(indexTest)+".mha ";
+		comman += volumenToProject;
+
+
+		//TODO: Create Directory for every test
+		//Directorio de Salida de los resultados del registro
+		string outputDir ="../outputData/virtualImages ";
+		//comman += outputDir;
+	
+		//Ejecución de POPEN
+		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
+		string outputTextRegistration = GetStdoutFromCommand(comman);
+
+		//Construimos un archivo que almacena todo el stream del comando ejecutado
+        string nameLogRegistro = "LogVirtualImages_"+inputTipoProy+"_"+to_string(indexTest);
+        nameLogRegistro += ".txt";
+
+		replace(outputDir.begin(), outputDir.end(), ' ', '/');
+		
+		//Escribiendo el archivo con el stream del comando ejecutado
+		ofstream out(outputDir + nameLogRegistro);
+		out << outputTextRegistration << endl;
+		out.close();
+		
 	}else
 		std::cerr << "Comando no encontrado" << std::endl;
 }
 
 string ScriptBuilder::GetStdoutFromCommand(string command){
-	
+
 	string data;
 	FILE * stream;
-	const int max_buffer = 256;
+	const int max_buffer = 300;
 	char buffer[max_buffer];
 	command.append(" 2>&1");
 

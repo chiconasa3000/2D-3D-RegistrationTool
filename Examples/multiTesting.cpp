@@ -17,21 +17,16 @@ using namespace std;
 
 int main(int argc, char *argv[]){	
 
-	//Creacion del creador de scripts
-	ScriptBuilder *scriptbuilder = new ScriptBuilder();
-	scriptbuilder->asignarScript("MultiImageRegistration");
-	//scriptbuilder->buildScript();	
-
 	//Lectura del numero de imagenes para las pruebas (Imagenes Deformadas)
-	int numImagenes = 3;
-		
+	int numImagenes = 2;
+
 	//Imagen de Ingreso : InputData
 	char *input_volume = NULL;
 
 	//Bandera de lectura satisfactoria
 	bool ok;
-	
-	
+
+
 	//Initialization de variables
 	while(argc > 1){
 		ok = false;
@@ -55,6 +50,37 @@ int main(int argc, char *argv[]){
 
 	}
 
+	ScriptBuilder *scriptbuilder = new ScriptBuilder();
+	scriptbuilder->setNumTests(numImagenes);
+
+/*
+	scriptbuilder->asignarScript("CreateImageSetSimilarity");	
+	scriptbuilder->buildScript();	
+
+
+	//Recorrer el numero de pruebas
+	for(int currentIndexTest = 0; currentIndexTest < numImagenes; currentIndexTest++){
+
+		//Actualizando el actual index para seleccionar una especifica
+		//imagen deformada y generar especificas imagenes virtuales	
+		scriptbuilder->setIndexTest(currentIndexTest);
+
+		//Generacion de Imagen AP
+		scriptbuilder->asignarScript("genVirtualImage");
+		scriptbuilder->setTipoProy("AP");
+		scriptbuilder->buildScript();
+
+		//Generacion de Imagen LT
+		scriptbuilder->asignarScript("genVirtualImage");
+		scriptbuilder->setTipoProy("ML");
+		scriptbuilder->buildScript();
+		
+		//Generar el registro de imagenes
+		scriptbuilder->asignarScript("MultiImageRegistration");
+		scriptbuilder->buildScript();
+	}*/
+	scriptbuilder->asignarScript("MultiImageRegistration");
+	scriptbuilder->buildScript();
 
 	return 0;
 }
