@@ -51,6 +51,7 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
     {
         this->m_CurrentFixedMultiImage.pop_back();
     }
+    /*
     for(unsigned int f=0; f<FImgTotal; f++ )
     {
         this->m_CurrentFixedMultiImage.push_back( this->m_FixedMultiImagePyramid[f]->GetOutput( m_CurrentLevel ) );
@@ -127,7 +128,7 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
         {
             std::cerr << e.GetDescription() << std::endl;
         }
-    }
+    }*/
 
     // Create the current vector of fixed images' regions
     while( this->m_CurrentFixedMultiImageRegion.size() > 0 )

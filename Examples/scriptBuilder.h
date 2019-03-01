@@ -1,10 +1,15 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include <fstream>
+
+using namespace std;
+
 class ScriptBuilder{
 
 private:
-	std::string tipoScript = "";
-	std::string comman = "";
+	string tipoScript = "";
+	string comman = "";
 	 
 public:
 	void asignarScript(string nombreScript);
