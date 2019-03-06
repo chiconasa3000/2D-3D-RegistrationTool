@@ -83,7 +83,7 @@ int main(int argc, char *argv[]){
 		
 		//No haremos comprobacion de Tipo de Transformacion
 		//ya que sabemos que es de Similaridad
-
+/*
 		//No haremos comprobacion de multiplicidad de transformaciones
 		//ya que sabemos que una sola transformacion es guardada en el archivo
 		itk::TransformFileReader::Pointer transformReader = itk::TransformFileReader::New();
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
 			std::cout << e.GesDescription() << std:endl;
 		}
 		itk::TransformFileReader::TransformListType* transformList = transformReader->GetTransformList();	
-		itk::TransformFileReaer::TransformPointer baseTransform = transformList->front();
+		itk::TransformFileReaer::TransformPointer baseTransform = transformList->front();*/
 	}
 
 	return 0;

@@ -1536,6 +1536,7 @@ PatchedRayCastInterpolateImageFunction< TInputImage, TCoordRep >
 
   OutputPointType transformedFocalPoint =
     m_Transform->TransformPoint( m_FocalPoint );
+
   transformedFocalPoint = m_PostTransform->TransformPoint( transformedFocalPoint );
 
   OutputPointType transformedPoint =

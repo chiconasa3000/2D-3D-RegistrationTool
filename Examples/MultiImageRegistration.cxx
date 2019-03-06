@@ -118,7 +118,7 @@ class OptimizerObserver : public itk::Command
 			if( itk::IterationEvent().CheckEvent( & event ) )
 			{
 				//std::cout << optimizer;
-				std::cout /*<< "Iteration " << optimizer->GetCurrentIteration()
+				/*std::cout << "Iteration " << optimizer->GetCurrentIteration()
 					<< "/" << optimizer->GetMaximumIteration() << " Position: " <<
 					optimizer->GetCurrentPosition() << " Value: " <<
 					optimizer->GetCurrentCost() << std::endl;*/
@@ -305,9 +305,14 @@ int main(int argc, char* argv[] )
 	//sera la sexta parte del total 100/6 = 16.6 o cuarta parte 100/4 = 25.0
 	OptimizerType::ScalesType scales( ParTotal );
 	scales.Fill(itk::NumericTraits<OptimizerType::ScalesType::ValueType>::One);
-	scales[0] = 25.;
-	scales[1] = 25.;
-	scales[2] = 25.;
+	scales[0] = 1.;
+	scales[1] = 1.;
+	scales[2] = 1.;
+	scales[3] = 1./1000.;
+	scales[4] = 1./1000.;
+	scales[5] = 1./1000.;
+	scales[6] = 1.;
+
 	optimizer->SetScales( scales );
 
 	optimizer->SetMaximize( true ); //true
@@ -623,9 +628,9 @@ int main(int argc, char* argv[] )
 	//Parametro para convertir de angulos sexagesimales a radianes
 	const double dtr = ( atan(1.0) * 4.0 ) / 180.0;
 
-	const double RotationAlongX = finalParameters[0]/dtr; // Convert radian to degree
-	const double RotationAlongY = finalParameters[1]/dtr;
-	const double RotationAlongZ = finalParameters[2]/dtr;
+	const double RotationAlongX = finalParameters[0]; // Convert radian to degree
+	const double RotationAlongY = finalParameters[1];
+	const double RotationAlongZ = finalParameters[2];
 	const double TranslationAlongX = finalParameters[3];
 	const double TranslationAlongY = finalParameters[4];
 	const double TranslationAlongZ = finalParameters[5];

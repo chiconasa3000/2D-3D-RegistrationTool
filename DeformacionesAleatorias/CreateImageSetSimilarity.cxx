@@ -119,8 +119,8 @@ int main( int argc, char * argv[] )
 		similarityTransform->SetIdentity();
 		//Reemplazado por setfixedParameters que es donde setea el centro de rotacion
 		//similarityTransform->SetCenter(center);
-		SimilarityTransformType::ParametersType similarityParameters;
-		similarityParameters = similarityTransform->GetParameters();
+		//SimilarityTransformType::ParametersType similarityParameters;
+		//similarityParameters = similarityTransform->GetParameters();
 
 		//Considerando al formula de numeros aleatorios
 		//x = ((double)rand()/RAND_MAX ) * (fmax - fmin) + fmin;
@@ -135,14 +135,72 @@ int main( int argc, char * argv[] )
 
 		const double dtr = (atan(1.0) * 4.0)/180.0;
 
+
+		//Angulos en Euler (Degrees)
+		double rx=90.0;
+		double ry=0.0;
+		double rz=0.0;
+
+		//Conversion de EUler a Versor
+		double c1 = cos(rx*dtr/2);
+		double s1 = sin(rx*dtr/2);
+		
+		double c2 = cos(ry*dtr/2);
+		double s2 = sin(ry*dtr/2);
+		
+		double c3 = cos(rz*dtr/2);
+		double s3 = sin(rz*dtr/2);
+		
+		double aw = c1*c2*c3 - s1*s2*s3;
+		double ax = c1*c2*s3 + s1*s2*c3;
+		double ay = s1*c2*c3 + c1*s2*s3;
+		double az = c1*s2*c3 - s1*c2*s3;
+
+		double angle = 2*acos(aw);
+		double norm = ax*ax+ay*ay+az*az;
+
+		if(norm < 0.001){
+			ax = 1;
+			ay = az = 0;
+		}else{
+			norm = sqrt(norm);
+			ax /= norm;
+			ay /= norm;
+			az /= norm;
+		}
+		
+		typedef SimilarityTransformType::VersorType VersorType;
+		typedef VersorType::VectorType VectorType;
+
+		VersorType rotation;
+		VectorType axis;
+
+		axis[0] = ax;
+		axis[1] = ay;
+		axis[2] = az;
+
+		rotation.Set(axis,angle);
+
+		std::cout<<"Rotation: "<<rotation<<std::endl;
+		
+		//Fijando solo rotacion
+		similarityTransform->SetRotation(rotation);
+
+		SimilarityTransformType::ParametersType similarityParameters;
+		similarityParameters = similarityTransform->GetParameters();
+
+
+
 		//Versor 3D Rotation
 		//rotaciones entre -5 y -5 grados sexag 
 		//similarityParameters[0] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[1] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[2] = dtr*(rand()%(5 - (-5) + 1) +(-5));
-		similarityParameters[0] = dtr*(0);
+		/*similarityParameters[0] = dtr*(0);
 		similarityParameters[1] = dtr*(0);
-		similarityParameters[2] = dtr*(0);
+		similarityParameters[2] = dtr*(0);*/
+		std::cout<<"SimilarityROtation: "<<std::endl;
+		std::cout<< similarityParameters[0]<<", "<< similarityParameters[1]<<", "<< similarityParameters[2]<<std::endl;
 
 
 

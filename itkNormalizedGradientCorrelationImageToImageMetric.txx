@@ -56,6 +56,8 @@ namespace itk
 				m_FixedSobelFilters[dim]->GetOutput()->SetRequestedRegion(
 						this->GetFixedImageRegion() );
 			}
+			
+			//std::cout<<"Direction before 3D: "<<this->m_MovingImage->GetDirection()<<std::endl;
 
 			m_ResampleImageFilter = ResampleImageFilterType::New();
 
@@ -79,7 +81,7 @@ namespace itk
 			m_RescaleIntImageFilter->SetInput( m_ResampleImageFilter->GetOutput());
 			m_RescaleIntImageFilter->Update(); //Imagen movible proyeccion con  0-255 y threshold 0 por el interpolador
 
-
+			//std::cout<<"Direction After 2D: "<<m_ResampleImageFilter->GetOutput()->GetDirection()<<std::endl;
 
 			//Para establecer correctamente las comparaciones la proyeccion de la imagen
 			//movible sera rescalada en umbral de 0  a 255 y con esta recien ser comparada

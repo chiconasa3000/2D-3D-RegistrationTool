@@ -5,7 +5,7 @@
 #include "itkTimeProbesCollectorBase.h"
 #include "itkImageFileReader.h"
 #include "itkResampleImageFilter.h"
-#include "itkSimilarity3DTransform.h"
+#include "itkEuler3DTransform.h"
 #include "itkRescaleIntensityImageFilter.h"
 #include "itkFlipImageFilter.h"
 #include "itkImageFileWriter.h"
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
 	//variable definition
 	char *input_name = NULL;		//input volume
 	char *output_name = NULL;		//virtual image
-	char *type_projection = NULL;		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
+	char *type_projection = "OR";		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
 
 	float scd = 1000.0;			//distance from source to isocenter
 
@@ -350,8 +350,9 @@ int main(int argc, char *argv[]){
 	filter->SetInput(image);
 	filter->SetDefaultPixelValue(0);
 
-	typedef itk::Similarity3DTransform< double > TransformType;
+	typedef itk::Euler3DTransform< double > TransformType;
 	TransformType::Pointer transform = TransformType::New();
+	transform->SetComputeZYX(true);
 	transform->SetIdentity();	
 	//constant for casting degrees into radians format of rotation projection
 	const double dtr = ( atan(1.0) * 4.0 ) / 180.0;
@@ -476,19 +477,22 @@ int main(int argc, char *argv[]){
 	if(strcmp(type_projection,"AP")==0){
 		// Compute the origin (inmm) of the 2D Image
 		origin[0] = im_sx * o2Dx;
-		origin[1] = -scd;
-		origin[2] = im_sy * o2Dy;
+		origin[1] = scd;
+		origin[2] = -im_sy * o2Dy;
 	}else if(strcmp(type_projection,"ML")==0){
 		// Compute the origin (inmm) of the 2D Image
-		origin[0] = -scd;
-		origin[1] = -im_sx * o2Dx;
-		origin[2] = im_sy * o2Dy;
+		origin[0] = scd;
+		origin[1] = im_sx * o2Dx;
+		origin[2] = -im_sy * o2Dy;
+	}else{
+		//byDefault
+		origin[0] = im_sx * o2Dx;
+		origin[1] = im_sy * o2Dy;
+		origin[2] = scd;
+
 	}
 
 	//set identity in direction cosine
-	itk::Versor< double > rotationDirect;
-	const double angleRadians = (-180.0) * vnl_math::pi/180.0;
-	rotationDirect.SetRotationAroundX(angleRadians);
 	const OutputImageType::DirectionType direction = image->GetDirection();
 	const OutputImageType::DirectionType newDirection = direction * helperRot.getRotg();
 	//OutputImageType::DirectionType direction;
