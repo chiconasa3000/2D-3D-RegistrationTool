@@ -21,14 +21,14 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkResampleImageFilter.h"
 
 //#include "itkAffineTransform.h"
-#include <itkSimilarity3DTransform.h>
+#include <itkEuler3DTransform.h>
 #include "itkBSplineDeformableTransform.h"
 
 #include "itkLinearInterpolateImageFunction.h"
 #include "itkTransformFileWriter.h"
 
 #include "itkRescaleIntensityImageFilter.h"
-
+#include "itkFlipImageFilter.h"
 #include <string>
 #include <sstream>
 #include <stdlib.h>
@@ -86,12 +86,8 @@ int main( int argc, char * argv[] )
 		ResampleFilterType::Pointer resample = ResampleFilterType::New();
 
 
-		typedef itk::Similarity3DTransform< double >  SimilarityTransformType;
+		typedef itk::Euler3DTransform< double >  SimilarityTransformType;
 		SimilarityTransformType::Pointer similarityTransform = SimilarityTransformType::New();
-
-		typedef itk::BSplineDeformableTransform< double,
-			Dimension,
-			3 >     BSplineTransformType;
 
 		resample->SetTransform( similarityTransform );
 		typedef itk::LinearInterpolateImageFunction<
@@ -105,22 +101,23 @@ int main( int argc, char * argv[] )
 		//Get the spacing
 		InputImageType::SpacingType spacing = reader->GetOutput()->GetSpacing();
 		//Get the origin
-		//BSplineTransformType::OriginType origin;
-		//origin = reader->GetOutput()->GetOrigin();
+		InputImageType::PointType origin;
+		origin = reader->GetOutput()->GetOrigin();
 
 		InputImageType::SizeType size = reader->GetOutput()->GetLargestPossibleRegion().GetSize();
 
-		/*SimilarityTransformType::FixedParametersType center; 
+		SimilarityTransformType::InputPointType center;
 
-		  for(unsigned int j=0; j< Dimension; j++)
+		for(unsigned int j=0; j< Dimension; j++)
 		  {
-		  center[j] = origin[j] + spacing[j]*size[j] / 2.0;
-		  }*/
+		    center[j] = reader->GetOutput()->GetOrigin()[j] + spacing[j]*size[j] / 2.0;
+		  }
 		similarityTransform->SetIdentity();
 		//Reemplazado por setfixedParameters que es donde setea el centro de rotacion
 		//similarityTransform->SetCenter(center);
-		//SimilarityTransformType::ParametersType similarityParameters;
-		//similarityParameters = similarityTransform->GetParameters();
+		similarityTransform->SetComputeZYX(true);
+		SimilarityTransformType::ParametersType similarityParameters;
+		similarityParameters = similarityTransform->GetParameters();
 
 		//Considerando al formula de numeros aleatorios
 		//x = ((double)rand()/RAND_MAX ) * (fmax - fmin) + fmin;
@@ -135,7 +132,7 @@ int main( int argc, char * argv[] )
 
 		const double dtr = (atan(1.0) * 4.0)/180.0;
 
-
+/*
 		//Angulos en Euler (Degrees)
 		double rx=90.0;
 		double ry=0.0;
@@ -167,9 +164,9 @@ int main( int argc, char * argv[] )
 			ax /= norm;
 			ay /= norm;
 			az /= norm;
-		}
+		}*/
 		
-		typedef SimilarityTransformType::VersorType VersorType;
+/*		typedef SimilarityTransformType::VersorType VersorType;
 		typedef VersorType::VectorType VectorType;
 
 		VersorType rotation;
@@ -190,15 +187,15 @@ int main( int argc, char * argv[] )
 		similarityParameters = similarityTransform->GetParameters();
 
 
-
+*/
 		//Versor 3D Rotation
 		//rotaciones entre -5 y -5 grados sexag 
 		//similarityParameters[0] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[1] = dtr*(rand()%(5 - (-5) + 1) +(-5));
 		//similarityParameters[2] = dtr*(rand()%(5 - (-5) + 1) +(-5));
-		/*similarityParameters[0] = dtr*(0);
+		similarityParameters[0] = dtr*(20);
 		similarityParameters[1] = dtr*(0);
-		similarityParameters[2] = dtr*(0);*/
+		similarityParameters[2] = dtr*(0);
 		std::cout<<"SimilarityROtation: "<<std::endl;
 		std::cout<< similarityParameters[0]<<", "<< similarityParameters[1]<<", "<< similarityParameters[2]<<std::endl;
 
@@ -219,7 +216,7 @@ int main( int argc, char * argv[] )
 		//sin escalas grandes obviarian informacion de la imagen
 		//escala entre 0.6 y 0.8 
 		//similarityParameters[6] = ((double)rand()/RAND_MAX)*(0.8 -  0.6) + 0.6;
-		similarityParameters[6] = 1;
+		//similarityParameters[6] = 1;
 
 
 		similarityTransform->SetParameters(similarityParameters);
@@ -234,9 +231,24 @@ int main( int argc, char * argv[] )
 		resample->SetDefaultPixelValue( 0 );
 		resample->SetOutputDirection( reader->GetOutput()->GetDirection());
 		resample->SetInput( reader->GetOutput() );
-		writer->SetInput( resample->GetOutput() );
-
 		
+		//When you change the volume it only doesn't required flip
+		//flip is required when you applied the proyection	
+		typedef itk::FlipImageFilter< OutputImageType > FlipFilterType;
+		FlipFilterType::Pointer flipFilter = FlipFilterType::New();	
+		
+		typedef FlipFilterType::FlipAxesArrayType FlipAxesArrayType;
+		FlipAxesArrayType flipArray;
+		flipArray[0] = 0;
+		flipArray[1] = 0;
+		flipArray[2] = 0;
+
+		flipFilter->SetFlipAxes(flipArray);
+		flipFilter->SetInput(resample->GetOutput());
+		
+		writer->SetInput( flipFilter->GetOutput() );
+
+
 		string fname;
 		ostringstream fnameStream;
 		fnameStream << i ;

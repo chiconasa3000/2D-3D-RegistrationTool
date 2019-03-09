@@ -3,8 +3,8 @@
 #endif
 
 #include <itkCommand.h>
-//#include <itkEuler3DTransform.h>
-#include <itkSimilarity3DTransform.h>
+#include <itkEuler3DTransform.h>
+//#include <itkSimilarity3DTransform.h>
 
 #include <itkFRPROptimizer.h>
 
@@ -177,9 +177,10 @@ int main(int argc, char* argv[] )
 	//----------------------------------------------------------------------------
 	// Create the transform
 	//----------------------------------------------------------------------------
-	typedef itk::Similarity3DTransform< double> TransformType;
+	typedef itk::Euler3DTransform< double> TransformType;
 
 	TransformType::Pointer transform = TransformType::New();
+	transform->SetComputeZYX(true);
 	transform->SetIdentity();
 	registration->SetTransform( transform );
 
@@ -305,13 +306,13 @@ int main(int argc, char* argv[] )
 	//sera la sexta parte del total 100/6 = 16.6 o cuarta parte 100/4 = 25.0
 	OptimizerType::ScalesType scales( ParTotal );
 	scales.Fill(itk::NumericTraits<OptimizerType::ScalesType::ValueType>::One);
-	scales[0] = 1.;
-	scales[1] = 1.;
-	scales[2] = 1.;
-	scales[3] = 1./1000.;
-	scales[4] = 1./1000.;
-	scales[5] = 1./1000.;
-	scales[6] = 1.;
+	scales[0] = 1.0;
+	scales[1] = 1.0;
+	scales[2] = 1.0;
+	scales[3] = 1.0;
+	scales[4] = 1.0;
+	scales[5] = 1.0;
+	scales[6] = 1.0;
 
 	optimizer->SetScales( scales );
 
@@ -541,7 +542,7 @@ int main(int argc, char* argv[] )
 
 		//the transformation file has a specify format
 		std::string className = baseTransform->GetNameOfClass();
-		if( className.compare("Similarity3DTransform") != 0 )
+		if( className.compare("Euler3DTransform") != 0 )
 		{
 			std::cerr << "Transform class must be Similarity3DTransform." << std::endl;
 			std::cerr << "Found " << className << " instead."
@@ -634,7 +635,7 @@ int main(int argc, char* argv[] )
 	const double TranslationAlongX = finalParameters[3];
 	const double TranslationAlongY = finalParameters[4];
 	const double TranslationAlongZ = finalParameters[5];
-	const double EscalaXYZ = finalParameters[6];
+	//const double EscalaXYZ = finalParameters[6];
 	const int numberOfIterations = optimizer->GetCurrentIteration();
 
 	const double bestValue = optimizer->GetValue();
@@ -648,7 +649,7 @@ int main(int argc, char* argv[] )
 	std::cout << " Translation Z = " << TranslationAlongZ  << " mm" << std::endl;
 	std::cout << " Number Of Iterations = " << numberOfIterations << std::endl;
 	std::cout << " Metric value  = " << bestValue          << std::endl;
-	std::cout << " Escala value = " << EscalaXYZ << std::endl;
+	//std::cout << " Escala value = " << EscalaXYZ << std::endl;
 
 
 

@@ -561,7 +561,9 @@ int main(int argc, char *argv[]){
 		rescaler->SetOutputMaximum( 255 );
 		rescaler->SetInput( filter->GetOutput() );
 		rescaler->Update();
-
+		
+		//Cuando se considera la direccion del volumen en las imagenes fijas
+		//ya no es necesario realizar el flipfilter
 		
 		// Out of some reason, the computed projection is upsided-down.
 		// Here we use a FilpImageFilter to flip the images in y direction.

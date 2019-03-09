@@ -2,8 +2,8 @@
 #define __itkPatchedRayCastInterpolateImageFunction_h
 
 #include <itkInterpolateImageFunction.h>
-//#include <itkEuler3DTransform.h>
-#include <itkSimilarity3DTransform.h>
+#include <itkEuler3DTransform.h>
+//#include <itkSimilarity3DTransform.h>
 #include <itkTransform.h>
 #include <itkVector.h>
 
@@ -106,7 +106,7 @@ typedef DirectionMovingType DirectionFixedType;
   typedef typename Superclass::ContinuousIndexType ContinuousIndexType;
 
   /** Post-transform typedef */
-  typedef typename itk::Similarity3DTransform<TCoordRep> PostTransformType;
+  typedef typename itk::Euler3DTransform<TCoordRep> PostTransformType;
   typedef typename PostTransformType::Pointer       PostTransformPointer;
 
   /** \brief

@@ -99,12 +99,12 @@ target_link_libraries(CreateImageSetSimilarity ${Libraries})
 
 
 #Registro de Imagenes
-add_executable(MultiImageRegistration ../Examples/MultiImageRegistration.cxx  ${HeaderFiles})
+add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx  ${HeaderFiles})
 target_link_libraries(MultiImageRegistration ${Libraries})
 
 
 #install(FILES ${HeaderFiles} DESTINATION include COMPONENT Development)
 
 #install(TARGETS MultiImageSearch DESTINATION bin COMPONENT Runtime)
-install(TARGETS MultiImageRegistration DESTINATION bin COMPONENT Runtime)
+#install(TARGETS MultiImageRegistration DESTINATION bin COMPONENT Runtime)
 #install(TARGETS ReadCmd DESTINATION bin COMPONENT Runtime)
