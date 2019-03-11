@@ -306,12 +306,12 @@ int main(int argc, char* argv[] )
 	//sera la sexta parte del total 100/6 = 16.6 o cuarta parte 100/4 = 25.0
 	OptimizerType::ScalesType scales( ParTotal );
 	scales.Fill(itk::NumericTraits<OptimizerType::ScalesType::ValueType>::One);
-	scales[0] = 1.0;
-	scales[1] = 1.0;
-	scales[2] = 1.0;
-	scales[3] = 1.0;
-	scales[4] = 1.0;
-	scales[5] = 1.0;
+	scales[0] = 25.0;
+	scales[1] = 25.0;
+	scales[2] = 25.0;
+	scales[3] = 25.0;
+	scales[4] = 25.0;
+	scales[5] = 25.0;
 	scales[6] = 1.0;
 
 	optimizer->SetScales( scales );
@@ -628,10 +628,13 @@ int main(int argc, char* argv[] )
 	ParametersType finalParameters = registration->GetLastTransformParameters();
 	//Parametro para convertir de angulos sexagesimales a radianes
 	const double dtr = ( atan(1.0) * 4.0 ) / 180.0;
-
-	const double RotationAlongX = finalParameters[0]; // Convert radian to degree
-	const double RotationAlongY = finalParameters[1];
-	const double RotationAlongZ = finalParameters[2];
+	const double rtd = 180 / ( atan(1.0) * 4.0);
+	//La salida en Euler es en radianes asi que debemos convertir a grados
+	//para observar el angulo en grados sexagesimales
+	
+	const double RotationAlongX = rtd*(finalParameters[0]); // Convert radian to degree
+	const double RotationAlongY = rtd*(finalParameters[1]);
+	const double RotationAlongZ = rtd*(finalParameters[2]);
 	const double TranslationAlongX = finalParameters[3];
 	const double TranslationAlongY = finalParameters[4];
 	const double TranslationAlongZ = finalParameters[5];

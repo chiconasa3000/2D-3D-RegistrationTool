@@ -12,7 +12,6 @@
 #include "../itkPatchedRayCastInterpolateImageFunction.h"
 #include "itkMatrix.h"
 #include "gestorMatrixRot.h"
-#include "itkVersor.h"
 #include <string>
 #include <itksys/SystemTools.hxx>
 // funcion de menu principal 
@@ -353,7 +352,7 @@ int main(int argc, char *argv[]){
 	typedef itk::Euler3DTransform< double > TransformType;
 	TransformType::Pointer transform = TransformType::New();
 	transform->SetComputeZYX(true);
-	transform->SetIdentity();	
+	//transform->SetIdentity();	
 	//constant for casting degrees into radians format of rotation projection
 	const double dtr = ( atan(1.0) * 4.0 ) / 180.0;
 
@@ -385,9 +384,11 @@ int main(int argc, char *argv[]){
 	helperRotInit.printRotg();
 	std::cout<<std::endl;
 
-	//itk::Versor<double> vectRot;
-	//vectRot.SetRotationAroundX(dtr*(-90.0));	
-	transform->SetMatrix(helperRotInit.getRotg());
+	//Para transformacion de similaridad usa setMatrix
+	//transform->SetMatrix(helperRotInit.getRotg());
+
+	//Para transformacion de Euler usa setRotation
+	transform->SetRotation(dtr*(rx),dtr*(ry),dtr*(rz));
 
 
 	//Read image properties in order to build our isocenter

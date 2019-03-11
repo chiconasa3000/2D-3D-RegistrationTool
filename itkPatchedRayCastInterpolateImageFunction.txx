@@ -1604,6 +1604,10 @@ PatchedRayCastInterpolateImageFunction< TInputImage, TCoordRep >
       m_PostTransform = PostTransformType::New();
       }
 
+    //El setMatrix asigna la matriz de rotacion aunque aqui asigna la inversa de la dirección
+    //la proyección se hace satisfactoriamente a pesar de colocar este función en un tipo
+    //de trasnformacion euleriano siempre y cuando no tenga relacion con la rotacion normal
+
     m_PostTransform->SetMatrix(
       itk::Matrix<TCoordRep,3,3>( this->m_Image->GetDirection().GetInverse()) );
 //	 itk::Matrix<TCoordRep,3,3>( this->m_DirectionFixed.GetInverse()) );
