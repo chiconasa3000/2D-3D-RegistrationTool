@@ -61,6 +61,7 @@ itkPatternIntensityMultiImageToImageMetric.txx
 BSplineDeformableTransformOpt.h
 BSplineDeformableTransformOpt.txx
 GenDRRs/gestorMatrixRot.h
+utils.h
 Examples/scriptBuilder.h
 )
 
@@ -94,7 +95,7 @@ target_link_libraries(CreateImageSetAffine ${Libraries})
 add_executable(CreateImageSetBspline DeformacionesAleatorias/CreateImageSetBspline.cxx)
 target_link_libraries(CreateImageSetBspline ${Libraries})
 
-add_executable(CreateImageSetSimilarity DeformacionesAleatorias/CreateImageSetSimilarity.cxx)
+add_executable(CreateImageSetSimilarity DeformacionesAleatorias/CreateImageSetSimilarity.cxx utils.cpp)
 target_link_libraries(CreateImageSetSimilarity ${Libraries})
 
 
