@@ -85,7 +85,7 @@ add_executable(multiTesting Examples/multiTesting.cpp Examples/scriptBuilder.cpp
 target_link_libraries(multiTesting ${Libraries})
 
 #Generador de imagenes Virtuales
-add_executable(genVirtualImage GenDRRs/genVirtualImage.cxx GenDRRs/gestorMatrixRot.cxx)
+add_executable(genVirtualImage GenDRRs/genVirtualImage.cxx GenDRRs/gestorMatrixRot.cxx utils.cpp)
 target_link_libraries(genVirtualImage ${Libraries})
 
 #Creacion de Deformaciones Aleatorias

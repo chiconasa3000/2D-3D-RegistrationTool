@@ -29,8 +29,8 @@ void Utilitarios::convertEulerToVersor(float &rx, float &ry, float &rz, double &
 	double norm = ax*ax+ay*ay+az*az;
 
 	if(norm < 0.001){
-		ax = 1;
-		ay = az = 0;
+		ay = 1;
+		ax = az = 0;
 	}else{
 		norm = sqrt(norm);
 		ax /= norm;
