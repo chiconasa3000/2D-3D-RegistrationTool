@@ -3,8 +3,10 @@
 #include "utils.h"
 
 
+Utilitarios::Utilitarios(){
+}
 
-void convertEulerToVersor(float rx, float ry, float rz, double &ax, double &ay, double &az, double &angle){
+void Utilitarios::convertEulerToVersor(float &rx, float &ry, float &rz, double &ax, double &ay, double &az, double &angle){
 	
 	const double dtr = (atan(1.0) * 4.0)/180.0;
 
@@ -35,7 +37,19 @@ void convertEulerToVersor(float rx, float ry, float rz, double &ax, double &ay, 
 		ay /= norm;
 		az /= norm;
 	}
+}
 
+void Utilitarios::convertVersorToEuler(float &x, float &y, float &z, float &w, float &rx, float &ry, float &rz){
+	float t0 = +2.0 * (w * x + y * z);
+        float t1 = +1.0 - 2.0 * (x * x + y * y);
+        rx = atan(t0/ t1);
 
+        float t2 = +2.0 * (w * y - z * x);
+ 	t2 = (t2 > +1.0) ? +1.0 : t2;
+	t2 = (t2 < -1.0) ? -1.0 : t2;
+        ry = asin(t2);
 
+        float t3 = +2.0 * (w * z + x * y);
+        float t4 = +1.0 - 2.0 * (y * y + z * z);
+        rz = atan(t3/ t4);
 }

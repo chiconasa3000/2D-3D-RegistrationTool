@@ -168,7 +168,6 @@ int main( int argc, char * argv[] )
     //Get the origin
     BSplineTransformType::OriginType origin;
     origin = reader->GetOutput()->GetOrigin();
-
     resample->SetSize(size);
     resample->SetOutputOrigin(origin);
     resample->SetOutputSpacing(spacing);

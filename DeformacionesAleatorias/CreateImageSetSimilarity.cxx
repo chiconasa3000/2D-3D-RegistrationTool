@@ -53,7 +53,7 @@ int main( int argc, char * argv[] )
 
 	//Converter From Degrees to Radians
 	const double dtr = (atan(1.0) * 4.0)/180.0;
-
+	const double rtd = (180.0)/(atan(1.0)*4.0);
 	//inputImageFile
 	char *inputImageFile = NULL;
 	//folderName
@@ -97,7 +97,7 @@ int main( int argc, char * argv[] )
 			ok == true;
 			verbose = true;
 		}
-		if((ok ==false) && (strcmp(argv[1], "centerSpec") == 0)){
+		if((ok ==false) && (strcmp(argv[1], "-centerSpec") == 0)){
 			argc--; argv++;
 			ok == true;
 			centerSpec = true;
@@ -129,26 +129,26 @@ int main( int argc, char * argv[] )
 			argc--; argv++;
 		}
 
-		if((ok ==false) && (strcmp(argv[1], "rx") == 0)){
+		if((ok ==false) && (strcmp(argv[1], "-rx") == 0)){
 			argc--; argv++;
 			ok == true;
 			rx = atof(argv[1]);
 			argc--; argv++;
 		}
-		if((ok ==false) && (strcmp(argv[1], "ry") == 0)){
+		if((ok ==false) && (strcmp(argv[1], "-ry") == 0)){
 			argc--; argv++;
 			ok == true;
 			ry = atof(argv[1]);
 			argc--; argv++;
 		}
-		if((ok ==false) && (strcmp(argv[1], "rz") == 0)){
+		if((ok ==false) && (strcmp(argv[1], "-rz") == 0)){
 			argc--; argv++;
 			ok == true;
 			rz = atof(argv[1]);
 			argc--; argv++;
 		}
 
-		if((ok ==false) && (strcmp(argv[1], "t") == 0)){
+		if((ok ==false) && (strcmp(argv[1], "-t") == 0)){
 			argc--; argv++;
 			ok == true;
 			tx = atof(argv[1]);
@@ -159,7 +159,7 @@ int main( int argc, char * argv[] )
 			argc--; argv++;
 
 		}
-		if((ok ==false) && (strcmp(argv[1], "origin") == 0)){
+		if((ok ==false) && (strcmp(argv[1], "-origin") == 0)){
 			argc--; argv++;
 			ok == true;
 			ox = atof(argv[1]);
@@ -171,7 +171,7 @@ int main( int argc, char * argv[] )
 
 		}
 
-		if((ok ==false) && (strcmp(argv[1], "sg") == 0)){
+		if((ok ==false) && (strcmp(argv[1], "-sg") == 0)){
 			argc--; argv++;
 			ok == true;
 			sg = atof(argv[1]);
@@ -275,30 +275,32 @@ int main( int argc, char * argv[] )
 		typedef VersorType::VectorType VectorType;
 		VersorType rotation;
 		VectorType axis;
-
+		
+		//Utilitario donde esta el conversor de rotacion euler a rotacion versor
+		Utilitarios *util = new Utilitarios();
 		//Procesamiento de parametros con modo Aleatorio o modo User
 		
 		if(random_mode){
 			
 			//Modo Aleatorio: parametros de transformacion definidos aleatoriamente
 	
+			
+			//Versor 3D Rotation
+			//rotaciones entre -180 y 180 grados sexag 
+			rx = rand()%(180 - (-180) + 1) +(-180);
+			ry = rand()%(180 - (-180) + 1) +(-180);
+			rz = rand()%(180 - (-180) + 1) +(-180);
+
+			util->convertEulerToVersor(rx,ry,rz,ax,ay,az,angle);
+			
+			//Warning no se considera el angulo en los parametros de rotacion		
+			axis[0] = ax; axis[1] = ay; axis[2] = az;
+			rotation.Set(axis,angle);
+			similarityTransform->SetRotation(rotation);
+
 			SimilarityTransformType::ParametersType similarityParameters;
 			similarityParameters = similarityTransform->GetParameters();
 
-
-			//Versor 3D Rotation
-			//rotaciones entre -5 y 5 grados sexag 
-			float rrx = dtr*(rand()%(5 - (-5) + 1) +(-5));
-			float rry = dtr*(rand()%(5 - (-5) + 1) +(-5));
-			float rrz = dtr*(rand()%(5 - (-5) + 1) +(-5));
-
-			convertEulerToVersor(rrx,rry,rrz,ax,ay,az,angle);
-			
-			//Warning no se considera el angulo en los parametros de rotacion		
-			similarityParameters[0] = ax; 
-			similarityParameters[1] = ay; 
-			similarityParameters[2] = az;
-		
 			//Traslation Vector 
 			//traslaciones entre -10 y 10 mm
 			similarityParameters[3] = rand()%(10 - (-10) + 1)+(-10);
@@ -309,34 +311,29 @@ int main( int argc, char * argv[] )
 			//sin escalas grandes obviarian informacion de la imagen
 			//escala entre 0.6 y 0.8 
 			similarityParameters[6] = ((double)rand()/RAND_MAX)*(0.8 -  0.6) + 0.6;
-			similarityParameters[6] = 1;
+			//similarityParameters[6] = 1;
 
 			similarityTransform->SetParameters(similarityParameters);
 		
-						
-			std::cout<<"SimilarityRotation: "<<std::endl;
-			std::cout<< similarityParameters[0]<<", "<< similarityParameters[1]<<", "<< similarityParameters[2]<<std::endl;
-
-	
 		}else{
 			//Modo User: parametros de transformacion definidos por el usuario
 			//Rotacion 3d de Similaridad
-			convertEulerToVersor(rx,ry,rz,ax,ay,az,angle);	
+			util->convertEulerToVersor(rx,ry,rz,ax,ay,az,angle);	
 			axis[0] = ax; axis[1] = ay; axis[2] = az;
 			rotation.Set(axis,angle);
 			similarityTransform->SetRotation(rotation);
 
 			//Traslación 3D de Similaridad
-			typedef SimilarityTransformType::OutputVectorType translation;
+			SimilarityTransformType::OutputVectorType translation;
 			translation[0] = tx;
 			translation[1] = ty;
 			translation[2] = tz;
-			similarity->SetTranslation(translation);
+			similarityTransform->SetTranslation(translation);
 			
 			//Escala 3d de Similaridad
-			typedef SimilarityTransformType::ScaleType scale;
+			SimilarityTransformType::ScaleType scale;
 			scale = sg;
-			similarity->SetScale(scale);
+			similarityTransform->SetScale(scale);
 		}
 
 
@@ -351,30 +348,50 @@ int main( int argc, char * argv[] )
 		
 		writer->SetInput( resample->GetOutput() );
 
-		string fname;
+		string fName = "";
 		ostringstream fnameStream;
 		fnameStream << i ;
 
 		//Write the transform files
 		itk::TransformFileWriterTemplate<double>::Pointer transformFileWriter =  itk::TransformFileWriterTemplate<double>::New();
-		itksys::SystemTools::MakeDirectory( (fname + argv[2] + "/TransformFiles/").c_str() );
-		string fileName = fname + argv[2] + "/TransformFiles/" + "transfSim_" +fnameStream.str() + ".txt";
+		itksys::SystemTools::MakeDirectory( (fName + folderName + "/TransformFiles/").c_str() );
+		string fileName = fName + folderName + "/TransformFiles/" + "transfSim_" +fnameStream.str() + ".txt";
 		transformFileWriter->SetFileName(fileName.c_str());
 		transformFileWriter->SetInput(similarityTransform);
 		transformFileWriter->Update();
 
-		itksys::SystemTools::MakeDirectory( (fname+argv[2]+"/Images/").c_str() );
-		fname = fname + argv[2] + "/Images/" + "imagenDef_"+ fnameStream.str();
-		fname += (Dimension == 2) ? ".png" : ".mha";
-/*
-		if(Dimension == 2)
-			fname += ".png";
-		else
-			fname += ".mha";
-*/
-		writer->SetFileName( fname.c_str() );
-		std::cout << "Writing " << fname.c_str() << std::endl;
+		itksys::SystemTools::MakeDirectory( (fName + folderName + "/Images/").c_str() );
+		fName = fName + folderName + "/Images/" + "imagenDef_"+ fnameStream.str();
+		fName += (Dimension == 2) ? ".png" : ".mha";
+
+		writer->SetFileName( fName.c_str() );
+		std::cout << "Writing " << fName.c_str() << std::endl;
 		writer->Update();
+
+		//Escribiendo Informacion General de Deformacion
+		if(verbose){
+			SimilarityTransformType::ParametersType finalParameters;
+			finalParameters = similarityTransform->GetParameters();
+
+			//La salida en Versor to Euler
+
+			const double RotationAlongX = finalParameters[0]; // Convert radian to degree
+			const double RotationAlongY = finalParameters[1];
+			const double RotationAlongZ = finalParameters[2];
+			const double TranslationAlongX = finalParameters[3];
+			const double TranslationAlongY = finalParameters[4];
+			const double TranslationAlongZ = finalParameters[5];
+			const double EscalaXYZ = finalParameters[6];
+
+			std::cout << "Deformacion Aplicada = " << std::endl;
+			std::cout << " Rotation Degrees = [ " << rx << ", "<< ry << ", " << rz  << " ]"<<std::endl;
+			std::cout << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
+			std::cout << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
+			std::cout << " Scale  = " << EscalaXYZ << std::endl;
+
+
+
+		}
 
 	}
 	return EXIT_SUCCESS;
