@@ -62,7 +62,7 @@ class RegistrationObserver : public itk::Command
 	public:
 		typedef itk::MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage> RegistrationType;
 		typedef RegistrationType*   RegistrationPointer;
-		typedef itk::PowellOptimizer  OptimizerType;
+		typedef itk::FRPROptimizer  OptimizerType;
 
 		void Execute(itk::Object *caller, const itk::EventObject & event)
 		{
