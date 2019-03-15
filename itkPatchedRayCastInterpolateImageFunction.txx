@@ -1550,6 +1550,8 @@ PatchedRayCastInterpolateImageFunction< TInputImage, TCoordRep >
   ray.Initialise();
 
   ray.SetRay(transformedPoint - this->m_Image->GetOrigin().GetVectorFromOrigin(), direction);
+  //ray.SetRay(transformedPoint, direction);
+
 // Fix by Aviv Hurvitz
 // http://blog.gmane.org/gmane.comp.lib.itk.user/month=20080701
 // ray.SetRay(point - this->m_Image->GetOrigin().GetVectorFromOrigin(), direction);

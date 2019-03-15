@@ -7,6 +7,8 @@
 #include <itkNeighborhoodOperatorImageFilter.h>
 #include <itkResampleImageFilter.h>
 #include <itkRescaleIntensityImageFilter.h>
+#include <itkImageFileWriter.h>
+
 
 namespace itk
 {
@@ -66,6 +68,8 @@ namespace itk
 			//#else
 			//  typedef typename Superclass::RealType                       RealType;
 			//#endif
+
+		
 			typedef typename Superclass::MovingImageType		MovingImageType;
 			typedef typename Superclass::MovingImagePixelType	MovingImagePixelType;
 			typedef typename Superclass::FixedImageType		FixedImageType;
@@ -100,7 +104,10 @@ namespace itk
 
 			typedef itk::Image<RealType,
 				itkGetStaticConstMacro(FixedImageDimension)> GradientImageType;
+			
+			typedef itk::ImageFileWriter<FixedImageType> WriterType; 
 
+			
 			/** Get the derivatives of the match measure. */
 			void GetDerivative( const TransformParametersType & parameters,
 					DerivativeType  & derivative ) const;

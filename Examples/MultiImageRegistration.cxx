@@ -3,12 +3,12 @@
 #endif
 
 #include <itkCommand.h>
-#include <itkEuler3DTransform.h>
-//#include <itkSimilarity3DTransform.h>
+//#include <itkEuler3DTransform.h>
+#include <itkSimilarity3DTransform.h>
 
 #include <itkFRPROptimizer.h>
-
-#include "itkPowellOptimizer.h"
+//#include "itkVersorRigid3DTransformOptimizer.h"
+//#include "itkPowellOptimizer.h"
 
 #include <itkImage.h>
 #include <itkImageFileReader.h>
@@ -62,7 +62,8 @@ class RegistrationObserver : public itk::Command
 	public:
 		typedef itk::MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage> RegistrationType;
 		typedef RegistrationType*   RegistrationPointer;
-		typedef itk::PowellOptimizer  OptimizerType;
+		//typedef itk::VersorRigid3DTransformOptimizer  OptimizerType;
+		typedef itk::FRPROptimizer  OptimizerType;
 
 		void Execute(itk::Object *caller, const itk::EventObject & event)
 		{
@@ -103,7 +104,9 @@ class OptimizerObserver : public itk::Command
 		OptimizerObserver() {};
 
 	public:
+		//typedef itk::VersorRigid3DTransformOptimizer  OptimizerType;
 		typedef itk::FRPROptimizer  OptimizerType;
+
 		typedef const OptimizerType*      OptimizerPointer;
 
 		void Execute(itk::Object *caller, const itk::EventObject & event)
@@ -177,10 +180,10 @@ int main(int argc, char* argv[] )
 	//----------------------------------------------------------------------------
 	// Create the transform
 	//----------------------------------------------------------------------------
-	typedef itk::Euler3DTransform< double> TransformType;
+	typedef itk::Similarity3DTransform< double> TransformType;
 
 	TransformType::Pointer transform = TransformType::New();
-	transform->SetComputeZYX(true);
+	//transform->SetComputeZYX(true);
 	transform->SetIdentity();
 	registration->SetTransform( transform );
 
@@ -296,7 +299,9 @@ int main(int argc, char* argv[] )
 	//----------------------------------------------------------------------------
 	// Create the optimizer
 	//----------------------------------------------------------------------------
+	//typedef itk::VersorRigid3DTransformOptimizer OptimizerType;
 	typedef itk::FRPROptimizer OptimizerType;
+
 
 	OptimizerType::Pointer optimizer = OptimizerType::New();
 
@@ -309,14 +314,19 @@ int main(int argc, char* argv[] )
 	scales[0] = 25.0;
 	scales[1] = 25.0;
 	scales[2] = 25.0;
-	scales[3] = 25.0;
-	scales[4] = 25.0;
-	scales[5] = 25.0;
-	scales[6] = 1.0;
+	scales[3] = 1.0;
+	scales[4] = 1.0;
+	scales[5] = 1.0;
+	scales[6] = 25.0;
 
 	optimizer->SetScales( scales );
 
 	optimizer->SetMaximize( true ); //true
+	//optimizer->SetRelaxationFactor(0.5);
+	//optimizer->SetMaximumStepLength(0.2000);
+	//optimizer->SetMinimumStepLength(0.0001);
+	//optimizer->SetNumberOfIterations(2500);
+	
 	optimizer->SetMaximumIteration( 10 ); //100
 	optimizer->SetMaximumLineIteration( 4 ); //10 - 4
 	optimizer->SetValueTolerance( 1e-3 );
@@ -542,7 +552,7 @@ int main(int argc, char* argv[] )
 
 		//the transformation file has a specify format
 		std::string className = baseTransform->GetNameOfClass();
-		if( className.compare("Euler3DTransform") != 0 )
+		if( className.compare("Similarity3DTransform") != 0 )
 		{
 			std::cerr << "Transform class must be Similarity3DTransform." << std::endl;
 			std::cerr << "Found " << className << " instead."
@@ -632,13 +642,13 @@ int main(int argc, char* argv[] )
 	//La salida en Euler es en radianes asi que debemos convertir a grados
 	//para observar el angulo en grados sexagesimales
 	
-	const double RotationAlongX = rtd*(finalParameters[0]); // Convert radian to degree
-	const double RotationAlongY = rtd*(finalParameters[1]);
-	const double RotationAlongZ = rtd*(finalParameters[2]);
+	const double RotationAlongX = finalParameters[0]; // Convert radian to degree
+	const double RotationAlongY = finalParameters[1];
+	const double RotationAlongZ = finalParameters[2];
 	const double TranslationAlongX = finalParameters[3];
 	const double TranslationAlongY = finalParameters[4];
 	const double TranslationAlongZ = finalParameters[5];
-	//const double EscalaXYZ = finalParameters[6];
+	const double EscalaXYZ = finalParameters[6];
 	const int numberOfIterations = optimizer->GetCurrentIteration();
 
 	const double bestValue = optimizer->GetValue();
@@ -652,7 +662,7 @@ int main(int argc, char* argv[] )
 	std::cout << " Translation Z = " << TranslationAlongZ  << " mm" << std::endl;
 	std::cout << " Number Of Iterations = " << numberOfIterations << std::endl;
 	std::cout << " Metric value  = " << bestValue          << std::endl;
-	//std::cout << " Escala value = " << EscalaXYZ << std::endl;
+	std::cout << " Escala value = " << EscalaXYZ << std::endl;
 
 
 

@@ -407,6 +407,11 @@ int main(int argc, char *argv[]){
 	scale = sg;
 	transform->SetScale(scale);	
 
+	//Lectura de Parametros de transformacion para mostrarlo en la info
+	TransformType::ParametersType similarityParameters;
+	similarityParameters = transform->GetParameters();
+
+
 	//Read image properties in order to build our isocenter
 	MovingImageType::PointType imOrigin = image->GetOrigin();
 	MovingImageType::SpacingType imRes = image->GetSpacing();
@@ -504,9 +509,9 @@ int main(int argc, char *argv[]){
 	if(verbose)
 	{
 		std::cout << "Rotation: " << rx << ", " << ry << ", " << rz << std::endl;
-		std::cout << "Versor: "<< ax << ", " << ay << ", "<< az << std::endl;
-		std::cout << "Traslation: " << tx << ", " << ty << ", " << tz << std::endl;
-		std::cout << "Scale " << sg << std::endl;
+		std::cout << "Versor: "<< similarityParameters[0] << ", " << similarityParameters[1] << ", "<< similarityParameters[2] << std::endl;
+		std::cout << "Traslation: " << similarityParameters[3] << ", " << similarityParameters[4] << ", " << similarityParameters[5] << std::endl;
+		std::cout << "Scale " << similarityParameters[6] << std::endl;
 		std::cout << "Output image size: " << size[0] << ", " << size[1] << ", " << size[2] << std::endl;
 		std::cout << "Output image spacing: " << spacing[0] << ", " << spacing[1] << ", " << spacing[2] << std::endl;
 		std::cout << "Output image origin: "<< origin[0] << ", " << origin[1] << ", " << origin[2] << std::endl;
