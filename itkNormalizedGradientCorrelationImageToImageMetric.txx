@@ -91,7 +91,7 @@ namespace itk
 			std::cout<<m_ResampleImageFilter->GetOutput()->GetDirection()<<std::endl;
 			std::cout<<"Direction After Fixed 2D: "<<std::endl;
 			std::cout<<this->m_FixedImage->GetDirection()<<std::endl;*/
-			
+			/*			
 			//Write the output images before to compute the NormalizedGradientCorrelation
 			typename WriterType::Pointer movingfile = WriterType::New();
 			movingfile->SetFileName("moving2D.mha");
@@ -108,6 +108,7 @@ namespace itk
 
 			std::cout<<"After Moving 2D: "<<std::endl;
 			std::cout<<*m_RescaleIntImageFilter->GetOutput();
+			*/
 			//Para establecer correctamente las comparaciones la proyeccion de la imagen
 			//movible sera rescalada en umbral de 0  a 255 y con esta recien ser comparada
 			//con la respectiva imagen fija que tambien esta de 0 a 255

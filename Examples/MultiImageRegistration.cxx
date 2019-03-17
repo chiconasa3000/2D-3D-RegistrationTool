@@ -327,8 +327,8 @@ int main(int argc, char* argv[] )
 	//optimizer->SetMinimumStepLength(0.0001);
 	//optimizer->SetNumberOfIterations(2500);
 	
-	optimizer->SetMaximumIteration( 10 ); //100
-	optimizer->SetMaximumLineIteration( 4 ); //10 - 4
+	optimizer->SetMaximumIteration( 10000 ); //100
+	optimizer->SetMaximumLineIteration(10); //10 - 4
 	optimizer->SetValueTolerance( 1e-3 );
 	optimizer->SetUseUnitLengthGradient( true );
 	optimizer->SetToPolakRibiere();
