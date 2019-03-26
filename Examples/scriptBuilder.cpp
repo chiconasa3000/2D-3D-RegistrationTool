@@ -16,6 +16,12 @@ void ScriptBuilder::setTipoProy(string tipoProy){
 	this->inputTipoProy = tipoProy;
 }
 
+void ScripBuilder::setrRotacion(float rx, float ry, float rz){
+	rotVol[0] = 
+	rotVol[1] = 
+	rotVol[2] = w:w
+}
+
 void ScriptBuilder::asignarScript(string nombreScript){
 
 	if(nombreScript.compare("MultiImageRegistration")==0){
@@ -53,7 +59,7 @@ void ScriptBuilder::buildScript(){
 		comman += fixed1Image;
 
 		//Punto Focal de la 1era Imagen 2D
-		string focal1Point = "0 1000 0 ";
+		string focal1Point = "0 -1000 0 ";
 		comman += focal1Point;
 
 		//2da Imagen 2D Fija (DRR o imagen virtual)
@@ -65,17 +71,17 @@ void ScriptBuilder::buildScript(){
 		comman += focal2Point;
 
 		//Tolerancia de la metrica para terminar la optimización
-		string stepTolerance = "0.01 ";
+		string stepTolerance = "0.02 ";
 		comman += stepTolerance;
 
 		//Tamanio de Paso
-		string stepSize = "2.0 ";
+		string stepSize = "3.0 ";
 		comman += stepSize;
 
 		//Nro de Niveles de Resolucion y 
 		//sus respectivos factores de escala en cada nivel de resolución
 		//string schedule = "4 6 4 2 1 ";
-		string schedule = "3 3 2 1 ";
+		string schedule = "3 5 3 1 ";
 		comman += schedule;
 
 		//TODO: Create Directory for every test
@@ -120,10 +126,12 @@ void ScriptBuilder::buildScript(){
 
 
 	}else if(tipoScript.compare("CreateImageSetSimilarity")==0){
-		//Modelo 3D a registrar
-		string movingImage = "../inputData/pelvisSegmIntensityLPI.mha ";
-		comman += movingImage;
-		
+			
+		//Activar modo Verbose
+		comman += "-v ";
+
+		//Directorio de Salida
+		comman += "-folderName ";
 		//TODO: Create Directory for every test
 		//Directorio de Salida de los resultados del registro
 		string outputDir ="../outputData/ImagesDefs ";
@@ -132,7 +140,16 @@ void ScriptBuilder::buildScript(){
 		//Numero de Imagenes a generar
 		string numImagesToGenerate = to_string(numTests);
 		comman += numImagesToGenerate + " ";
-		
+	
+		//Transformacion del modelo
+		comman += "-rx " + to_string(rx) + " -ry " + to_string(ry) +  " -rz " + to_string(rz)+" ";
+		comman += "-t "+ to_string(tx) +" "+to_string(ty)+" "+to_string(tz)+" ";	
+		comman += "-sg "+ to_string(1.0)+" ";
+			
+		//Modelo 3D a registrar
+		string movingImage = "../inputData/pelvisSegmIntensityLPI.mha ";
+		comman += movingImage;		
+	
 		//Semilla para tener nro aleatorio real
 		string seedRandomOn = "on";
 		comman += seedRandomOn;
@@ -159,8 +176,8 @@ void ScriptBuilder::buildScript(){
 
 	}else if(tipoScript.compare("genVirtualImage")==0){
 		//Modo Verbose activado
-		//string verboseOn = "-v ";
-		//comman += verboseOn;
+		string verboseOn = "-v ";
+		comman += verboseOn;
 	
 		//Tipo de Proyeccion
 		string tipoProy = "-p "+inputTipoProy+" ";
@@ -184,11 +201,11 @@ void ScriptBuilder::buildScript(){
 		//Separacion por el tipo de proyeccion
 		if(inputTipoProy.compare("AP")==0){
 			//Cosenos Directores
-			directCosine = "-dc -90 0 0 ";
+			directCosine = "-dc 90 0 0 ";
 			comman += directCosine;
 
 			//Posicion de Punto Focal
-			puntoFocal = "-foc 0 1000 0 ";
+			puntoFocal = "-foc 0 -1000 0 ";
 			comman += puntoFocal;
 
 			//Tamanio de la Image Virtual
@@ -201,11 +218,16 @@ void ScriptBuilder::buildScript(){
 			//Nombre de la Imagen Virtual
 			nameVirtualImage = "-o pelvisHealthy_ap_"+to_string(indexTest)+" ";
 			comman += nameVirtualImage;
+			
+			//Distancia de Fuente a Isocentro
+			string sourceToIsocenterDistance = "-scd -200 ";
+			comman += sourceToIsocenterDistance;
+
 
 
 		}else if(inputTipoProy.compare("ML")==0){
 			//Cosenos Directores
-			directCosine = "-dc -90 90 0 ";
+			directCosine = "-dc 90 90 0 ";
 			comman += directCosine;
 
 			//Posicion de Punto Focal
@@ -223,12 +245,11 @@ void ScriptBuilder::buildScript(){
 			nameVirtualImage = "-o pelvisHealthy_ml_"+to_string(indexTest)+" ";
 			comman += nameVirtualImage;
 
+			//Distancia de Fuente a Isocentro
+			string sourceToIsocenterDistance = "-scd -200 ";
+			comman += sourceToIsocenterDistance;
 
 		}
-
-		//Distancia de Fuente a Isocentro
-		string sourceToIsocenterDistance = "-scd 200 ";
-		comman += sourceToIsocenterDistance;
 
 		//Umbral de Hounsfield
 		string threshold = "-threshold 0 ";
@@ -249,8 +270,8 @@ void ScriptBuilder::buildScript(){
 		string outputTextRegistration = GetStdoutFromCommand(comman);
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
-        string nameLogRegistro = "LogVirtualImages_"+inputTipoProy+"_"+to_string(indexTest);
-        nameLogRegistro += ".txt";
+        	string nameLogRegistro = "LogVirtualImages_"+inputTipoProy+"_"+to_string(indexTest);
+        	nameLogRegistro += ".txt";
 
 		replace(outputDir.begin(), outputDir.end(), ' ', '/');
 		

@@ -83,21 +83,31 @@ int main(int argc, char *argv[]){
 		
 		//No haremos comprobacion de Tipo de Transformacion
 		//ya que sabemos que es de Similaridad
-/*
+
 		//No haremos comprobacion de multiplicidad de transformaciones
 		//ya que sabemos que una sola transformacion es guardada en el archivo
-		itk::TransformFileReader::Pointer transformReader = itk::TransformFileReader::New();
-		transformReader->SetFileName(argv[0]);
 		
+		//Formando el nombre del archivo de transformacion
+		string currentTransformFile = "../outputData/DefsImages/TransformFiles/transfSim_";
+		currentTransformFile += to_string(indexTest);
+		currentTransformFile += ".txt";
+				
+		itk::TransformFileReader::Pointer transformReader = itk::TransformFileReader::New();
+		transformReader->SetFileName(currentTransformFile);
+
 		std::cout<<"Lectura de Archivo de Transformacion del "<<indexTest<<" registro"<<std::endl;
 		try{
 			transformReader->Update();
 		}catch(itk::ExceptionObject &e)
 		{
-			std::cout << e.GesDescription() << std:endl;
+			std::cout << e.GetDescription() << std:endl;
 		}
+
 		itk::TransformFileReader::TransformListType* transformList = transformReader->GetTransformList();	
-		itk::TransformFileReaer::TransformPointer baseTransform = transformList->front();*/
+		itk::TransformFileReader::TransformPointer baseTransform = transformList->front();
+		
+		std::cout<<"Current Parameters Transform"<<std::endl;
+		std::cout<< baseTransform->GetParameters() << std::endl;
 	}
 
 	return 0;

@@ -476,13 +476,13 @@ int main(int argc, char *argv[]){
 	//Hint: consider the origin like a other input parameter
 	if(strcmp(type_projection,"AP")==0){
 		// Compute the origin (inmm) of the 2D Image
-		origin[0] = im_sx * o2Dx;
-		origin[1] = -scd;
-		origin[2] = im_sy * o2Dy;
+		origin[0] = +im_sx * o2Dx;
+		origin[1] = +scd;
+		origin[2] = -im_sy * o2Dy;
 	}else if(strcmp(type_projection,"ML")==0){
 		// Compute the origin (inmm) of the 2D Image
-		origin[0] = scd;
-		origin[1] = im_sx * o2Dx;
+		origin[0] = -scd;
+		origin[1] = +im_sx * o2Dx;
 		origin[2] = -im_sy * o2Dy;
 	}else{
 		//byDefault

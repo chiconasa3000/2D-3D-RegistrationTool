@@ -311,9 +311,9 @@ int main(int argc, char* argv[] )
 	//sera la sexta parte del total 100/6 = 16.6 o cuarta parte 100/4 = 25.0
 	OptimizerType::ScalesType scales( ParTotal );
 	scales.Fill(itk::NumericTraits<OptimizerType::ScalesType::ValueType>::One);
-	scales[0] = 25.0;
-	scales[1] = 25.0;
-	scales[2] = 25.0;
+	scales[0] = 35.0;
+	scales[1] = 35.0;
+	scales[2] = 35.0;
 	scales[3] = 1.0;
 	scales[4] = 1.0;
 	scales[5] = 1.0;
@@ -327,7 +327,7 @@ int main(int argc, char* argv[] )
 	//optimizer->SetMinimumStepLength(0.0001);
 	//optimizer->SetNumberOfIterations(2500);
 	
-	optimizer->SetMaximumIteration( 10000 ); //100
+	optimizer->SetMaximumIteration( 1000 ); //100
 	optimizer->SetMaximumLineIteration(10); //10 - 4
 	optimizer->SetValueTolerance( 1e-3 );
 	optimizer->SetUseUnitLengthGradient( true );
