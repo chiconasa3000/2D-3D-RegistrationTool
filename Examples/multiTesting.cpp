@@ -5,6 +5,7 @@
 #include <vector>
 #include <sstream>
 #include "scriptBuilder.h"
+#include <itkTransformFileReader.h>
 using namespace std;
 
 
@@ -52,8 +53,9 @@ int main(int argc, char *argv[]){
 
 	ScriptBuilder *scriptbuilder = new ScriptBuilder();
 	scriptbuilder->setNumTests(numImagenes);
-
-
+	scriptbuilder->setInputVolume(input_volume);
+	scriptbuilder->setRotation(45.0,0.0,0.0);
+	scriptbuilder->setTranslation(0.0,0.0,0.0);
 	scriptbuilder->asignarScript("CreateImageSetSimilarity");	
 	scriptbuilder->buildScript();	
 
@@ -88,19 +90,17 @@ int main(int argc, char *argv[]){
 		//ya que sabemos que una sola transformacion es guardada en el archivo
 		
 		//Formando el nombre del archivo de transformacion
-		string currentTransformFile = "../outputData/DefsImages/TransformFiles/transfSim_";
-		currentTransformFile += to_string(indexTest);
-		currentTransformFile += ".txt";
+		string currentTransformFile = "../outputData/resultsReg_"+to_string(currentIndexTest)+"/outTransform_0.02_4.txt";
 				
 		itk::TransformFileReader::Pointer transformReader = itk::TransformFileReader::New();
 		transformReader->SetFileName(currentTransformFile);
 
-		std::cout<<"Lectura de Archivo de Transformacion del "<<indexTest<<" registro"<<std::endl;
+		std::cout<<"Lectura de Archivo de Transformacion del "<<currentIndexTest<<" registro"<<std::endl;
 		try{
 			transformReader->Update();
 		}catch(itk::ExceptionObject &e)
 		{
-			std::cout << e.GetDescription() << std:endl;
+			std::cout << e.GetDescription() << std::endl;
 		}
 
 		itk::TransformFileReader::TransformListType* transformList = transformReader->GetTransformList();	

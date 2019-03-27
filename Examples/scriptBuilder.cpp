@@ -4,9 +4,14 @@ ScriptBuilder::ScriptBuilder(){
 	//TODO: To do something :p
 }
 
+void ScriptBuilder::setInputVolume(string input){
+	this->input_volume = input;
+}
+
 void ScriptBuilder::setIndexTest(int indexTest){
 	this->indexTest = indexTest;
 }
+
 
 void ScriptBuilder::setNumTests(int numTests){
 	this->numTests = numTests;
@@ -16,10 +21,16 @@ void ScriptBuilder::setTipoProy(string tipoProy){
 	this->inputTipoProy = tipoProy;
 }
 
-void ScripBuilder::setrRotacion(float rx, float ry, float rz){
-	rotVol[0] = 
-	rotVol[1] = 
-	rotVol[2] = w:w
+void ScriptBuilder::setRotation(float rx, float ry, float rz){
+	rotVol[0] = rx; 
+	rotVol[1] = ry;
+	rotVol[2] = rz;
+}
+
+void ScriptBuilder::setTranslation(float tx, float ty, float tz){
+	trasVol[0] = tx;
+	trasVol[1] = ty;
+	trasVol[2] = tz;
 }
 
 void ScriptBuilder::asignarScript(string nombreScript){
@@ -47,7 +58,7 @@ void ScriptBuilder::buildScript(){
 	if(tipoScript.compare("MultiImageRegistration")==0){
 
 		//Modelo 3D a registrar
-		string movingImage = "../inputData/pelvisSegmIntensityLPI.mha ";
+		string movingImage = input_volume + " ";
 		comman += movingImage;
 
 		//Nro de imagenes a registrar
@@ -75,13 +86,13 @@ void ScriptBuilder::buildScript(){
 		comman += stepTolerance;
 
 		//Tamanio de Paso
-		string stepSize = "3.0 ";
+		string stepSize = "4.0 ";
 		comman += stepSize;
 
 		//Nro de Niveles de Resolucion y 
 		//sus respectivos factores de escala en cada nivel de resolución
 		//string schedule = "4 6 4 2 1 ";
-		string schedule = "3 5 3 1 ";
+		string schedule = "2 2 1 ";
 		comman += schedule;
 
 		//TODO: Create Directory for every test
@@ -126,7 +137,6 @@ void ScriptBuilder::buildScript(){
 
 
 	}else if(tipoScript.compare("CreateImageSetSimilarity")==0){
-			
 		//Activar modo Verbose
 		comman += "-v ";
 
@@ -139,20 +149,24 @@ void ScriptBuilder::buildScript(){
 	
 		//Numero de Imagenes a generar
 		string numImagesToGenerate = to_string(numTests);
-		comman += numImagesToGenerate + " ";
+		comman += "-numImages " + numImagesToGenerate + " ";
 	
 		//Transformacion del modelo
-		comman += "-rx " + to_string(rx) + " -ry " + to_string(ry) +  " -rz " + to_string(rz)+" ";
-		comman += "-t "+ to_string(tx) +" "+to_string(ty)+" "+to_string(tz)+" ";	
+		comman += "-rx " + to_string(rotVol[0]) + " -ry " + to_string(rotVol[1]) +  " -rz " + to_string(rotVol[2])+" ";
+		comman += "-t "+ to_string(trasVol[0]) +" "+to_string(trasVol[1])+" "+to_string(trasVol[2])+" ";	
 		comman += "-sg "+ to_string(1.0)+" ";
-			
-		//Modelo 3D a registrar
-		string movingImage = "../inputData/pelvisSegmIntensityLPI.mha ";
-		comman += movingImage;		
 	
 		//Semilla para tener nro aleatorio real
-		string seedRandomOn = "on";
-		comman += seedRandomOn;
+		/*string randomOn = "-rnd ";
+		comman += randomOn;
+
+		string seedSeedOn = "-rnd_sem ";
+		comman += SeedOn;*/
+		
+		//Modelo 3D a registrar
+		string movingImage = input_volume + " ";
+		comman += movingImage;
+
 
 		//Ejecución de POPEN
 		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
