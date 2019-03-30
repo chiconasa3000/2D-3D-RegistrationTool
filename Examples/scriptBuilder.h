@@ -13,8 +13,9 @@ private:
 	string comman = "";
 	int numTests = 1;
 	int indexTest = 1;
-	float rotVol[3] = {90.0, 0.0, 0.0};
-	float trasVol[3] = {0.0, 0.0, 0.0};	 
+	float rotVol[3] = {0.0, 0.0, 0.0};
+	float trasVol[3] = {0.0, 0.0, 0.0};
+	float generalScale=1.0;	 
 public:
 	void setIndexTest(int indexTest);
 	void setNumTests(int numTests);
@@ -24,6 +25,7 @@ public:
 	ScriptBuilder();
 	void setRotation(float rx, float ry, float rz);
 	void setTranslation(float tx, float ty, float tz);
+	void setScale(float scale);
 	void setInputVolume(string inputVol);	
 	string GetStdoutFromCommand(string command);
 

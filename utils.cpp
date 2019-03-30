@@ -39,6 +39,28 @@ void Utilitarios::convertEulerToVersor(float &rx, float &ry, float &rz, double &
 	}
 }
 
+void Utilitarios::unirVectorWithAngle(float &rx, float &ry, float &rz, double &vx, double &vy, double &vz, double &newangulo){
+
+	double ax,ay,az,angle;
+	//Usar la funcion de conversion de Euler a Versor
+	convertEulerToVersor(rx,ry,rz,ax,ay,az,angle);
+	double axisnorm = sqrt(ax*ax + ay*ay + az*az);
+	if(axisnorm == 0.0){
+		std::cerr<< "Error norma de vector del versor es cercano a  cero"<<std::endl;
+	}else{
+
+	double cosangle = cos(angle/2.0);
+	double sinangle = sin(angle/2.0);
+	
+	double factor = sinangle/ axisnorm;
+
+	vx = ax * factor;
+	vy = ay * factor;
+	vz = az * factor;
+	
+	newangulo = cosangle;	}
+}
+
 void Utilitarios::convertVersorToEuler(float &x, float &y, float &z, float &w, float &rx, float &ry, float &rz){
 	float t0 = +2.0 * (w * x + y * z);
         float t1 = +1.0 - 2.0 * (x * x + y * y);

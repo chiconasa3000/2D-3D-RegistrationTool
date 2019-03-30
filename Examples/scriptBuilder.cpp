@@ -27,6 +27,10 @@ void ScriptBuilder::setRotation(float rx, float ry, float rz){
 	rotVol[2] = rz;
 }
 
+void ScriptBuilder::setScale(float scale){
+	this->generalScale = scale;
+}
+
 void ScriptBuilder::setTranslation(float tx, float ty, float tz){
 	trasVol[0] = tx;
 	trasVol[1] = ty;
@@ -78,7 +82,7 @@ void ScriptBuilder::buildScript(){
 		comman += fixed2Image;
 
 		//Punto Focal de la 2da Imagen 2D
-		string focal2Point = "1000 0 0 ";
+		string focal2Point = "-1000 0 0 ";
 		comman += focal2Point;
 
 		//Tolerancia de la metrica para terminar la optimización
@@ -92,7 +96,7 @@ void ScriptBuilder::buildScript(){
 		//Nro de Niveles de Resolucion y 
 		//sus respectivos factores de escala en cada nivel de resolución
 		//string schedule = "4 6 4 2 1 ";
-		string schedule = "2 2 1 ";
+		string schedule = "4 8 3 2 1 ";
 		comman += schedule;
 
 		//TODO: Create Directory for every test
@@ -154,7 +158,7 @@ void ScriptBuilder::buildScript(){
 		//Transformacion del modelo
 		comman += "-rx " + to_string(rotVol[0]) + " -ry " + to_string(rotVol[1]) +  " -rz " + to_string(rotVol[2])+" ";
 		comman += "-t "+ to_string(trasVol[0]) +" "+to_string(trasVol[1])+" "+to_string(trasVol[2])+" ";	
-		comman += "-sg "+ to_string(1.0)+" ";
+		comman += "-sg "+ to_string(generalScale)+" ";
 	
 		//Semilla para tener nro aleatorio real
 		/*string randomOn = "-rnd ";
@@ -245,7 +249,7 @@ void ScriptBuilder::buildScript(){
 			comman += directCosine;
 
 			//Posicion de Punto Focal
-			puntoFocal = "-foc 1000 0 0 ";
+			puntoFocal = "-foc -1000 0 0 ";
 			comman += puntoFocal;
 
 			//Tamanio de la Image Virtual
@@ -260,7 +264,7 @@ void ScriptBuilder::buildScript(){
 			comman += nameVirtualImage;
 
 			//Distancia de Fuente a Isocentro
-			string sourceToIsocenterDistance = "-scd -200 ";
+			string sourceToIsocenterDistance = "-scd 200 ";
 			comman += sourceToIsocenterDistance;
 
 		}

@@ -311,13 +311,13 @@ int main(int argc, char* argv[] )
 	//sera la sexta parte del total 100/6 = 16.6 o cuarta parte 100/4 = 25.0
 	OptimizerType::ScalesType scales( ParTotal );
 	scales.Fill(itk::NumericTraits<OptimizerType::ScalesType::ValueType>::One);
-	scales[0] = 35.0;
-	scales[1] = 35.0;
-	scales[2] = 35.0;
-	scales[3] = 1.0;
-	scales[4] = 1.0;
-	scales[5] = 1.0;
-	scales[6] = 25.0;
+	scales[0] = 25.0;
+	scales[1] = 25.0;
+	scales[2] = 25.0;
+	scales[3] = 1.0/200.0;
+	scales[4] = 1.0/200.0;
+	scales[5] = 1.0/200.0;
+	scales[6] = 1.0;
 
 	optimizer->SetScales( scales );
 
@@ -673,7 +673,7 @@ int main(int argc, char* argv[] )
 	//output transformation
 	std::string outputTransformPath = outDir;
 	outputTransformPath.append( "/outTransform" );
-	outputTransformPath.append("_"+strStepTol.str()+"_"+strStepLen.str());
+	//outputTransformPath.append("_"+strStepTol.str()+"_"+strStepLen.str());
 	outputTransformPath.append(".txt");
 
 	itk::TransformFileWriter::Pointer transformWriter = itk::TransformFileWriter::New();

@@ -81,7 +81,7 @@ add_executable(doRegistration Examples/doRegistration.cpp)
 target_link_libraries(doRegistration ${Libraries})
 
 #MultiPruebas
-add_executable(multiTesting Examples/multiTesting.cpp Examples/scriptBuilder.cpp)
+add_executable(multiTesting Examples/multiTesting.cpp Examples/scriptBuilder.cpp utils.cpp)
 target_link_libraries(multiTesting ${Libraries})
 
 #Generador de imagenes Virtuales
