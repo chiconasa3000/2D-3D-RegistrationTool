@@ -286,10 +286,13 @@ int main( int argc, char * argv[] )
 	
 			
 			//Versor 3D Rotation
-			//rotaciones entre -180 y 180 grados sexag 
-			rx = rand()%(180 - (-180) + 1) +(-180);
-			ry = rand()%(180 - (-180) + 1) +(-180);
-			rz = rand()%(180 - (-180) + 1) +(-180);
+			//rotaciones entre -10 y 10 grados sexag 
+			//rx = rand()%(10 - (-10) + 1) +(-10);
+			//ry = rand()%(10 - (-10) + 1) +(-10);
+			//rz = rand()%(10 - (-10) + 1) +(-10);
+			rx = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
+			ry = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
+			rz = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
 
 			util->convertEulerToVersor(rx,ry,rz,ax,ay,az,angle);
 			
@@ -303,14 +306,14 @@ int main( int argc, char * argv[] )
 
 			//Traslation Vector 
 			//traslaciones entre -10 y 10 mm
-			similarityParameters[3] = rand()%(10 - (-10) + 1)+(-10);
-			similarityParameters[4] = rand()%(10 - (-10) + 1)+(-10);
-			similarityParameters[5] = rand()%(10 - (-10) + 1)+(-10);
+			similarityParameters[3] = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
+			similarityParameters[4] = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
+			similarityParameters[5] = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
 
 			//Scale Factor (no podemos afectar mucho la escala)
 			//sin escalas grandes obviarian informacion de la imagen
-			//escala entre 0.6 y 0.8 
-			similarityParameters[6] = ((double)rand()/RAND_MAX)*(0.8 -  0.6) + 0.6;
+			//escala entre 1.0 y 1.5 
+			similarityParameters[6] = ((double)rand()/RAND_MAX)*(1.5 -  1.0) + 1.0;
 			//similarityParameters[6] = 1;
 
 			similarityTransform->SetParameters(similarityParameters);

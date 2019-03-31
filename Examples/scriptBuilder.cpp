@@ -96,7 +96,7 @@ void ScriptBuilder::buildScript(){
 		//Nro de Niveles de Resolucion y 
 		//sus respectivos factores de escala en cada nivel de resolución
 		//string schedule = "4 6 4 2 1 ";
-		string schedule = "4 8 3 2 1 ";
+		string schedule = "4 6 3 2 1 ";
 		comman += schedule;
 
 		//TODO: Create Directory for every test
@@ -143,6 +143,10 @@ void ScriptBuilder::buildScript(){
 	}else if(tipoScript.compare("CreateImageSetSimilarity")==0){
 		//Activar modo Verbose
 		comman += "-v ";
+
+		//Mode Random
+		comman += "-rnd ";
+		comman += "-rnd_sem ";
 
 		//Directorio de Salida
 		comman += "-folderName ";

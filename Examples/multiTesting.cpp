@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
 	float tz_error = 0.0;
 
 	float sg_error = 0.0;
-				
+
 	//Lectura del numero de imagenes para las pruebas (Imagenes Deformadas)
 	int numImagenes = 2;
 
@@ -129,6 +129,29 @@ int main(int argc, char *argv[]){
 
 	//Recorrer el numero de pruebas
 	for(int currentIndexTest = 0; currentIndexTest < numImagenes; currentIndexTest++){
+		
+		string cindex = to_string(currentIndexTest);
+
+		//Lectura de Archivos de el volumen Transformado Aleatoriamente
+		string deformRandomTransform = "../outputData/ImagesDefs/TransformFiles/transfSim_"+ cindex +".txt";
+
+		itk::TransformFileReader::Pointer transformReader_2 = itk::TransformFileReader::New();
+		transformReader_2->SetFileName(deformRandomTransform);
+
+		std::cout<<"Lectura de Transformacion de la Deformacion "<<currentIndexTest<<" registro"<<std::endl;
+		try{
+			transformReader_2->Update();
+		}catch(itk::ExceptionObject &e)
+		{
+			std::cout << e.GetDescription() << std::endl;
+		}
+
+		itk::TransformFileReader::TransformListType* transformList_2 = transformReader_2->GetTransformList();	
+		itk::TransformFileReader::TransformPointer baseTransform_2 = transformList_2->front();
+
+		std::cout<<"Parameters Deformed Volume Transform"<<std::endl;
+		std::cout<< baseTransform_2->GetParameters() << std::endl;
+
 
 		//Actualizando el actual index para seleccionar una especifica
 		//imagen deformada y generar especificas imagenes virtuales	
@@ -143,22 +166,22 @@ int main(int argc, char *argv[]){
 		scriptbuilder->asignarScript("genVirtualImage");
 		scriptbuilder->setTipoProy("ML");
 		scriptbuilder->buildScript();
-		
+
 		//Generar el registro de imagenes
 		scriptbuilder->asignarScript("MultiImageRegistration");
 		scriptbuilder->buildScript();
 
 		//Leer Transformacion de Salida
-		
+
 		//No haremos comprobacion de Tipo de Transformacion
 		//ya que sabemos que es de Similaridad
 
 		//No haremos comprobacion de multiplicidad de transformaciones
 		//ya que sabemos que una sola transformacion es guardada en el archivo
-		
+
 		//Formando el nombre del archivo de transformacion
-		string currentTransformFile = "../outputData/resultsReg_"+to_string(currentIndexTest)+"/outTransform.txt";
-				
+		string currentTransformFile = "../outputData/resultsReg_"+ cindex +"/outTransform.txt";
+
 		itk::TransformFileReader::Pointer transformReader = itk::TransformFileReader::New();
 		transformReader->SetFileName(currentTransformFile);
 
@@ -172,25 +195,26 @@ int main(int argc, char *argv[]){
 
 		itk::TransformFileReader::TransformListType* transformList = transformReader->GetTransformList();	
 		itk::TransformFileReader::TransformPointer baseTransform = transformList->front();
-		
+
 		std::cout<<"Current Parameters Transform"<<std::endl;
 		std::cout<< baseTransform->GetParameters() << std::endl;
-		
+
 		//adaptar los euler a su forma versor
 		Utilitarios * util = new Utilitarios();
-		
+
 		double vx,vy,vz,newangle;
 		util->unirVectorWithAngle(rx,ry,rz,vx,vy,vz,newangle);
+
+		rx_error = baseTransform_2->GetParameters()[0] - baseTransform->GetParameters()[0];
+		ry_error = baseTransform_2->GetParameters()[1] - baseTransform->GetParameters()[1];
+		rz_error = baseTransform_2->GetParameters()[2] - baseTransform->GetParameters()[2];
+
+		tx_error = baseTransform_2->GetParameters()[3] - baseTransform->GetParameters()[3];
+		ty_error = baseTransform_2->GetParameters()[4] - baseTransform->GetParameters()[4];
+		tz_error = baseTransform_2->GetParameters()[5] - baseTransform->GetParameters()[5];
+
+		sg_error = baseTransform_2->GetParameters()[6]- baseTransform->GetParameters()[6];
 		
-		rx_error += vx - baseTransform->GetParameters()[0];
-		ry_error += vy - baseTransform->GetParameters()[1];
-		rz_error += vz - baseTransform->GetParameters()[2];
-
-		tx_error += tx - baseTransform->GetParameters()[3];
-		ty_error += ty - baseTransform->GetParameters()[4];
-		tz_error += tz - baseTransform->GetParameters()[5];
-
-		sg_error += sg - baseTransform->GetParameters()[6];
 		std::cout << "newangle versor: " << newangle << std::endl;	
 		std::cout << "rx_error: " << rx_error << std::endl;
 		std::cout << "ry_error: " << ry_error << std::endl;
@@ -199,10 +223,8 @@ int main(int argc, char *argv[]){
 		std::cout << "tx_error: " << tx_error << std::endl;
 		std::cout << "ty_error: " << ty_error << std::endl;
 		std::cout << "tz_error: " << tz_error << std::endl;
- 		
+
 		std::cout << "sg_error: " << sg_error << std::endl;
-		
-		
 
 	}
 
