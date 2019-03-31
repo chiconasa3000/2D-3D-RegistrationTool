@@ -7,6 +7,7 @@
 #include "scriptBuilder.h"
 #include <itkTransformFileReader.h>
 #include "utils.h"
+#include <fstream>
 using namespace std;
 
 
@@ -127,6 +128,9 @@ int main(int argc, char *argv[]){
 	scriptbuilder->buildScript();	
 
 
+	ofstream myfile;
+	myfile.open("RMSE_Registro.txt");	
+
 	//Recorrer el numero de pruebas
 	for(int currentIndexTest = 0; currentIndexTest < numImagenes; currentIndexTest++){
 		
@@ -200,22 +204,23 @@ int main(int argc, char *argv[]){
 		std::cout<< baseTransform->GetParameters() << std::endl;
 
 		//adaptar los euler a su forma versor
-		Utilitarios * util = new Utilitarios();
+		//Utilitarios * util = new Utilitarios();
 
-		double vx,vy,vz,newangle;
-		util->unirVectorWithAngle(rx,ry,rz,vx,vy,vz,newangle);
+		//double vx,vy,vz,newangle;
+		//util->unirVectorWithAngle(rx,ry,rz,vx,vy,vz,newangle);
 
-		rx_error = baseTransform_2->GetParameters()[0] - baseTransform->GetParameters()[0];
-		ry_error = baseTransform_2->GetParameters()[1] - baseTransform->GetParameters()[1];
-		rz_error = baseTransform_2->GetParameters()[2] - baseTransform->GetParameters()[2];
+		rx_error += pow(baseTransform_2->GetParameters()[0] - baseTransform->GetParameters()[0],2.0);
+		ry_error += pow(baseTransform_2->GetParameters()[1] - baseTransform->GetParameters()[1],2.0);
+		rz_error += pow(baseTransform_2->GetParameters()[2] - baseTransform->GetParameters()[2],2.0);
 
-		tx_error = baseTransform_2->GetParameters()[3] - baseTransform->GetParameters()[3];
-		ty_error = baseTransform_2->GetParameters()[4] - baseTransform->GetParameters()[4];
-		tz_error = baseTransform_2->GetParameters()[5] - baseTransform->GetParameters()[5];
+		tx_error += pow(baseTransform_2->GetParameters()[3] - baseTransform->GetParameters()[3],2.0);
+		ty_error += pow(baseTransform_2->GetParameters()[4] - baseTransform->GetParameters()[4],2.0);
+		tz_error += pow(baseTransform_2->GetParameters()[5] - baseTransform->GetParameters()[5],2.0);
 
-		sg_error = baseTransform_2->GetParameters()[6]- baseTransform->GetParameters()[6];
+		sg_error += pow(baseTransform_2->GetParameters()[6]- baseTransform->GetParameters()[6],2.0);
 		
-		std::cout << "newangle versor: " << newangle << std::endl;	
+		//std::cout << "newangle versor: " << newangle << std::endl;	
+		/*
 		std::cout << "rx_error: " << rx_error << std::endl;
 		std::cout << "ry_error: " << ry_error << std::endl;
 		std::cout << "rz_error: " << rz_error << std::endl;
@@ -225,8 +230,40 @@ int main(int argc, char *argv[]){
 		std::cout << "tz_error: " << tz_error << std::endl;
 
 		std::cout << "sg_error: " << sg_error << std::endl;
+		*/
+		myfile << "rx_error: " << rx_error << std::endl;
+		myfile << "ry_error: " << ry_error << std::endl;
+		myfile << "rz_error: " << rz_error << std::endl;
+
+		myfile << "tx_error: " << tx_error << std::endl;
+		myfile << "ty_error: " << ty_error << std::endl;
+		myfile << "tz_error: " << tz_error << std::endl;
+
+		myfile << "sg_error: " << sg_error << std::endl;
+
+
+
 
 	}
+	/*
+	std::cout << "Rx_final_Error: " << sqrt(rx_error/numImagenes) << std::endl;
+	std::cout << "Ry_final_Error: " << sqrt(ry_error/numImagenes) << std::endl;
+	std::cout << "Rz_final_Error: " << sqrt(rz_error/numImagenes) << std::endl;
+	std::cout << "Tx_final_Error: " << sqrt(tx_error/numImagenes) << std::endl;
+	std::cout << "Ty_final_Error: " << sqrt(ty_error/numImagenes) << std::endl;
+	std::cout << "Tz_final_Error: " << sqrt(tz_error/numImagenes) << std::endl;
+	std::cout << "Sg_final_Error: " << sqrt(sg_error/numImagenes) << std::endl;
+	*/
+	myfile << "Rx_final_Error: " << sqrt(rx_error/numImagenes) << std::endl;
+	myfile << "Ry_final_Error: " << sqrt(ry_error/numImagenes) << std::endl;
+	myfile << "Rz_final_Error: " << sqrt(rz_error/numImagenes) << std::endl;
+	myfile << "Tx_final_Error: " << sqrt(tx_error/numImagenes) << std::endl;
+	myfile << "Ty_final_Error: " << sqrt(ty_error/numImagenes) << std::endl;
+	myfile << "Tz_final_Error: " << sqrt(tz_error/numImagenes) << std::endl;
+	myfile << "Sg_final_Error: " << sqrt(sg_error/numImagenes) << std::endl;
+
+
+	
 
 	return 0;
 }
