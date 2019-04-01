@@ -8,6 +8,8 @@
 #include <itkTransformFileReader.h>
 #include "utils.h"
 #include <fstream>
+#include "itkTimeProbe.h"
+
 using namespace std;
 
 
@@ -131,6 +133,8 @@ int main(int argc, char *argv[]){
 	ofstream myfile;
 	myfile.open("RMSE_Registro.txt");	
 
+	itk::TimeProbe cputimer;
+	cputimer.Start();
 	//Recorrer el numero de pruebas
 	for(int currentIndexTest = 0; currentIndexTest < numImagenes; currentIndexTest++){
 		
@@ -244,15 +248,15 @@ int main(int argc, char *argv[]){
 		*/
 		
 		myfile << "Registro num " << currentIndexTest << std::endl;	
-		myfile << "rx_error: " << rx_error << std::endl;
-		myfile << "ry_error: " << ry_error << std::endl;
-		myfile << "rz_error: " << rz_error << std::endl;
+		myfile << "rx_error: " << t_rx << std::endl;
+		myfile << "ry_error: " << t_ry << std::endl;
+		myfile << "rz_error: " << t_rz << std::endl;
 
-		myfile << "tx_error: " << tx_error << std::endl;
-		myfile << "ty_error: " << ty_error << std::endl;
-		myfile << "tz_error: " << tz_error << std::endl;
+		myfile << "tx_error: " << t_tx << std::endl;
+		myfile << "ty_error: " << t_ty << std::endl;
+		myfile << "tz_error: " << t_tz << std::endl;
 
-		myfile << "sg_error: " << sg_error << std::endl;
+		myfile << "sg_error: " << t_sg << std::endl;
 		myfile << std::endl;
 
 
@@ -275,8 +279,10 @@ int main(int argc, char *argv[]){
 	myfile << "Tz_final_Error: " << sqrt(tz_error/numImagenes) << std::endl;
 	myfile << "Sg_final_Error: " << sqrt(sg_error/numImagenes) << std::endl;
 
-
+	cputimer.Stop();
 	
+	myfile << "Registrations took " << cputimer.GetMean() << " seconds.\n" << std::endl;
+
 
 	return 0;
 }
