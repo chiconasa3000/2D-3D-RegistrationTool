@@ -208,17 +208,28 @@ int main(int argc, char *argv[]){
 
 		//double vx,vy,vz,newangle;
 		//util->unirVectorWithAngle(rx,ry,rz,vx,vy,vz,newangle);
-
-		rx_error += pow(baseTransform_2->GetParameters()[0] - baseTransform->GetParameters()[0],2.0);
-		ry_error += pow(baseTransform_2->GetParameters()[1] - baseTransform->GetParameters()[1],2.0);
-		rz_error += pow(baseTransform_2->GetParameters()[2] - baseTransform->GetParameters()[2],2.0);
-
-		tx_error += pow(baseTransform_2->GetParameters()[3] - baseTransform->GetParameters()[3],2.0);
-		ty_error += pow(baseTransform_2->GetParameters()[4] - baseTransform->GetParameters()[4],2.0);
-		tz_error += pow(baseTransform_2->GetParameters()[5] - baseTransform->GetParameters()[5],2.0);
-
-		sg_error += pow(baseTransform_2->GetParameters()[6]- baseTransform->GetParameters()[6],2.0);
 		
+		double t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
+
+		t_rx = pow(baseTransform_2->GetParameters()[0] - baseTransform->GetParameters()[0],2.0);
+		t_ry = pow(baseTransform_2->GetParameters()[1] - baseTransform->GetParameters()[1],2.0);
+		t_rz = pow(baseTransform_2->GetParameters()[2] - baseTransform->GetParameters()[2],2.0);
+
+		t_tx = pow(baseTransform_2->GetParameters()[3] - baseTransform->GetParameters()[3],2.0);
+		t_ty = pow(baseTransform_2->GetParameters()[4] - baseTransform->GetParameters()[4],2.0);
+		t_tz = pow(baseTransform_2->GetParameters()[5] - baseTransform->GetParameters()[5],2.0);
+
+		t_sg = pow(baseTransform_2->GetParameters()[6]- baseTransform->GetParameters()[6],2.0);
+		
+		rx_error += t_rx;
+		ry_error += t_ry;
+		rz_error += t_rz;
+		tx_error += t_tx;
+		ty_error += t_ty;
+		tz_error += t_tz;
+		sg_error += t_sg;
+
+
 		//std::cout << "newangle versor: " << newangle << std::endl;	
 		/*
 		std::cout << "rx_error: " << rx_error << std::endl;
@@ -231,6 +242,8 @@ int main(int argc, char *argv[]){
 
 		std::cout << "sg_error: " << sg_error << std::endl;
 		*/
+		
+		myfile << "Registro num " << currentIndexTest << std::endl;	
 		myfile << "rx_error: " << rx_error << std::endl;
 		myfile << "ry_error: " << ry_error << std::endl;
 		myfile << "rz_error: " << rz_error << std::endl;
@@ -240,7 +253,7 @@ int main(int argc, char *argv[]){
 		myfile << "tz_error: " << tz_error << std::endl;
 
 		myfile << "sg_error: " << sg_error << std::endl;
-
+		myfile << std::endl;
 
 
 
