@@ -6,6 +6,8 @@
 #include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkNumericTraits.h>
 
+
+
 namespace itk
 {
 
@@ -56,8 +58,12 @@ namespace itk
 				m_FixedSobelFilters[dim]->GetOutput()->SetRequestedRegion(
 						this->GetFixedImageRegion() );
 			}
-			
-			//std::cout<<"Direction before 3D: "<<this->m_MovingImage->GetDirection()<<std::endl;
+			/*
+			std::cout<<"Direction Before Moving 3D: "<<std::endl;
+			std::cout<<this->m_MovingImage->GetDirection()<<std::endl;
+			std::cout<<"Direction Before Fixed 2D: "<<std::endl;
+			std::cout<<this->m_FixedImage->GetDirection()<<std::endl; 
+			*/
 
 			m_ResampleImageFilter = ResampleImageFilterType::New();
 

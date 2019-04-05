@@ -26,7 +26,6 @@
 #include "itkCovariantVector.h"
 #include "itkPoint.h"
 
-
 namespace itk
 {
 /** \class NormalizedCorrelationTwoImageToOneImageMetric
@@ -62,7 +61,6 @@ public:
   /** Run-time type information (and related methods). */
   itkTypeMacro(NormalizedCorrelationTwoImageToOneImageMetric, ImageToImageMetric);
 
- 
   /** Types transferred from the base class */
   typedef typename Superclass::RealType                 RealType;
   typedef typename Superclass::TransformType            TransformType;

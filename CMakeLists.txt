@@ -61,6 +61,7 @@ itkPatternIntensityMultiImageToImageMetric.txx
 BSplineDeformableTransformOpt.h
 BSplineDeformableTransformOpt.txx
 GenDRRs/gestorMatrixRot.h
+utils.h
 Examples/scriptBuilder.h
 )
 
@@ -80,11 +81,11 @@ add_executable(doRegistration Examples/doRegistration.cpp)
 target_link_libraries(doRegistration ${Libraries})
 
 #MultiPruebas
-add_executable(multiTesting Examples/multiTesting.cpp Examples/scriptBuilder.cpp)
+add_executable(multiTesting Examples/multiTesting.cpp Examples/scriptBuilder.cpp utils.cpp)
 target_link_libraries(multiTesting ${Libraries})
 
 #Generador de imagenes Virtuales
-add_executable(genVirtualImage GenDRRs/genVirtualImage.cxx GenDRRs/gestorMatrixRot.cxx)
+add_executable(genVirtualImage GenDRRs/genVirtualImage.cxx GenDRRs/gestorMatrixRot.cxx utils.cpp)
 target_link_libraries(genVirtualImage ${Libraries})
 
 #Creacion de Deformaciones Aleatorias
@@ -94,7 +95,7 @@ target_link_libraries(CreateImageSetAffine ${Libraries})
 add_executable(CreateImageSetBspline DeformacionesAleatorias/CreateImageSetBspline.cxx)
 target_link_libraries(CreateImageSetBspline ${Libraries})
 
-add_executable(CreateImageSetSimilarity DeformacionesAleatorias/CreateImageSetSimilarity.cxx)
+add_executable(CreateImageSetSimilarity DeformacionesAleatorias/CreateImageSetSimilarity.cxx utils.cpp)
 target_link_libraries(CreateImageSetSimilarity ${Libraries})
 
 

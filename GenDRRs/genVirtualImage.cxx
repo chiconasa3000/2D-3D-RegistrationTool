@@ -5,7 +5,9 @@
 #include "itkTimeProbesCollectorBase.h"
 #include "itkImageFileReader.h"
 #include "itkResampleImageFilter.h"
-#include "itkEuler3DTransform.h"
+
+#include "itkSimilarity3DTransform.h"
+
 #include "itkRescaleIntensityImageFilter.h"
 #include "itkFlipImageFilter.h"
 #include "itkImageFileWriter.h"
@@ -14,6 +16,9 @@
 #include "gestorMatrixRot.h"
 #include <string>
 #include <itksys/SystemTools.hxx>
+
+#include "utils.h"
+
 // funcion de menu principal 
 
 void menu(){
@@ -21,7 +26,8 @@ void menu(){
 }
 
 int main(int argc, char *argv[]){
-
+	//Variables para la conversion al Versor de una rotacion Euler
+	double ax,ay,az,angle;
 	//variable definition
 	char *input_name = NULL;		//input volume
 	char *output_name = NULL;		//virtual image
@@ -43,6 +49,9 @@ int main(int argc, char *argv[]){
 	float tx = 0.;
 	float ty = 0.;
 	float tz = 0.;
+	
+	//Scale
+	float sg = 1.;
 
 	bool customized_iso  = false; 		//flag for iso given by user
 	bool customized_2DCX = false;		//flag for central of 2d image
@@ -118,6 +127,14 @@ int main(int argc, char *argv[]){
 			dcy=atof(argv[1]);
 			argc--; argv++;
 			dcz=atof(argv[1]);
+			argc--; argv++;
+		}
+		
+		if ((ok == false) && (strcmp(argv[1], "-sg") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			sg=atof(argv[1]);
 			argc--; argv++;
 		}
 
@@ -349,14 +366,14 @@ int main(int argc, char *argv[]){
 	filter->SetInput(image);
 	filter->SetDefaultPixelValue(0);
 
-	typedef itk::Euler3DTransform< double > TransformType;
+	typedef itk::Similarity3DTransform< double > TransformType;
 	TransformType::Pointer transform = TransformType::New();
-	transform->SetComputeZYX(true);
-	//transform->SetIdentity();	
+	transform->SetIdentity();	
+	
 	//constant for casting degrees into radians format of rotation projection
 	const double dtr = ( atan(1.0) * 4.0 ) / 180.0;
 
-	//set general transformations transform
+	//Translate vector in Similarity Transform
 	TransformType::OutputVectorType translation;
 
 	translation[0] = tx;
@@ -365,30 +382,34 @@ int main(int argc, char *argv[]){
 
 	transform->SetTranslation( translation );
 
-
+	//Matriz de Rotacion de Dirección Euleriana a pesar de que es de similaridad (Ojo but Works)
 	HelperRot helperRot; 
-	HelperRot helperRotInit;
-
 	helperRot.initRotX(dtr*(dcx));
 	helperRot.initRotY(dtr*(dcy));
 	helperRot.initRotZ(dtr*(dcz));
-
-	helperRotInit.initRotX(dtr*(rx));
-	helperRotInit.initRotY(dtr*(ry));
-	helperRotInit.initRotZ(dtr*(rz));
-	
 	helperRot.composeMatrixRot();
-	helperRotInit.composeMatrixRot();
+	
+	//Rotacion Normal para el volumen en Versor
+	typedef TransformType::VersorType VersorType;
+	typedef VersorType::VectorType VectorType;
+	VersorType rotation;
+	VectorType axis;
 
-	std::cout<<"Matriz de Rotacion para la imagen Movible"<<std::endl;
-	helperRotInit.printRotg();
-	std::cout<<std::endl;
+	Utilitarios *util = new Utilitarios();
+	
+	util->convertEulerToVersor(rx,ry,rz,ax,ay,az,angle);		
+	axis[0] = ax; axis[1] = ay; axis[2] = az;
+	rotation.Set(axis, angle);
+	transform->SetRotation(rotation);			
 
-	//Para transformacion de similaridad usa setMatrix
-	//transform->SetMatrix(helperRotInit.getRotg());
+	//Escala en Similarity Transform
+	TransformType::ScaleType scale;
+	scale = sg;
+	transform->SetScale(scale);	
 
-	//Para transformacion de Euler usa setRotation
-	transform->SetRotation(dtr*(rx),dtr*(ry),dtr*(rz));
+	//Lectura de Parametros de transformacion para mostrarlo en la info
+	TransformType::ParametersType similarityParameters;
+	similarityParameters = transform->GetParameters();
 
 
 	//Read image properties in order to build our isocenter
@@ -402,25 +423,9 @@ int main(int argc, char *argv[]){
 	InputImageSizeType imSize = imRegion.GetSize();
 
 	TransformType::InputPointType isocenter;
-
-	//Consider the center of the volume
-
-	if (customized_iso)
-	{
-		// Isocenter location given by the user.
-		isocenter[0] = imOrigin[0] + imRes[0] * cx; 
-		isocenter[1] = imOrigin[1] + imRes[1] * cy; 
-		isocenter[2] = imOrigin[2] + imRes[2] * cz;
-	}
-	else
-	{
-		// Set the center of the image as the isocenter.
-		isocenter[0] = imOrigin[0] + imRes[0] * static_cast<double>( imSize[0] ) / 2.0; 
-		isocenter[1] = imOrigin[1] + imRes[1] * static_cast<double>( imSize[1] ) / 2.0; 
-		isocenter[2] = imOrigin[2] + imRes[2] * static_cast<double>( imSize[2] ) / 2.0;
-	}
-
-	//transform->SetCenter(isocenter);
+	
+	//El centro de la trasnformacion ya no es necesario ya que este va de acuerdo al patched
+	//ademas el centro siempre es seteado a (0,0,0)
 
 	//Instance of the interpolator
 	typedef itk::PatchedRayCastInterpolateImageFunction<MovingImageType, double> InterpolatorType;
@@ -437,21 +442,15 @@ int main(int argc, char *argv[]){
 	focalPoint[0] = focalPointx;
 	focalPoint[1] = focalPointy;
 	focalPoint[2] = focalPointz;
+
 	//Set the focal point in interpolator
 	interpolator->SetFocalPoint(focalPoint);
-
-	//TODO: class need this function
-	//interpolator->SetProjectionAngle( dtr * rprojection );
-
 	interpolator->SetTransform(transform);
-	//TODO: class need this function
-	//interpolator->Initialize();
-
+	
 	//insert the interpolator into the filter
 	filter->SetInterpolator(interpolator);
 
 	//Setting properties of fixed image
-
 	MovingImageType::SizeType size;
 	double spacing[Dimension];
 	double origin[Dimension];
@@ -477,13 +476,13 @@ int main(int argc, char *argv[]){
 	//Hint: consider the origin like a other input parameter
 	if(strcmp(type_projection,"AP")==0){
 		// Compute the origin (inmm) of the 2D Image
-		origin[0] = im_sx * o2Dx;
-		origin[1] = scd;
+		origin[0] = +im_sx * o2Dx;
+		origin[1] = +scd;
 		origin[2] = -im_sy * o2Dy;
 	}else if(strcmp(type_projection,"ML")==0){
 		// Compute the origin (inmm) of the 2D Image
-		origin[0] = scd;
-		origin[1] = im_sx * o2Dx;
+		origin[0] = -scd;
+		origin[1] = +im_sx * o2Dx;
 		origin[2] = -im_sy * o2Dy;
 	}else{
 		//byDefault
@@ -496,11 +495,9 @@ int main(int argc, char *argv[]){
 	//set identity in direction cosine
 	const OutputImageType::DirectionType direction = image->GetDirection();
 	const OutputImageType::DirectionType newDirection = direction * helperRot.getRotg();
-	//OutputImageType::DirectionType direction;
-	//direction.SetIdentity();
-
 	filter->SetOutputDirection(newDirection);
-	//set properties of the virtual image
+	
+	//Set properties of the virtual image
 	filter->SetSize(size);
 	filter->SetOutputSpacing(spacing);
 	filter->SetOutputOrigin(origin);
@@ -511,35 +508,14 @@ int main(int argc, char *argv[]){
 	//Virtual Image Properties information
 	if(verbose)
 	{
-		std::cout << "Rotation: " 
-			<< rx << ", " 
-			<< ry << ", " 
-			<< rz << std::endl;
-
-		std::cout << "Traslation: " 
-			<< tx << ", " 
-			<< ty << ", " 
-			<< tz << std::endl;
-
-
-		std::cout << "Output image size: " 
-			<< size[0] << ", " 
-			<< size[1] << ", " 
-			<< size[2] << std::endl;
-
-		std::cout << "Output image spacing: " 
-			<< spacing[0] << ", " 
-			<< spacing[1] << ", " 
-			<< spacing[2] << std::endl;
-
-		std::cout << "Output image origin: "
-			<< origin[0] << ", " 
-			<< origin[1] << ", " 
-			<< origin[2] << std::endl;
-		std::cout << "Focal point image: "
-			<< focalPoint[0] << ", " 
-			<< focalPoint[1] << ", " 
-			<< focalPoint[2] << std::endl;
+		std::cout << "Rotation: " << rx << ", " << ry << ", " << rz << std::endl;
+		std::cout << "Versor: "<< similarityParameters[0] << ", " << similarityParameters[1] << ", "<< similarityParameters[2] << std::endl;
+		std::cout << "Traslation: " << similarityParameters[3] << ", " << similarityParameters[4] << ", " << similarityParameters[5] << std::endl;
+		std::cout << "Scale " << similarityParameters[6] << std::endl;
+		std::cout << "Output image size: " << size[0] << ", " << size[1] << ", " << size[2] << std::endl;
+		std::cout << "Output image spacing: " << spacing[0] << ", " << spacing[1] << ", " << spacing[2] << std::endl;
+		std::cout << "Output image origin: "<< origin[0] << ", " << origin[1] << ", " << origin[2] << std::endl;
+		std::cout << "Focal point image: "<< focalPoint[0] << ", " << focalPoint[1] << ", " << focalPoint[2] << std::endl;
 
 	}
 
@@ -563,43 +539,8 @@ int main(int argc, char *argv[]){
 		rescaler->SetInput( filter->GetOutput() );
 		rescaler->Update();
 		
-		//Cuando se considera la direccion del volumen en las imagenes fijas
-		//ya no es necesario realizar el flipfilter
-		
-		// Out of some reason, the computed projection is upsided-down.
-		// Here we use a FilpImageFilter to flip the images in y direction.
-		/*typedef itk::FlipImageFilter< OutputImageType > FlipFilterType;
-		FlipFilterType::Pointer flipFilter = FlipFilterType::New();
-
-		typedef FlipFilterType::FlipAxesArrayType FlipAxesArrayType;
-		FlipAxesArrayType flipArray;
-		flipArray[0] = 0;
-		flipArray[1] = 0;
-
-		flipFilter->SetFlipAxes( flipArray );
-		flipFilter->SetInput( rescaler->GetOutput() );
-		flipFilter->Update();
-		*/
 		timer.Stop("DRR post-processing");
 		
-
-		/*typedef itk::ImageFileWriter< OutputImageType >  WriterType;
-		  WriterType::Pointer writer = WriterType::New();
-
-		// Now we are ready to write the projection image.
-		writer->SetFileName( output_name );
-		writer->SetInput( rescaler->GetOutput() );
-
-		try 
-		{ 
-		std::cout << "Writing image: " << output_name << std::endl;
-		writer->Update();
-		} 
-		catch( itk::ExceptionObject & err ) 
-		{ 
-		std::cerr << "ERROR: ExceptionObject caught !" << std::endl; 
-		std::cerr << err << std::endl; 
-		} */
 		std::string fname;
 	        typedef itk::ImageFileWriter< OutputImageType >  WriterType;
 		  WriterType::Pointer writer = WriterType::New();
