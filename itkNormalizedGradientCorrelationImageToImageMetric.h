@@ -105,8 +105,7 @@ namespace itk
 			typedef itk::Image<RealType,
 				itkGetStaticConstMacro(FixedImageDimension)> GradientImageType;
 			
-			typedef itk::ImageFileWriter<FixedImageType> WriterType; 
-
+			typedef itk::ImageFileWriter<FixedImageType> WriterType;			
 			
 			/** Get the derivatives of the match measure. */
 			void GetDerivative( const TransformParametersType & parameters,
