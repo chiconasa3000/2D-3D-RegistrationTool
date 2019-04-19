@@ -15,7 +15,7 @@
 #include <itkResampleImageFilter.h>
 #include <itkSubtractImageFilter.h>
 #include <itkRescaleIntensityImageFilter.h>
-
+#include "itkTimeProbe.h"
 /** \class MultiResolutionMultiImageToImageRegistrationMethod
  * \brief Multi-resolution registration using multiple fixed images.
  *
@@ -202,7 +202,8 @@ protected:
 
   /** Set the current level to be processed */
   itkSetMacro( CurrentLevel, unsigned long );
-
+//GetTimeProbe mean
+float getOptimizer();
 private:
   MultiResolutionMultiImageToImageRegistrationMethod(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
@@ -231,7 +232,8 @@ private:
 
   bool                             m_ScheduleSpecified;
   bool                             m_NumberOfLevelsSpecified;
-
+//TimeProbe
+  itk::TimeProbe optimizer_time;
 };
 
 

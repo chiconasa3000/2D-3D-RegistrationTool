@@ -620,12 +620,11 @@ int main(int argc, char* argv[] )
 		cputimer.Start();
 		registration->Update();
 		cputimer.Stop();
-		cputimer.Report();
-		std::cout << "CPU Registration took " << cputimer.GetTotal() << " mean.\n" << cputimer.GetMean()<< std::endl;
-		std::cout << "TotalTime Process Object: "<< registration->GetTotal() << std::endl;
-		std::cout << "TimeTransform: " << transform->GetTotal() << std::endl;
-	       	std::cout << "TimeMetric: "<< multiMetric->GetTotal() << std::endl;	
-		std::cout << "TimeOptmizer: " << optimizer->GetTotal() << std::endl; 
+		std::cout << "CPU Registration took " << cputimer.GetMean() << " mean.\n"<< std::endl;
+		std::cout << "TotalTime Process Object: "<< registration->GetMTime() << std::endl;
+		std::cout << "TimeTransform: " << transform->GetMTime() << std::endl;
+	       	std::cout << "TimeMetric: "<< multiMetric->GetMTime() << std::endl;	
+		std::cout << "TimeOptmizer: " << optimizer->GetMTime() << std::endl; 
 	}
 	catch( itk::ExceptionObject & e )
 	{

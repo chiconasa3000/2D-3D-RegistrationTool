@@ -448,7 +448,9 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
         // Do the optimization on each resolution level
         try
         {
+		optimizer_time.Start();
             this->m_Optimizer->StartOptimization();
+	    	optimizer_time.Stop();
         }
         catch( ExceptionObject& err )
         {
@@ -529,6 +531,15 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
     return mtime;
 
 }
+
+template < typename TFixedImage, typename TMovingImage >
+float
+MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
+::getOptimizer()
+{
+	optimizer_time.GetMean();
+}
+
 
 } // end namespace itk
 
