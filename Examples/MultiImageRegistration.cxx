@@ -625,7 +625,7 @@ int main(int argc, char* argv[] )
 		std::cout << "TimeTransform: " << transform->GetMTime() << std::endl;
 	       	std::cout << "TimeMetric: "<< multiMetric->GetMTime() << std::endl;	
 		std::cout << "TimeOptmizer: " << optimizer->GetMTime() << std::endl;
-	        std::cout << "TimeOptimizer: " << registration->getOptimizerTime()<< std::endl;	
+	        registration->getOptimizerTime();	
 	}
 	catch( itk::ExceptionObject & e )
 	{

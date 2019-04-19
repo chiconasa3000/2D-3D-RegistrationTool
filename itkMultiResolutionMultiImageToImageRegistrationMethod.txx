@@ -533,11 +533,11 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
 }
 
 template < typename TFixedImage, typename TMovingImage >
-float
+void
 MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
 ::getOptimizerTime()
 {
-	optimizer_time.GetMean();
+	std::cout << "OptimizerTimeFinal:" << optimizer_time.GetMean();
 }
 
 

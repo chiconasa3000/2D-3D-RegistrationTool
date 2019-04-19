@@ -188,7 +188,7 @@ public:
   typedef typename itk::SubtractImageFilter<FixedImageType,FixedImageType, FixedImageType>  SubtracterType;
   typedef typename itk::RescaleIntensityImageFilter< MovingImageType, MovingImageType > RescaleFilterType;
 //GetTimeProbe mean
-float getOptimizerTime();
+void getOptimizerTime();
 protected:
   MultiResolutionMultiImageToImageRegistrationMethod();
   virtual ~MultiResolutionMultiImageToImageRegistrationMethod() {};
