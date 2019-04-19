@@ -535,7 +535,7 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
 template < typename TFixedImage, typename TMovingImage >
 float
 MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
-::getOptimizer()
+::getOptimizerTime()
 {
 	optimizer_time.GetMean();
 }
