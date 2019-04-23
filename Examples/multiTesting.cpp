@@ -47,9 +47,12 @@ int main(int argc, char *argv[]){
 	//Lectura del numero de imagenes para las pruebas (Imagenes Deformadas)
 	int numImagenes = 2;
 
-	//Imagen de Ingreso : InputData
-	char *input_volume = NULL;
-
+	//Volumen Referencia : InputData
+	char *origin_volume = NULL;
+	
+	//Volumen Movible:
+	char *target_volume = NULL;
+	 
 	//Bandera de lectura satisfactoria
 	bool ok;
 
@@ -107,22 +110,28 @@ int main(int argc, char *argv[]){
 			numImagenes = atoi(argv[1]);
 			argc--; argv++;
 		}
-		if(ok == false)
+		if((ok == false) && (strcmp(argv[1], "-targetVol") == 0))
 		{
-			if(input_volume == NULL){
-				input_volume = argv[1];
-				argc--;
-				argv++;
-				std::cerr << "Imagen Leida"<< std::endl;
-			}else
-				std::cerr << "Error: No se puede leer la imagen de entrada" << argv[1] << std::endl;
+			argc--; argv++;
+			ok = true;
+			target_volume = argv[1];
+			argc--; argv++;
+		}
+
+		if((ok == false) && (strcmp(argv[1], "-originVol") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			origin_volume = argv[1];
+			argc--; argv++;
 		}
 
 	}
 
 	ScriptBuilder *scriptbuilder = new ScriptBuilder();
 	scriptbuilder->setNumTests(numImagenes);
-	scriptbuilder->setInputVolume(input_volume);
+	scriptbuilder->setOriginVolume(origin_volume);
+	scriptbuilder->setTargetVolume(target_volume);
 	scriptbuilder->setRotation(rx,ry,rz);
 	scriptbuilder->setTranslation(tx,ty,tz);
 	scriptbuilder->setScale(sg);

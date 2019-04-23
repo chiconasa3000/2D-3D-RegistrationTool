@@ -7,7 +7,8 @@ using namespace std;
 class ScriptBuilder{
 
 private:
-	string input_volume = "";
+	string origin_volume = "";
+	string target_volume = "";
 	string tipoScript = "";
 	string inputTipoProy = "";
 	string comman = "";
@@ -26,7 +27,10 @@ public:
 	void setRotation(float rx, float ry, float rz);
 	void setTranslation(float tx, float ty, float tz);
 	void setScale(float scale);
-	void setInputVolume(string inputVol);	
+	
+	void setTargetVolume(string inputVol);	
+	void setOriginVolume(string inputVol);	
+
 	string GetStdoutFromCommand(string command);
 
 };

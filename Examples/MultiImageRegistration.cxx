@@ -625,7 +625,8 @@ int main(int argc, char* argv[] )
 		std::cout << "TimeTransform: " << transform->GetMTime() << std::endl;
 	       	std::cout << "TimeMetric: "<< multiMetric->GetMTime() << std::endl;	
 		std::cout << "TimeOptmizer: " << optimizer->GetMTime() << std::endl;
-	        registration->getOptimizerTime();	
+	        registration->getOptimizerTime();
+			
 	}
 	catch( itk::ExceptionObject & e )
 	{
@@ -816,8 +817,9 @@ int main(int argc, char* argv[] )
 	//con el mismo volumen de entrada (size, origen, espaciado, direcccion)
 
 	
-	//El tipo de pixel y el nro de dimensiones de salida seran las mismas al volumen de entrada 
-	
+	//El tipo de pixel y el nro de dimensiones de salida seran las mismas al volumen de entrada
+	itk::TimeProbe transTime;
+	transTime.Start(); 	
 	using  WriterTypeVol = itk::ImageFileWriter<FixedImageType>;
 	using ResampleFilterType = itk::ResampleImageFilter< MovingImageType, MovingImageType>;
 	ResampleFilterType::Pointer resamplerVol = ResampleFilterType::New();
@@ -838,11 +840,9 @@ int main(int argc, char* argv[] )
 	catch(itk::ExceptionObject & e){
 		std::cerr << e.GetDescription() << std::endl;
 	}
-
-
-	 
-	
-
+	transTime.Stop();
+	std::cout<<"TransformTime: "<<std::endl;
+	transTime.Report();
 
 	//----------------------------------------------------------------------------
 	// End of the example

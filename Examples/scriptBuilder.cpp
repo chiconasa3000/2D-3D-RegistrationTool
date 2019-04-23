@@ -4,9 +4,16 @@ ScriptBuilder::ScriptBuilder(){
 	//TODO: To do something :p
 }
 
-void ScriptBuilder::setInputVolume(string input){
-	this->input_volume = input;
+void ScriptBuilder::setOriginVolume(string input){
+	this->origin_volume = input;
 }
+
+
+void ScriptBuilder::setTargetVolume(string input){
+	this->target_volume = input;
+}
+
+
 
 void ScriptBuilder::setIndexTest(int indexTest){
 	this->indexTest = indexTest;
@@ -62,7 +69,7 @@ void ScriptBuilder::buildScript(){
 	if(tipoScript.compare("MultiImageRegistration")==0){
 
 		//Modelo 3D a registrar
-		string movingImage = input_volume + " ";
+		string movingImage = origin_volume + " ";
 		comman += movingImage;
 
 		//Nro de imagenes a registrar
@@ -172,7 +179,7 @@ void ScriptBuilder::buildScript(){
 		comman += SeedOn;*/
 		
 		//Modelo 3D a registrar
-		string movingImage = input_volume + " ";
+		string movingImage = target_volume + " ";
 		comman += movingImage;
 
 
