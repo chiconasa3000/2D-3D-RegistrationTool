@@ -810,6 +810,39 @@ int main(int argc, char* argv[] )
 
 	}
 
+	//Aplicando Final Transformacion al volume con referencia al volume fijo
+	//La referencia lo unico que se puede cambiar es espaciado y size lo cual 
+	//no cambiaria el volumen pero si su resolucion. Asi que todo se dejara por defecto
+	//con el mismo volumen de entrada (size, origen, espaciado, direcccion)
+
+	
+	//El tipo de pixel y el nro de dimensiones de salida seran las mismas al volumen de entrada 
+	
+	using  WriterTypeVol = itk::ImageFileWriter<FixedImageType>;
+	using ResampleFilterType = itk::ResampleImageFilter< MovingImageType, MovingImageType>;
+	ResampleFilterType::Pointer resamplerVol = ResampleFilterType::New();
+	WriterTypeVol::Pointer writer = WriterTypeVol::New();
+
+	resamplerVol->SetTransform(transform);
+	resamplerVol->SetInput(registration->GetMovingImage());
+	resamplerVol->SetSize(registration->GetMovingImage()->GetBufferedRegion().GetSize());
+	resamplerVol->SetUseReferenceImage( true );
+	resamplerVol->SetReferenceImage( registration->GetMovingImage() );
+
+ 	writer->SetFileName(outDir + "/newVolumen.mha");
+	writer->SetInput(resamplerVol->GetOutput());
+	std::cout<<"Escribiendo Volumen de Salida "<<writer->GetFileName() << std::endl;
+	try{
+		writer->Update();
+	}
+	catch(itk::ExceptionObject & e){
+		std::cerr << e.GetDescription() << std::endl;
+	}
+
+
+	 
+	
+
 
 	//----------------------------------------------------------------------------
 	// End of the example
