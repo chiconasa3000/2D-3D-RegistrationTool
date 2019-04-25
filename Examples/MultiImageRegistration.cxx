@@ -53,7 +53,7 @@ class RegistrationObserver : public itk::Command
 		typedef  itk::Command             Superclass;
 		typedef  itk::SmartPointer<Self>  Pointer;
 		itkNewMacro( Self );
-
+		std::ofstream *logRegistration; 
 	protected:
 		RegistrationObserver() {};
 
@@ -82,6 +82,16 @@ class RegistrationObserver : public itk::Command
 		void Execute(const itk::Object* caller, const itk::EventObject & event)
 		{}
 
+			
+		void buildOfstream(std::ofstream & log){
+			logRegistration = &log;
+			char * buffer = new char[20];
+			buffer = "Log registration";	
+			logRegistration->write(buffer,20);
+			//logRegistration->close();
+		}
+
+
 };
 
 
@@ -96,7 +106,7 @@ class OptimizerObserver : public itk::Command
 		typedef  itk::SmartPointer<Self>  Pointer;
 		itkNewMacro( Self );
 		//Ofstream para el archivo el orden de impresion 
-		std::ofstream *logregistro;
+		std::ofstream *logOptimizer;
 	protected:
 		OptimizerObserver() {};
 
@@ -141,11 +151,12 @@ class OptimizerObserver : public itk::Command
 		}
 		
 		void buildOfstream(std::ofstream & log){
-			logregistro = &log;
+			logOptimizer = &log;
 			char * buffer = new char[20];
-			buffer = "Escribiendo en el Log...";	
-			logregistro->write(buffer,20);
-			logregistro->close();
+			buffer = "Log Optimizer";
+			buffer + = '\n';	
+			logOptimizer->write(buffer,20);
+			logOptimizer->close();
 		}
 
 };
@@ -359,9 +370,13 @@ int main(int argc, char* argv[] )
 	optimizer->AddObserver( itk::StartEvent(), optimizerObserver );
 	optimizer->AddObserver( itk::EndEvent(), optimizerObserver );
 	
-		
-	std::ofstream logregistro("GranLogRegistro.txt");
+	//Ofstream General para todo el proceso de registro	
+	std::ofstream logregistro("LogRegistro.txt");
+	
+	registrationObserver->buildOfstream(logregistro);
 	optimizerObserver->buildOfstream(logregistro);
+	
+
 	//set the optimizer in the registration process
 	registration->SetOptimizer( optimizer );
 
