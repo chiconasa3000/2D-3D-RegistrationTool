@@ -30,7 +30,7 @@
 #include <sstream>
 #include <string>
 #include <itksys/SystemTools.hxx>
-
+#include <fstream>
 /**
  * MultiImageRegistration
  *
@@ -42,8 +42,6 @@
  * the last one.
  *
  */
-
-
 //----------------------------------------------------------------------------
 // Registration observer class
 //----------------------------------------------------------------------------
@@ -73,7 +71,6 @@ class RegistrationObserver : public itk::Command
 				std::cout << std::endl << "Resolution level " << registration->GetCurrentLevel() << std::endl;
 				//Half step length and tolerance in each level
 				OptimizerType* optimizer = dynamic_cast<OptimizerType*>(registration->GetOptimizer() );
-
 				//optimizer->SetStepLength( 0.5 * optimizer->GetStepLength() );
 				//std::cout << "StepLength set to " << optimizer->GetStepLength() << std::endl;
 				//optimizer->SetStepTolerance( 0.5 * optimizer->GetStepTolerance() );
@@ -98,7 +95,8 @@ class OptimizerObserver : public itk::Command
 		typedef  itk::Command             Superclass;
 		typedef  itk::SmartPointer<Self>  Pointer;
 		itkNewMacro( Self );
-
+		//Ofstream para el archivo el orden de impresion 
+		std::ofstream *logregistro;
 	protected:
 		OptimizerObserver() {};
 
@@ -124,17 +122,30 @@ class OptimizerObserver : public itk::Command
 					<< "/" << optimizer->GetMaximumIteration() << " Position: " <<
 					optimizer->GetCurrentPosition() << " Value: " <<
 					optimizer->GetCurrentCost() << std::endl;*/
-				std::cout << "Similarity: " << optimizer->GetValue() << std::endl;
+				//std::cout << "Iteration " << optimizer->GetCurrentIteration()
+				//	<< " Similarity: " << optimizer->GetValue() << std::endl
+				//	<< " Position " << optimizer->GetCurrentPosition();
+					//The value of metric works too with 				
+					//optimizer->GetCurrentCost() << std::endl;
+	
 			}
 			else if( itk::StartEvent().CheckEvent( & event ) )
 			{
-				std::cout << "Optimization started ..." << std::endl;
+				//std::cout << "Optimization started ..." << std::endl;
 			}
 			else if( itk::EndEvent().CheckEvent( & event ) )
 			{
-				std::cout << "Optimization ended." << std::endl;
+				//std::cout << "Optimization ended." << std::endl;
 			}
 
+		}
+		
+		void buildOfstream(std::ofstream & log){
+			logregistro = &log;
+			char * buffer = new char[20];
+			buffer = "Escribiendo en el Log...";	
+			logregistro->write(buffer,20);
+			logregistro->close();
 		}
 
 };
@@ -145,6 +156,7 @@ class OptimizerObserver : public itk::Command
 //----------------------------------------------------------------------------
 int main(int argc, char* argv[] )
 {
+	
 	if( argc < 13 )
 	{
 		std::cerr << "Usage: " << argv[0] << " [movingImage] [N] [fixedImage1] "
@@ -346,10 +358,12 @@ int main(int argc, char* argv[] )
 	optimizer->AddObserver( itk::IterationEvent(), optimizerObserver );
 	optimizer->AddObserver( itk::StartEvent(), optimizerObserver );
 	optimizer->AddObserver( itk::EndEvent(), optimizerObserver );
-
+	
+		
+	std::ofstream logregistro("GranLogRegistro.txt");
+	optimizerObserver->buildOfstream(logregistro);
 	//set the optimizer in the registration process
 	registration->SetOptimizer( optimizer );
-
 
 	//----------------------------------------------------------------------------
 	// Set the moving and fixed images' schedules

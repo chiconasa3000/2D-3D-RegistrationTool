@@ -140,6 +140,11 @@ void ScriptBuilder::buildScript(){
 		replace(schedule.begin(), schedule.end(), ' ', '_');
 		nameLogRegistro +=  schedule;
 		nameLogRegistro += ".txt";
+		
+		//Considerando asignar el nombre del archivo log
+		//string outputLog = outputDir + "/" + nameLogRegistro;
+		//comman += outputLog;
+
 
 		//Escribiendo el archivo con el stream del comando ejecutado
 		ofstream out(outputDir+"/" + nameLogRegistro);
