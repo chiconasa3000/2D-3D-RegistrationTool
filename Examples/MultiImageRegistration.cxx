@@ -18,7 +18,7 @@
 #include <itkSubtractImageFilter.h>
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
-#include "itkTimeProbe.h"
+#include "itkTimeProbesCollectorBase.h"
 
 #include "itkNormalizedGradientCorrelationMultiImageToImageMetric.h"
 
@@ -183,6 +183,9 @@ int main(int argc, char* argv[] )
 	//Ofstream General para todo el proceso de registro	
 	//---------------------------------------------------------------------------
 	
+	//Collector de Tiempos
+	itk::TimeProbesCollectorBase timer;
+
 	//Primer Comando
 	argc--;
 	argv++;
@@ -658,21 +661,20 @@ int main(int argc, char* argv[] )
 		//registration->Print( std::cout );
 
 		//measure the total time
-		itk::TimeProbe cputimer;
-		cputimer.Start();
+		timer.Start("Tiempo de Registro");
 		registration->Update();
-		cputimer.Stop();
-		logregistro << 	"CPU Registration took " << cputimer.GetMean() << " mean.\n"<< std::endl;
-		logregistro << "TotalTime Process Object: "<< registration->GetMTime() << std::endl;
-		logregistro <<  "TimeTransform: " << transform->GetMTime() << std::endl;
-		logregistro << "TimeMetric: "<< multiMetric->GetMTime() << std::endl;	
-		logregistro << "TimeOptmizer: " << optimizer->GetMTime() << std::endl;
+		timer.Stop("Tiempo de Regitro");
+		//logregistro << 	"Total Registration time " << cputimer.GetMean() << " mean.\n"<< std::endl;
+		//logregistro << "TotalTime Process Object: "<< registration->GetMTime() << std::endl;
+		//logregistro <<  "TimeTransform: " << transform->GetMTime() << std::endl;
+		//logregistro << "TimeMetric: "<< multiMetric->GetMTime() << std::endl;	
+		//logregistro << "TimeOptmizer: " << optimizer->GetMTime() << std::endl;
 		//std::cout << "CPU Registration took " << cputimer.GetMean() << " mean.\n"<< std::endl;
 		//std::cout << "TotalTime Process Object: "<< registration->GetMTime() << std::endl;
 		//std::cout << "TimeTransform: " << transform->GetMTime() << std::endl;
 	       	//std::cout << "TimeMetric: "<< multiMetric->GetMTime() << std::endl;	
 		//std::cout << "TimeOptmizer: " << optimizer->GetMTime() << std::endl;
-	        registration->getOptimizerTime();
+	        //registration->getOptimizerTime();
 			
 	}
 	catch( itk::ExceptionObject & e )
@@ -878,8 +880,7 @@ int main(int argc, char* argv[] )
 
 	
 	//El tipo de pixel y el nro de dimensiones de salida seran las mismas al volumen de entrada
-	itk::TimeProbe transTime;
-	transTime.Start(); 	
+	timer.Start("Tiempo en Transformacion"); 	
 	using  WriterTypeVol = itk::ImageFileWriter<FixedImageType>;
 	using ResampleFilterType = itk::ResampleImageFilter< MovingImageType, MovingImageType>;
 	ResampleFilterType::Pointer resamplerVol = ResampleFilterType::New();
@@ -900,11 +901,11 @@ int main(int argc, char* argv[] )
 	catch(itk::ExceptionObject & e){
 		std::cerr << e.GetDescription() << std::endl;
 	}
-	transTime.Stop();
-	std::cout<<"TransformTime: "<<std::endl;
+	timer.Stop("Tiempo en Transformacion");
+	
+	timer.ExpandedReport(logregistro);
 	logregistro.close();
-	transTime.Report();
-
+	
 	//----------------------------------------------------------------------------
 	// End of the example
 	//----------------------------------------------------------------------------
