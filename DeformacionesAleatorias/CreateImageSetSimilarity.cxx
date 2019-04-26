@@ -58,6 +58,8 @@ int main( int argc, char * argv[] )
 	char *inputImageFile = NULL;
 	//folderName
 	char *folderName = NULL;
+	//Log File Name in order to save the output stream
+	char *logfilename = NULL; 	
 	//numberOfImages
 	int numberOfImages = 0;
 	//Random Mode
@@ -177,22 +179,29 @@ int main( int argc, char * argv[] )
 			sg = atof(argv[1]);
 			argc--; argv++;
 		}
-
-		if(ok == false){
-			if(inputImageFile == NULL){
-				inputImageFile = argv[1];
-				argc--; argv++;
-			}else
-				std::cerr << "Error: No se pudo leer la imagen de entrada "<<argv[1] << std::endl;
-		}	
-
+		if((ok ==false) && (strcmp(argv[1], "-inputVol") == 0)){
+			argc--; argv++;
+			ok == true;
+			inputImageFile = argv[1];
+			argc--; argv++;
+		}
+		if((ok ==false) && (strcmp(argv[1], "-logFileName") == 0)){
+			argc--; argv++;
+			ok == true;
+			logfilename = argv[1];
+			argc--; argv++;
+		}
 
 	}
 
-
+	//Archivo de Registro LOG
+	std::ofstream logregistro(logfilename);
+		
 	if(verbose)
 	{
-		if (inputImageFile)  std::cout << "Input image: "  << inputImageFile  << std::endl;
+		if (inputImageFile)  
+			logregistro  << "Input image: "  << inputImageFile  << std::endl;
+			//std::cout << "Input image: "  << inputImageFile  << std::endl;
 	}
 	if(random_mode && semillaRandom){
 		srand(time(NULL));	
@@ -368,7 +377,8 @@ int main( int argc, char * argv[] )
 		fName += (Dimension == 2) ? ".png" : ".mha";
 
 		writer->SetFileName( fName.c_str() );
-		std::cout << "Writing " << fName.c_str() << std::endl;
+		logregistro << "Writing " << fName.c_str() << std::endl; 
+		//std::cout << "Writing " << fName.c_str() << std::endl;
 		writer->Update();
 
 		//Escribiendo Informacion General de Deformacion
@@ -385,16 +395,23 @@ int main( int argc, char * argv[] )
 			const double TranslationAlongY = finalParameters[4];
 			const double TranslationAlongZ = finalParameters[5];
 			const double EscalaXYZ = finalParameters[6];
+			
+			logregistro << "Deformacion Aplicada = " << std::endl;
+			logregistro << " Rotation Degrees = [ " << rx << ", "<< ry << ", " << rz  << " ]"<<std::endl;
+			logregistro << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
+			logregistro << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
+			logregistro << " Scale  = " << EscalaXYZ << std::endl;
 
-			std::cout << "Deformacion Aplicada = " << std::endl;
-			std::cout << " Rotation Degrees = [ " << rx << ", "<< ry << ", " << rz  << " ]"<<std::endl;
-			std::cout << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
-			std::cout << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
-			std::cout << " Scale  = " << EscalaXYZ << std::endl;
+			//std::cout << "Deformacion Aplicada = " << std::endl;
+			//std::cout << " Rotation Degrees = [ " << rx << ", "<< ry << ", " << rz  << " ]"<<std::endl;
+			//std::cout << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
+			//std::cout << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
+			//std::cout << " Scale  = " << EscalaXYZ << std::endl;
 
 
 
 		}
+		logregistro.close();
 
 	}
 	return EXIT_SUCCESS;

@@ -16,7 +16,7 @@
 #include "gestorMatrixRot.h"
 #include <string>
 #include <itksys/SystemTools.hxx>
-
+#include <fstream>
 #include "utils.h"
 
 // funcion de menu principal 
@@ -31,6 +31,7 @@ int main(int argc, char *argv[]){
 	//variable definition
 	char *input_name = NULL;		//input volume
 	char *output_name = NULL;		//virtual image
+	char *logfilename = NULL;		//FileName Log
 	char *type_projection = "OR";		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
 
 	float scd = 1000.0;			//distance from source to isocenter
@@ -250,26 +251,38 @@ int main(int argc, char *argv[]){
 			argc--; argv++;
 		}
 
-		if (ok == false) 
+		if ((ok == false) && (strcmp(argv[1], "-inputVol") == 0 ))
+		{	
+			argc--; argv++;
+			ok = true;
+			input_name = argv[1];
+			argc--; argv++;
+		}
+		
+		if ((ok == false) && (strcmp(argv[1], "-logFileName") == 0))
 		{
-
-			if (input_name == NULL) 
-			{
-				input_name = argv[1];
-				argc--;
-				argv++;
-			}
-			else 
-				std::cerr << "ERROR: Can not parse the image " << argv[1] << std::endl;
-
+			argc--; argv++;
+			ok = true;
+			logfilename = argv[1];
+			argc--; argv++;
 		}
 
 
+
 	}
+
+	std::ofstream logregistro(logfilename);
+	 
 	if (verbose) 
 	{
-		if (input_name)  std::cout << "Input image: "  << input_name  << std::endl;
-		if (output_name) std::cout << "Output image: " << output_name << std::endl;
+		if (input_name) {
+			logregistro <<  "Input image: "  << input_name  << std::endl;
+			//std::cout << "Input image: "  << input_name  << std::endl;
+		}
+		if (output_name){ 
+			logregistro <<  "Output image: " << output_name << std::endl;
+			//std::cout << "Output image: " << output_name << std::endl;
+		}
 	}
 
 
@@ -330,27 +343,36 @@ int main(int argc, char *argv[]){
 	{
 		unsigned int i;
 		const itk::Vector<double, 3> spacing = image->GetSpacing();  
-		std::cout << std::endl << "Input ";
+		//logregistro << std::endl << "Input ";
+		//std::cout << std::endl << "Input ";
 
 		MovingImageType::RegionType region = image->GetBufferedRegion();
-		region.Print(std::cout);
-
-		std::cout << "  Resolution: [";
+		//region.Print(std::cout);
+		
+		logregistro << "  Resolution: [";	
+		//std::cout << "  Resolution: [";
 		for (i=0; i<Dimension; i++) 
 		{
-			std::cout << spacing[i];
-			if (i < Dimension-1) std::cout << ", ";
+			logregistro << spacing[i];
+			//std::cout << spacing[i];
+			if (i < Dimension-1){ std::cout << ", ";}
 		}
-		std::cout << "]" << std::endl;
+		logregistro << "]" << std::endl;
+		//std::cout << "]" << std::endl;
 
 		const itk::Point<double, 3> origin = image->GetOrigin();
-		std::cout << "  Origin: [";
+		logregistro << "  Origin: ["; 
+		//std::cout << "  Origin: [";
 		for (i=0; i<Dimension; i++) 
 		{
-			std::cout << origin[i];
-			if (i < Dimension-1) std::cout << ", ";
+			logregistro << origin[i];	
+			//std::cout << origin[i];
+			if (i < Dimension-1) 
+				logregistro << ", ";
+				//std::cout << ", ";
 		}
-		std::cout << "]" << std::endl<< std::endl;
+		logregistro << "]" << std::endl<< std::endl;
+		//std::cout << "]" << std::endl<< std::endl;
 		//std::cout<< "Isocenter: " <<isocenter[0] <<", "<< isocenter[1] << ", "<< isocenter[2] << std::endl;
 		//std::cout << "Transform: " << transform << std::endl;
 	}
@@ -508,14 +530,22 @@ int main(int argc, char *argv[]){
 	//Virtual Image Properties information
 	if(verbose)
 	{
-		std::cout << "Rotation: " << rx << ", " << ry << ", " << rz << std::endl;
-		std::cout << "Versor: "<< similarityParameters[0] << ", " << similarityParameters[1] << ", "<< similarityParameters[2] << std::endl;
-		std::cout << "Traslation: " << similarityParameters[3] << ", " << similarityParameters[4] << ", " << similarityParameters[5] << std::endl;
-		std::cout << "Scale " << similarityParameters[6] << std::endl;
-		std::cout << "Output image size: " << size[0] << ", " << size[1] << ", " << size[2] << std::endl;
-		std::cout << "Output image spacing: " << spacing[0] << ", " << spacing[1] << ", " << spacing[2] << std::endl;
-		std::cout << "Output image origin: "<< origin[0] << ", " << origin[1] << ", " << origin[2] << std::endl;
-		std::cout << "Focal point image: "<< focalPoint[0] << ", " << focalPoint[1] << ", " << focalPoint[2] << std::endl;
+		logregistro << "Rotation: " << rx << ", " << ry << ", " << rz << std::endl;
+		logregistro << "Versor: "<< similarityParameters[0] << ", " << similarityParameters[1] << ", "<< similarityParameters[2] << std::endl;
+		logregistro << "Traslation: " << similarityParameters[3] << ", " << similarityParameters[4] << ", " << similarityParameters[5] << std::endl;
+		logregistro << "Scale " << similarityParameters[6] << std::endl;
+		logregistro << "Output image size: " << size[0] << ", " << size[1] << ", " << size[2] << std::endl;
+		logregistro << "Output image spacing: " << spacing[0] << ", " << spacing[1] << ", " << spacing[2] << std::endl;
+		logregistro << "Output image origin: "<< origin[0] << ", " << origin[1] << ", " << origin[2] << std::endl;
+		logregistro << "Focal point image: "<< focalPoint[0] << ", " << focalPoint[1] << ", " << focalPoint[2] << std::endl;
+		//std::cout << "Rotation: " << rx << ", " << ry << ", " << rz << std::endl;
+		//std::cout << "Versor: "<< similarityParameters[0] << ", " << similarityParameters[1] << ", "<< similarityParameters[2] << std::endl;
+		//std::cout << "Traslation: " << similarityParameters[3] << ", " << similarityParameters[4] << ", " << similarityParameters[5] << std::endl;
+		//std::cout << "Scale " << similarityParameters[6] << std::endl;
+		//std::cout << "Output image size: " << size[0] << ", " << size[1] << ", " << size[2] << std::endl;
+		//std::cout << "Output image spacing: " << spacing[0] << ", " << spacing[1] << ", " << spacing[2] << std::endl;
+		//std::cout << "Output image origin: "<< origin[0] << ", " << origin[1] << ", " << origin[2] << std::endl;
+		//std::cout << "Focal point image: "<< focalPoint[0] << ", " << focalPoint[1] << ", " << focalPoint[2] << std::endl;
 
 	}
 
@@ -569,7 +599,7 @@ int main(int argc, char *argv[]){
 			std::cerr << err << std::endl; 
 		} 
 	}
-
+	logregistro.close();
 	timer.Report();
 	return 0;
 }

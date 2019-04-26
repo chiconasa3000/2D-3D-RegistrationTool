@@ -67,7 +67,7 @@ void ScriptBuilder::buildScript(){
 
 
 	if(tipoScript.compare("MultiImageRegistration")==0){
-
+	
 		//Modelo 3D a registrar
 		string movingImage = origin_volume + " ";
 		comman += movingImage;
@@ -108,13 +108,12 @@ void ScriptBuilder::buildScript(){
 
 		//TODO: Create Directory for every test
 		//Directorio de Salida de los resultados del registro
-		string outputDir ="../outputData/resultsReg_"+to_string(indexTest);
+		string outputDir ="../outputData/resultsReg_"+to_string(indexTest) + " ";
 		comman += outputDir;
-
 
 		//Ejecución de POPEN
 		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
-		string outputTextRegistration = GetStdoutFromCommand(comman);
+		GetStdoutFromCommand(comman);
 
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
@@ -140,16 +139,15 @@ void ScriptBuilder::buildScript(){
 		replace(schedule.begin(), schedule.end(), ' ', '_');
 		nameLogRegistro +=  schedule;
 		nameLogRegistro += ".txt";
+
+		//Nombre del Archivo de Registro
+		string logFileName = outputDir + "/" + nameLogRegistro + " ";
+		comman += logFileName;	
 		
-		//Considerando asignar el nombre del archivo log
-		//string outputLog = outputDir + "/" + nameLogRegistro;
-		//comman += outputLog;
-
-
 		//Escribiendo el archivo con el stream del comando ejecutado
-		ofstream out(outputDir+"/" + nameLogRegistro);
-		out << outputTextRegistration << endl;
-		out.close();
+		//ofstream out(outputDir+"/" + nameLogRegistro);
+		//out << outputTextRegistration << endl;
+		//out.close();
 
 
 	}else if(tipoScript.compare("CreateImageSetSimilarity")==0){
@@ -175,22 +173,10 @@ void ScriptBuilder::buildScript(){
 		comman += "-rx " + to_string(rotVol[0]) + " -ry " + to_string(rotVol[1]) +  " -rz " + to_string(rotVol[2])+" ";
 		comman += "-t "+ to_string(trasVol[0]) +" "+to_string(trasVol[1])+" "+to_string(trasVol[2])+" ";	
 		comman += "-sg "+ to_string(generalScale)+" ";
-	
-		//Semilla para tener nro aleatorio real
-		/*string randomOn = "-rnd ";
-		comman += randomOn;
-
-		string seedSeedOn = "-rnd_sem ";
-		comman += SeedOn;*/
 		
 		//Modelo 3D a registrar
-		string movingImage = target_volume + " ";
+		string movingImage = "-inputVol" + target_volume + " ";
 		comman += movingImage;
-
-
-		//Ejecución de POPEN
-		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
-		string outputTextRegistration = GetStdoutFromCommand(comman);
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
 		string nameLogRegistro;
@@ -201,10 +187,18 @@ void ScriptBuilder::buildScript(){
 
 		nameLogRegistro += ".txt";
 		
+		//Asignando el nombre del archivo log
+		string logfilename = "-logFileName" + outputDir + nameLogRegistro;
+		comman += logfilename;		
 		//Escribiendo el archivo con el stream del comando ejecutado
-		ofstream out(outputDir + nameLogRegistro);
-		out << outputTextRegistration << endl;
-		out.close();
+		//ofstream out(outputDir + nameLogRegistro);
+		//out << outputTextRegistration << endl;
+		//out.close();
+		
+		//Ejecución de POPEN
+		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
+		GetStdoutFromCommand(comman);
+
 
 
 
@@ -290,37 +284,40 @@ void ScriptBuilder::buildScript(){
 		comman += threshold;
 
 		//Volumen de Entrada
-		string volumenToProject = "../outputData/ImagesDefs/Images/imagenDef_"+to_string(indexTest)+".mha ";
+		string volumenToProject = "-inputVol ../outputData/ImagesDefs/Images/imagenDef_"+to_string(indexTest)+".mha ";
 		comman += volumenToProject;
 
 
 		//TODO: Create Directory for every test
 		//Directorio de Salida de los resultados del registro
 		string outputDir ="../outputData/virtualImages ";
-		//comman += outputDir;
 	
-		//Ejecución de POPEN
-		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
-		string outputTextRegistration = GetStdoutFromCommand(comman);
-
+		
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
         	string nameLogRegistro = "LogVirtualImages_"+inputTipoProy+"_"+to_string(indexTest);
         	nameLogRegistro += ".txt";
 
 		replace(outputDir.begin(), outputDir.end(), ' ', '/');
-		
+	
+		string logfilename = "-logFileName " + outputDir + nameLogRegistro;	
+		comman += logfilename;
 		//Escribiendo el archivo con el stream del comando ejecutado
-		ofstream out(outputDir + nameLogRegistro);
-		out << outputTextRegistration << endl;
-		out.close();
+		//ofstream out(outputDir + nameLogRegistro);
+		//out << outputTextRegistration << endl;
+		//out.close();
+	
+		//Ejecución del comando
+		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
+		GetStdoutFromCommand(comman);
+
 		
 	}else
 		std::cerr << "Comando no encontrado" << std::endl;
 }
 
-string ScriptBuilder::GetStdoutFromCommand(string command){
+void ScriptBuilder::GetStdoutFromCommand(string command){
 
-	string data;
+	/*string data;
 	FILE * stream;
 	const int max_buffer = 300;
 	char buffer[max_buffer];
@@ -338,7 +335,9 @@ string ScriptBuilder::GetStdoutFromCommand(string command){
 				data.append(buffer);
 			}
 		pclose(stream);
-	}
-	return data;
+	}*/
+
+	std::system(command.c_str());	
+	//return data;
 
 }

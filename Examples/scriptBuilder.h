@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <stdlib.h>
 using namespace std;
 
 class ScriptBuilder{
@@ -31,6 +32,6 @@ public:
 	void setTargetVolume(string inputVol);	
 	void setOriginVolume(string inputVol);	
 
-	string GetStdoutFromCommand(string command);
+	void GetStdoutFromCommand(string command);
 
 };

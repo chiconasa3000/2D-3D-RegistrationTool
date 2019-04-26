@@ -30,7 +30,7 @@
 #include <sstream>
 #include <string>
 #include <itksys/SystemTools.hxx>
-#include <fstream>
+
 /**
  * MultiImageRegistration
  *
@@ -42,6 +42,8 @@
  * the last one.
  *
  */
+
+
 //----------------------------------------------------------------------------
 // Registration observer class
 //----------------------------------------------------------------------------
@@ -53,7 +55,8 @@ class RegistrationObserver : public itk::Command
 		typedef  itk::Command             Superclass;
 		typedef  itk::SmartPointer<Self>  Pointer;
 		itkNewMacro( Self );
-		std::ofstream *logRegistration; 
+		std::ofstream *logRegistration;
+		std::string logoptimizer = "";
 	protected:
 		RegistrationObserver() {};
 
@@ -66,11 +69,13 @@ class RegistrationObserver : public itk::Command
 		{
 			RegistrationPointer registration = dynamic_cast<RegistrationPointer>( caller );
 			if( itk::IterationEvent().CheckEvent( & event ) )
-			{
-
+			{	
+				logoptimizer += "Resolution level " + std::to_string(registration->GetCurrentLevel()) + "\n";
+				logRegistration->write(logoptimizer.c_str(),logoptimizer.size());			
 				std::cout << std::endl << "Resolution level " << registration->GetCurrentLevel() << std::endl;
 				//Half step length and tolerance in each level
-				OptimizerType* optimizer = dynamic_cast<OptimizerType*>(registration->GetOptimizer() );
+				//OptimizerType* optimizer = dynamic_cast<OptimizerType*>(registration->GetOptimizer() );
+
 				//optimizer->SetStepLength( 0.5 * optimizer->GetStepLength() );
 				//std::cout << "StepLength set to " << optimizer->GetStepLength() << std::endl;
 				//optimizer->SetStepTolerance( 0.5 * optimizer->GetStepTolerance() );
@@ -81,16 +86,9 @@ class RegistrationObserver : public itk::Command
 		//again call the execution method
 		void Execute(const itk::Object* caller, const itk::EventObject & event)
 		{}
-
-			
 		void buildOfstream(std::ofstream & log){
 			logRegistration = &log;
-			char * buffer = new char[20];
-			buffer = "Log registration";	
-			logRegistration->write(buffer,20);
-			//logRegistration->close();
 		}
-
 
 };
 
@@ -105,10 +103,11 @@ class OptimizerObserver : public itk::Command
 		typedef  itk::Command             Superclass;
 		typedef  itk::SmartPointer<Self>  Pointer;
 		itkNewMacro( Self );
-		//Ofstream para el archivo el orden de impresion 
-		std::ofstream *logOptimizer;
+		std::ofstream *logOptimizer;	
+		std::string logoptimizer = "";
 	protected:
 		OptimizerObserver() {};
+
 
 	public:
 		//typedef itk::VersorRigid3DTransformOptimizer  OptimizerType;
@@ -132,12 +131,18 @@ class OptimizerObserver : public itk::Command
 					<< "/" << optimizer->GetMaximumIteration() << " Position: " <<
 					optimizer->GetCurrentPosition() << " Value: " <<
 					optimizer->GetCurrentCost() << std::endl;*/
-				//std::cout << "Iteration " << optimizer->GetCurrentIteration()
-				//	<< " Similarity: " << optimizer->GetValue() << std::endl
-				//	<< " Position " << optimizer->GetCurrentPosition();
-					//The value of metric works too with 				
-					//optimizer->GetCurrentCost() << std::endl;
-	
+				
+					logoptimizer = "Iteration: " + std::to_string(optimizer->GetCurrentIteration()) + " "
+					+ "Similarity: " + std::to_string(optimizer->GetValue()) + " "
+					+ "Position: " + std::to_string(optimizer->GetCurrentPosition()[0]) + " " +
+							std::to_string(optimizer->GetCurrentPosition()[1]) + " " +
+							std::to_string(optimizer->GetCurrentPosition()[2]) + " " +
+							std::to_string(optimizer->GetCurrentPosition()[3]) + " " +
+							std::to_string(optimizer->GetCurrentPosition()[4]) + " " +
+							std::to_string(optimizer->GetCurrentPosition()[5]) + " " +
+							std::to_string(optimizer->GetCurrentPosition()[6]) + "\n";
+					logOptimizer->write(logoptimizer.c_str(),logoptimizer.size());		
+				std::cout << " Similarity: " << optimizer->GetValue() << std::endl;
 			}
 			else if( itk::StartEvent().CheckEvent( & event ) )
 			{
@@ -152,11 +157,6 @@ class OptimizerObserver : public itk::Command
 		
 		void buildOfstream(std::ofstream & log){
 			logOptimizer = &log;
-			char * buffer = new char[20];
-			buffer = "Log Optimizer";
-			buffer + = '\n';	
-			logOptimizer->write(buffer,20);
-			logOptimizer->close();
 		}
 
 };
@@ -170,7 +170,7 @@ int main(int argc, char* argv[] )
 	
 	if( argc < 13 )
 	{
-		std::cerr << "Usage: " << argv[0] << " [movingImage] [N] [fixedImage1] "
+		std::cerr << "Usage: " << argv[0] << " [logFile] [movingImage] [N] [fixedImage1] "
 			<< "[focalPoint1_x] [focalPoint1_y] [focalPoint1_z] ... "
 			<< "[focalPointN_x] [focalPointN_y] [focalPointN_z] "
 			<< "[tolerance] [stepsize]"
@@ -178,7 +178,16 @@ int main(int argc, char* argv[] )
 			<< "[outputDirectory] <inputTransform>" << std::endl;
 		return EXIT_FAILURE;
 	}
+	
+	//---------------------------------------------------------------------------
+	//Ofstream General para todo el proceso de registro	
+	//---------------------------------------------------------------------------
+	
+	//Primer Comando
+	argc--;
+	argv++;
 
+	
 	const unsigned int Dimensions = 3;
 
 	typedef itk::Image<short int,Dimensions>  FixedImageType;
@@ -195,10 +204,7 @@ int main(int argc, char* argv[] )
 	//the registration add the registraton observer in order to show some datas
 	registration->AddObserver( itk::IterationEvent(), registrationObserver );
 
-	argc--;
-	argv++;
-
-
+	
 	//----------------------------------------------------------------------------
 	// Create the transform
 	//----------------------------------------------------------------------------
@@ -368,14 +374,7 @@ int main(int argc, char* argv[] )
 	OptimizerObserver::Pointer optimizerObserver = OptimizerObserver::New();
 	optimizer->AddObserver( itk::IterationEvent(), optimizerObserver );
 	optimizer->AddObserver( itk::StartEvent(), optimizerObserver );
-	optimizer->AddObserver( itk::EndEvent(), optimizerObserver );
-	
-	//Ofstream General para todo el proceso de registro	
-	std::ofstream logregistro("LogRegistro.txt");
-	
-	registrationObserver->buildOfstream(logregistro);
-	optimizerObserver->buildOfstream(logregistro);
-	
+	optimizer->AddObserver( itk::EndEvent(), optimizerObserver );	
 
 	//set the optimizer in the registration process
 	registration->SetOptimizer( optimizer );
@@ -398,9 +397,9 @@ int main(int argc, char* argv[] )
 	}
 
 	argc-= ResolutionLevels;
-	argv+= ResolutionLevels;
-
-	std::cout<<"::Planning::"<<std::endl;
+	argv+= ResolutionLevels;	
+	//logregistro << "::Planning::" << "\n";
+	//std::cout<<"::Planning::"<<std::endl;
 
 	//set the scales according to the vector of the scales
 	for(int i=0; i<ResolutionLevels; i++){
@@ -413,9 +412,10 @@ int main(int argc, char* argv[] )
 				movingSchedule[i][j]=schedulesScales[i];
 			}
 		}
-		std::cout<<schedulesScales[i]<<",";
+		//logregistro << schedulesScales[i]<<","; 
+		//std::cout<<schedulesScales[i]<<",";
 	}
-	std::cout<<std::endl;
+	//logregistro << "\n";
 
 	//set both schedules from fixed and moving images in the registration process
 	registration->SetSchedules( fixedSchedule, movingSchedule );
@@ -425,13 +425,24 @@ int main(int argc, char* argv[] )
 	// Get the output directory
 	//----------------------------------------------------------------------------
 	std::string outDir = argv[0];
-	//crear el directorio de SALIDA
 	//el directorio donde estaran los resultados del registro
 	std::string fname;
 	itksys::SystemTools::MakeDirectory((fname + outDir));
 
 	argc--;
 	argv++;
+
+	//----------------------------------------------------------------------------
+	//Nombre del archivo de registro 
+	//----------------------------------------------------------------------------
+	std::ofstream logregistro( argv[0] );
+	argc--;
+	argv++;
+
+	//Set the observer in the ofstream register
+	registrationObserver->buildOfstream(logregistro);
+	optimizerObserver->buildOfstream(logregistro);
+
 
 	//----------------------------------------------------------------------------
 	// Save projected images
@@ -460,7 +471,6 @@ int main(int argc, char* argv[] )
 		rescaler1->SetOutputMaximum( 255 );
 		rescaler1->SetInput( resampler->GetOutput());
 		rescaler1->Update(); //Imagen movible proyeccion con  0-255 y threshold 0 por el interpolador
-
 	
 		
 		std::stringstream strStream;
@@ -478,9 +488,9 @@ int main(int argc, char* argv[] )
 		WriterType::Pointer projectionWriter = WriterType::New();
 		projectionWriter->SetFileName( strStream.str().c_str() );
 		projectionWriter->SetInput( rescaler1->GetOutput() );
-
-		std::cout << "Attempting to write projection file " <<
-			projectionWriter->GetFileName() << std::endl;
+		
+		logregistro << "Attempting to write projection file " << projectionWriter->GetFileName() << std::endl;
+		//std::cout << "Attempting to write projection file " << projectionWriter->GetFileName() << std::endl;
 		try
 		{
 			projectionWriter->Update();
@@ -508,9 +518,8 @@ int main(int argc, char* argv[] )
 		WriterType::Pointer subtractionWriter = WriterType::New();
 		subtractionWriter->SetFileName( strStream2.str().c_str() );
 		subtractionWriter->SetInput( subtracter->GetOutput() );
-
-		std::cout << "Attempting to write subtraction file " <<
-			subtractionWriter->GetFileName() << std::endl;
+		logregistro << "Attempting to write subtraction file " << subtractionWriter->GetFileName() << std::endl;
+		//std::cout << "Attempting to write subtraction file " << subtractionWriter->GetFileName() << std::endl;
 		try
 		{
 			subtractionWriter->Update();
@@ -530,9 +539,8 @@ int main(int argc, char* argv[] )
 		fixedWriter->SetFileName( strStream3.str().c_str() );
 		fixedWriter->SetInput( registration->GetFixedMultiImage()[f] );  //imagen fija generada con threhsold 100 (por ser virtual viene de un volumen  0 255) 
 
-
-		std::cout << "Attempting to write subtraction file " <<
-			fixedWriter->GetFileName() << std::endl;
+		logregistro << "Attempting to write subtraction file " << fixedWriter->GetFileName() << std::endl; 
+		//std::cout << "Attempting to write subtraction file " << fixedWriter->GetFileName() << std::endl;
 		try
 		{
 			fixedWriter->Update();
@@ -556,8 +564,9 @@ int main(int argc, char* argv[] )
 		transformReader->SetFileName( argv[0] );
 		argc--;
 		argv++;
-
-		std::cout << "Attempting to read transform file " << transformReader->GetFileName() << std::endl;
+		
+		logregistro << "Attempting to read transform file " << transformReader->GetFileName() << std::endl;
+		//std::cout << "Attempting to read transform file " << transformReader->GetFileName() << std::endl;
 		try
 		{
 			transformReader->Update();
@@ -571,7 +580,7 @@ int main(int argc, char* argv[] )
 		itk::TransformFileReader::TransformListType* transformList = transformReader->GetTransformList();
 
 		if( transformList->size() > 1 )
-		{
+		{ 
 			std::cout << "Only one transform expected from file. "
 				<< "Using first available transform" << std::endl;
 		}
@@ -595,11 +604,14 @@ int main(int argc, char* argv[] )
 	//this will be the initial parameters
 	registration->SetInitialTransformParameters( transform->GetParameters() );
 
-
+	
 	//Print parameters using in the registration
-	std::cout << "StepTolerance "<< optimizer->GetStepTolerance()<<std::endl;
-	std::cout<< "StepLength "<< optimizer->GetStepLength()<<std::endl;
-	std::cout<< "Schedules"<< schedulesScales[0]<<" "<<schedulesScales[1]<<" "<<schedulesScales[2]<<std::endl;
+	logregistro << "StepTolerance "<< optimizer->GetStepTolerance()<<std::endl; 
+	//std::cout << "StepTolerance "<< optimizer->GetStepTolerance()<<std::endl;
+	logregistro <<  "StepLength "<< optimizer->GetStepLength()<<std::endl; 
+	//std::cout<< "StepLength "<< optimizer->GetStepLength()<<std::endl;
+	logregistro <<  "Schedules"<< schedulesScales[0]<<" "<<schedulesScales[1]<<" "<<schedulesScales[2]<<std::endl; 
+	//std::cout<< "Schedules"<< schedulesScales[0]<<" "<<schedulesScales[1]<<" "<<schedulesScales[2]<<std::endl;
 
 	//Create stream for important parameters
 	std::ostringstream strStepTol, strStepLen;
@@ -615,7 +627,8 @@ int main(int argc, char* argv[] )
 	inputMatrixPath.append(".txt");
 
 	std::ofstream inputMatrixFile;
-	std::cout << "Saving input matrix file " << inputMatrixPath << std::endl;
+	logregistro <<  "Saving input matrix file " << inputMatrixPath << std::endl;
+	//std::cout << "Saving input matrix file " << inputMatrixPath << std::endl;
 	inputMatrixFile.open( inputMatrixPath.c_str() );
 
 	if(  inputMatrixFile.is_open() )
@@ -649,11 +662,16 @@ int main(int argc, char* argv[] )
 		cputimer.Start();
 		registration->Update();
 		cputimer.Stop();
-		std::cout << "CPU Registration took " << cputimer.GetMean() << " mean.\n"<< std::endl;
-		std::cout << "TotalTime Process Object: "<< registration->GetMTime() << std::endl;
-		std::cout << "TimeTransform: " << transform->GetMTime() << std::endl;
-	       	std::cout << "TimeMetric: "<< multiMetric->GetMTime() << std::endl;	
-		std::cout << "TimeOptmizer: " << optimizer->GetMTime() << std::endl;
+		logregistro << 	"CPU Registration took " << cputimer.GetMean() << " mean.\n"<< std::endl;
+		logregistro << "TotalTime Process Object: "<< registration->GetMTime() << std::endl;
+		logregistro <<  "TimeTransform: " << transform->GetMTime() << std::endl;
+		logregistro << "TimeMetric: "<< multiMetric->GetMTime() << std::endl;	
+		logregistro << "TimeOptmizer: " << optimizer->GetMTime() << std::endl;
+		//std::cout << "CPU Registration took " << cputimer.GetMean() << " mean.\n"<< std::endl;
+		//std::cout << "TotalTime Process Object: "<< registration->GetMTime() << std::endl;
+		//std::cout << "TimeTransform: " << transform->GetMTime() << std::endl;
+	       	//std::cout << "TimeMetric: "<< multiMetric->GetMTime() << std::endl;	
+		//std::cout << "TimeOptmizer: " << optimizer->GetMTime() << std::endl;
 	        registration->getOptimizerTime();
 			
 	}
@@ -662,6 +680,7 @@ int main(int argc, char* argv[] )
 		std::cout << e.GetDescription() << std::endl;
 		return EXIT_FAILURE;
 	}
+
 	
 	//---------------------------------------------------------------------------
 	// General Information after Registration Process
@@ -686,16 +705,27 @@ int main(int argc, char* argv[] )
 
 	const double bestValue = optimizer->GetValue();
 
-	std::cout << "Result = " << std::endl;
-	std::cout << " Rotation Along X = " << RotationAlongX  << " deg" << std::endl;
-	std::cout << " Rotation Along Y = " << RotationAlongY  << " deg" << std::endl;
-	std::cout << " Rotation Along Z = " << RotationAlongZ  << " deg" << std::endl;
-	std::cout << " Translation X = " << TranslationAlongX  << " mm" << std::endl;
-	std::cout << " Translation Y = " << TranslationAlongY  << " mm" << std::endl;
-	std::cout << " Translation Z = " << TranslationAlongZ  << " mm" << std::endl;
-	std::cout << " Number Of Iterations = " << numberOfIterations << std::endl;
-	std::cout << " Metric value  = " << bestValue          << std::endl;
-	std::cout << " Escala value = " << EscalaXYZ << std::endl;
+	logregistro << "Result = " << std::endl;
+	logregistro << " Rotation Along X = " << RotationAlongX  << " deg" << std::endl;
+	logregistro << " Rotation Along Y = " << RotationAlongY  << " deg" << std::endl; 
+	logregistro << " Rotation Along Z = " << RotationAlongZ  << " deg" << std::endl;
+	logregistro << " Translation X = " << TranslationAlongX  << " mm" << std::endl;
+	logregistro << " Translation Y = " << TranslationAlongY  << " mm" << std::endl;
+	logregistro << " Translation Z = " << TranslationAlongZ  << " mm" << std::endl;
+	logregistro << " Number Of Iterations = " << numberOfIterations << std::endl;
+	logregistro << " Metric value  = " << bestValue          << std::endl;
+	logregistro << " Escala value = " << EscalaXYZ << std::endl;
+
+	//std::cout << "Result = " << std::endl;
+	//std::cout << " Rotation Along X = " << RotationAlongX  << " deg" << std::endl;
+	//std::cout << " Rotation Along Y = " << RotationAlongY  << " deg" << std::endl;
+	//std::cout << " Rotation Along Z = " << RotationAlongZ  << " deg" << std::endl;
+	//std::cout << " Translation X = " << TranslationAlongX  << " mm" << std::endl;
+	//std::cout << " Translation Y = " << TranslationAlongY  << " mm" << std::endl;
+	//std::cout << " Translation Z = " << TranslationAlongZ  << " mm" << std::endl;
+	//std::cout << " Number Of Iterations = " << numberOfIterations << std::endl;
+	//std::cout << " Metric value  = " << bestValue          << std::endl;
+	//std::cout << " Escala value = " << EscalaXYZ << std::endl;
 
 
 
@@ -712,8 +742,9 @@ int main(int argc, char* argv[] )
 	itk::TransformFileWriter::Pointer transformWriter = itk::TransformFileWriter::New();
 	transformWriter->SetInput( transform );
 	transformWriter->SetFileName( outputTransformPath.c_str() );
-
-	std::cout << "Saving output transform file " << transformWriter->GetFileName() << std::endl;
+	
+	logregistro << "Saving output transform file " << transformWriter->GetFileName() << std::endl;
+	//std::cout << "Saving output transform file " << transformWriter->GetFileName() << std::endl;
 	try
 	{
 		transformWriter->Update();
@@ -729,7 +760,8 @@ int main(int argc, char* argv[] )
 	outputMatrixPath.append(".txt");
 
 	std::ofstream outputMatrixFile;
-	std::cout << "Saving output matrix file " << outputMatrixPath << std::endl;
+	logregistro << "Saving output matrix file " << outputMatrixPath << std::endl;
+	//std::cout << "Saving output matrix file " << outputMatrixPath << std::endl;
 	outputMatrixFile.open( outputMatrixPath.c_str() );
 
 	if(  outputMatrixFile.is_open() )
@@ -792,9 +824,9 @@ int main(int argc, char* argv[] )
 		projectionWriter->SetFileName( strStream.str().c_str() );
 		//projectionWriter->SetInput( resampler->GetOutput() );
 		projectionWriter->SetInput( rescaler1->GetOutput() ); //Imagen Movible proyeccion de 0 a 255 (por deformada) y threshold 100 por ser rescalada
+		logregistro << "Attempting to write projection file " << projectionWriter->GetFileName() << std::endl;
 
-		std::cout << "Attempting to write projection file " <<
-			projectionWriter->GetFileName() << std::endl;
+		//std::cout << "Attempting to write projection file " <<projectionWriter->GetFileName() << std::endl;
 		try
 		{
 			projectionWriter->Update();
@@ -826,9 +858,8 @@ int main(int argc, char* argv[] )
 		WriterType::Pointer subtractionWriter = WriterType::New();
 		subtractionWriter->SetFileName( strStream2.str().c_str() );
 		subtractionWriter->SetInput( subtracter->GetOutput() );
-
-		std::cout << "Attempting to write subtraction file " <<
-			subtractionWriter->GetFileName() << std::endl;
+		logregistro << "Attempting to write subtraction file " <<subtractionWriter->GetFileName() << std::endl;
+		//std::cout << "Attempting to write subtraction file " <<subtractionWriter->GetFileName() << std::endl;
 		try
 		{
 			subtractionWriter->Update();
@@ -871,6 +902,7 @@ int main(int argc, char* argv[] )
 	}
 	transTime.Stop();
 	std::cout<<"TransformTime: "<<std::endl;
+	logregistro.close();
 	transTime.Report();
 
 	//----------------------------------------------------------------------------
