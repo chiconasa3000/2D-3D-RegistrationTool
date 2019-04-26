@@ -46,7 +46,7 @@ void ScriptBuilder::setTranslation(float tx, float ty, float tz){
 
 void ScriptBuilder::asignarScript(string nombreScript){
 
-	if(nombreScript.compare("MultiImageRegistration")==0){
+    if(nombreScript.compare("MultiImageRegistration")==0){
 		comman = "./"+nombreScript+" ";
 		tipoScript = "MultiImageRegistration";
 		cout<<"MultiImageRegistrationActivado"<<endl;
@@ -111,11 +111,6 @@ void ScriptBuilder::buildScript(){
 		string outputDir ="../outputData/resultsReg_"+to_string(indexTest) + " ";
 		comman += outputDir;
 
-		//Ejecución de POPEN
-		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
-		GetStdoutFromCommand(comman);
-
-
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
 		string nameLogRegistro;
 		string cabezera = "LogMultiImageRegistration_"+to_string(indexTest);
@@ -128,7 +123,7 @@ void ScriptBuilder::buildScript(){
 		nameLogRegistro += numImages;
 
 		//LogRegisterIteration + numero de imagenes + step tolerance
-		replace(stepTolerance.begin(), stepTolerance.end(), ' ', '_');
+        replace(stepTolerance.begin(), stepTolerance.end(), ' ', '_');
 		nameLogRegistro += stepTolerance;
 
 		//LogRegisterIteration + numero de imagenes + step tolerance + size step
@@ -140,10 +135,14 @@ void ScriptBuilder::buildScript(){
 		nameLogRegistro +=  schedule;
 		nameLogRegistro += ".txt";
 
+        replace(outputDir.begin(), outputDir.end(), ' ', '/');
 		//Nombre del Archivo de Registro
-		string logFileName = outputDir + "/" + nameLogRegistro + " ";
+        string logFileName = outputDir + nameLogRegistro + " ";
 		comman += logFileName;	
 		
+        //Ejecución de POPEN
+        //Para conseguir el stream cuando ejecutamos el comando que hemos construido
+        GetStdoutFromCommand(comman);
 		//Escribiendo el archivo con el stream del comando ejecutado
 		//ofstream out(outputDir+"/" + nameLogRegistro);
 		//out << outputTextRegistration << endl;
@@ -175,7 +174,7 @@ void ScriptBuilder::buildScript(){
 		comman += "-sg "+ to_string(generalScale)+" ";
 		
 		//Modelo 3D a registrar
-		string movingImage = "-inputVol" + target_volume + " ";
+        string movingImage = "-inputVol " + target_volume + " ";
 		comman += movingImage;
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
@@ -188,7 +187,7 @@ void ScriptBuilder::buildScript(){
 		nameLogRegistro += ".txt";
 		
 		//Asignando el nombre del archivo log
-		string logfilename = "-logFileName" + outputDir + nameLogRegistro;
+		string logfilename = "-logFileName " + outputDir + nameLogRegistro;
 		comman += logfilename;		
 		//Escribiendo el archivo con el stream del comando ejecutado
 		//ofstream out(outputDir + nameLogRegistro);

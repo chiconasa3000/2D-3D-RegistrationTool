@@ -199,10 +199,11 @@ int main( int argc, char * argv[] )
 		
 	if(verbose)
 	{
-		if (inputImageFile)  
+        if (inputImageFile){
 			logregistro  << "Input image: "  << inputImageFile  << std::endl;
-			//std::cout << "Input image: "  << inputImageFile  << std::endl;
-	}
+            std::cout << "Input image: "  << inputImageFile  << std::endl;
+        }
+    }
 	if(random_mode && semillaRandom){
 		srand(time(NULL));	
 	}
@@ -221,7 +222,7 @@ int main( int argc, char * argv[] )
 	typedef itk::ImageFileReader< InputImageType  >  ReaderType;
 	typedef itk::ImageFileWriter< OutputImageType >  WriterType;
 
-	// Read the input image
+    // Read the input image
 	ReaderType::Pointer reader = ReaderType::New();
 	reader->SetFileName( inputImageFile );
 	reader->Update();
