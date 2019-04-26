@@ -70,7 +70,7 @@ class RegistrationObserver : public itk::Command
 			RegistrationPointer registration = dynamic_cast<RegistrationPointer>( caller );
 			if( itk::IterationEvent().CheckEvent( & event ) )
 			{	
-				logoptimizer += "Resolution level " + std::to_string(registration->GetCurrentLevel()) + "\n";
+				logoptimizer = "Resolution level " + std::to_string(registration->GetCurrentLevel()) + "\n";
 				logRegistration->write(logoptimizer.c_str(),logoptimizer.size());			
 				std::cout << std::endl << "Resolution level " << registration->GetCurrentLevel() << std::endl;
 				//Half step length and tolerance in each level
@@ -663,7 +663,7 @@ int main(int argc, char* argv[] )
 		//measure the total time
 		timer.Start("Tiempo de Registro");
 		registration->Update();
-		timer.Stop("Tiempo de Regitro");
+		timer.Stop("Tiempo de Registro");
 		//logregistro << 	"Total Registration time " << cputimer.GetMean() << " mean.\n"<< std::endl;
 		//logregistro << "TotalTime Process Object: "<< registration->GetMTime() << std::endl;
 		//logregistro <<  "TimeTransform: " << transform->GetMTime() << std::endl;
@@ -880,7 +880,7 @@ int main(int argc, char* argv[] )
 
 	
 	//El tipo de pixel y el nro de dimensiones de salida seran las mismas al volumen de entrada
-	timer.Start("Tiempo en Transformacion"); 	
+	timer.Start("Tiempo de Transformacion"); 	
 	using  WriterTypeVol = itk::ImageFileWriter<FixedImageType>;
 	using ResampleFilterType = itk::ResampleImageFilter< MovingImageType, MovingImageType>;
 	ResampleFilterType::Pointer resamplerVol = ResampleFilterType::New();
@@ -901,7 +901,7 @@ int main(int argc, char* argv[] )
 	catch(itk::ExceptionObject & e){
 		std::cerr << e.GetDescription() << std::endl;
 	}
-	timer.Stop("Tiempo en Transformacion");
+	timer.Stop("Tiempo de Transformacion");
 	
 	timer.ExpandedReport(logregistro);
 	logregistro.close();
