@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.8.2, 2019-04-26T02:56:48. -->
+<!-- Written by QtCreator 4.8.2, 2019-04-27T22:38:27. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -67,7 +67,7 @@
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">qt.qt5.5122.gcc_64_kit</value>
    <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">5</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
     <valuelist type="QVariantList" key="CMake.Configuration"/>
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/home/chris/frameworks/Cpu-midas-journal-800/mybuild</value>
@@ -215,7 +215,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.MultiImageRegistration
 /home/chris/frameworks/Cpu-midas-journal-800/</value>
-    <value type="QString" key="RunConfiguration.Arguments">../inputData/pelvisSegmIntensityLPI.mha 2 ../outputData/virtualImages/pelvisHealthy_ap_0.mha 0 -1000 0 ../outputData/virtualImages/pelvisHealthy_ml_0.mha -1000 0 0 0.02 4.0 4 6 3 2 1 ../outputData/resultsReg_0 ../outputData/resultsReg_0/LogMultiImageRegistration_02_0.02_4.0_4_6_3_2_1_.txt</value>
+    <value type="QString" key="RunConfiguration.Arguments">-movingImage ../inputData/pelvisSegmIntensityLPI.mha -numFixedImages 2 -f0 ../outputData/virtualImages/pelvisHealthy_ap_0.mha 0 -1000 0 -f1 ../outputData/virtualImages/pelvisHealthy_ml_0.mha -1000 0 0 -steptolerance 0.02 -stepsize 4.0 -numLevels 4 -schedule 6 3 2 1 -outputDirectory ../outputData/resultsReg_0 -logfilename ../outputData/resultsReg_0/LogMultiImageRegistration_0 -writeFinalVol -writeStatistics</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
