@@ -228,14 +228,8 @@ int main( int argc, char * argv[] )
 
 		resample2->SetInput( resample->GetOutput() );
 			
-		typedef itk::RescaleIntensityImageFilter<OutputImageType, OutputImageType >  RescaleFilterType2;
-		RescaleFilterType2::Pointer    rescaleFilter2    = RescaleFilterType2::New();
-		rescaleFilter2->SetInput(    resample2->GetOutput() );
-		rescaleFilter2->SetOutputMinimum(0);
-		rescaleFilter2->SetOutputMaximum(255);
-		rescaleFilter2->Update();
-	
-		writer->SetInput( rescaleFilter2->GetOutput() );
+
+		writer->SetInput(resample2->GetOutput() );
 
 		string fname;
 		string nfname;
@@ -265,7 +259,7 @@ int main( int argc, char * argv[] )
 		}
 		else
 		{
-			fname += ".mhd";
+			fname += ".mha";
 		}
 
 		writer->SetFileName( fname.c_str() );

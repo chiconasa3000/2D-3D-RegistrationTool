@@ -359,7 +359,14 @@ int main( int argc, char * argv[] )
 		resample->SetOutputDirection( reader->GetOutput()->GetDirection());
 		resample->SetInput(image);
 		
-		writer->SetInput( resample->GetOutput() );
+		typedef itk::RescaleIntensityImageFilter<OutputImageType, OutputImageType >  RescaleFilterType2;
+		RescaleFilterType2::Pointer    rescaleFilter2    = RescaleFilterType2::New();
+		rescaleFilter2->SetInput(    resample->GetOutput() );
+		rescaleFilter2->SetOutputMinimum(0);
+		rescaleFilter2->SetOutputMaximum(255);
+		rescaleFilter2->Update();
+			
+		writer->SetInput( rescaleFilter2->GetOutput() );
 
 		string fName = "";
 		ostringstream fnameStream;
