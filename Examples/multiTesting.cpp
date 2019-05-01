@@ -6,7 +6,6 @@
 #include <sstream>
 #include "scriptBuilder.h"
 #include <itkTransformFileReader.h>
-#include "utils.h"
 #include <fstream>
 #include "itkTimeProbe.h"
 
@@ -52,7 +51,9 @@ int main(int argc, char *argv[]){
 	
 	//Volumen Movible:
 	char *target_volume = NULL;
-	 
+	
+	//Bandera de Comparacion de Volumenes
+	bool comparevolumes = false;	 
 	//Bandera de lectura satisfactoria
 	bool ok;
 
@@ -125,6 +126,12 @@ int main(int argc, char *argv[]){
 			origin_volume = argv[1];
 			argc--; argv++;
 		}
+		if((ok == false) && (strcmp(argv[1], "-compareVols") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			comparevolumes = true;
+		}
 
 	}
 
@@ -137,7 +144,7 @@ int main(int argc, char *argv[]){
 	scriptbuilder->setScale(sg);
 	scriptbuilder->asignarScript("CreateImageSetSimilarity");	
 	scriptbuilder->buildScript();	
-
+	
 
 	ofstream myfile;
 	myfile.open("RMSE_Registro.txt");	
@@ -187,6 +194,11 @@ int main(int argc, char *argv[]){
 		//Generar el registro de imagenes
 		scriptbuilder->asignarScript("MultiImageRegistration");
 		scriptbuilder->buildScript();
+		
+		//Comparacion de Volumenes solo en caso que este activado
+		if(comparevolumes){
+			scriptbuilder->setCompareVols(true);
+		}
 
 		//Leer Transformacion de Salida
 
@@ -217,11 +229,9 @@ int main(int argc, char *argv[]){
 		std::cout<< baseTransform->GetParameters() << std::endl;
 
 		//adaptar los euler a su forma versor
-		//Utilitarios * util = new Utilitarios();
-
 		//double vx,vy,vz,newangle;
 		//util->unirVectorWithAngle(rx,ry,rz,vx,vy,vz,newangle);
-		
+				
 		double t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
 
 		t_rx = pow(baseTransform_2->GetParameters()[0] - baseTransform->GetParameters()[0],2.0);
@@ -267,7 +277,7 @@ int main(int argc, char *argv[]){
 
 		myfile << "sg_error: " << t_sg << std::endl;
 		myfile << std::endl;
-
+		
 
 
 	}

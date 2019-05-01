@@ -44,6 +44,10 @@ void ScriptBuilder::setTranslation(float tx, float ty, float tz){
 	trasVol[2] = tz;
 }
 
+void ScriptBuilder::setCompareVols(bool flagCompVols){
+	this->compareVols = flagCompVols;
+}
+
 void ScriptBuilder::asignarScript(string nombreScript){
 
     if(nombreScript.compare("MultiImageRegistration")==0){
@@ -67,7 +71,8 @@ void ScriptBuilder::buildScript(){
 
 
 	if(tipoScript.compare("MultiImageRegistration")==0){
-
+		//Creando Clase de ayuda para la comparacion de volumenes
+		Utilitarios *util = new Utilitarios();
 		//Modelo 3D a registrar
 		string movingImage = "-movingImage " +origin_volume + " ";
 		comman += movingImage;
@@ -110,17 +115,17 @@ void ScriptBuilder::buildScript(){
 
 		//TODO: Create Directory for every test
 		//Directorio de Salida de los resultados del registro
-        string strDir = "../outputData/resultsReg_"+to_string(indexTest);
-        string outputDir ="-outputDirectory " + strDir + " ";
+		string strDir = "../outputData/resultsReg_"+to_string(indexTest);
+		string outputDir ="-outputDirectory " + strDir + " ";
 		comman += outputDir;
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
-        string nameLogRegistro = "LogMultiImageRegistration_"+to_string(indexTest);
+		string nameLogRegistro = "LogMultiImageRegistration_"+to_string(indexTest);
 
 		//Nombre del Archivo de Registro
-        string logFileName = "-logfilename " + strDir +"/"+ nameLogRegistro + " ";
+		string logFileName = "-logfilename " + strDir +"/"+ nameLogRegistro + " ";
 		comman += logFileName;	
-		
+
 		string activeNewVol = "-writeFinalVol ";
 		comman += activeNewVol;
 
@@ -139,7 +144,11 @@ void ScriptBuilder::buildScript(){
 	
 		//El volumen reconstruido, la distancia de housdorff y las estadisticas
 		//seran activadas ya que requiere una carga adicional para el registro
-				
+		if(compareVols){
+			string fileNuevoVolumen = strDir + "/newvolume.mha";
+			string fileDeforVolumen = "../outputData/ImagesDefs/Images/imagenDef_" + std::to_string(indexTest) + ".mha"; 
+			util->compareVols(fileNuevoVolumen, fileDeforVolumen, indexTest);
+		}			
 		
 	}else if(tipoScript.compare("CreateImageSetSimilarity")==0){
 		//Activar modo Verbose
@@ -166,7 +175,7 @@ void ScriptBuilder::buildScript(){
 		comman += "-sg "+ to_string(generalScale)+" ";
 		
 		//Modelo 3D a registrar
-        string movingImage = "-inputVol " + target_volume + " ";
+        	string movingImage = "-inputVol " + target_volume + " ";
 		comman += movingImage;
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
