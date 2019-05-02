@@ -20,7 +20,10 @@ using namespace std;
 
 
 int main(int argc, char *argv[]){	
-
+	
+	//Acumulador de distancia de hausdorff
+	float hausdorffDistanceValue = 0.0;
+	float hausdorffDistanceAcum = 0.0;
 	//Valores de entrada para la transformacion inicial
 	float rx = 0.0;
 	float ry = 0.0;
@@ -146,6 +149,10 @@ int main(int argc, char *argv[]){
 	scriptbuilder->buildScript();	
 	
 
+	//Archivo log para los valores de distancia de hausdorff
+	ofstream hausdorffDistances;
+	hausdorffDistances.open("HausdorffDistances.txt");
+	//Archivo log para los errores de parametros de transformacion	
 	ofstream myfile;
 	myfile.open("RMSE_Registro.txt");	
 
@@ -193,12 +200,36 @@ int main(int argc, char *argv[]){
 
 		//Generar el registro de imagenes
 		scriptbuilder->asignarScript("MultiImageRegistration");
-		scriptbuilder->buildScript();
-		
 		//Comparacion de Volumenes solo en caso que este activado
 		if(comparevolumes){
 			scriptbuilder->setCompareVols(true);
 		}
+		scriptbuilder->buildScript();
+		
+		//Obtener las lineas correspondientes a la distancia de hausdorff
+		std::string nameLogRegistro = "LogMultiImageRegistration_"+to_string(currentIndexTest);
+		std::string logfilename = "../outputData/resultsReg_"+to_string(currentIndexTest) + "/" + nameLogRegistro; 
+		
+		FILE * stream; //salida en el cmd
+		const int max_buffer = 6; //nro de cifras del valor de hausdorff
+		char buffer[max_buffer]; //string que guarda el valor de hausdorff
+		std::string cmdDistHauss = "cat " + logfilename + " | tail -n 1 | awk '{print $2}'"; 
+		cmdDistHauss.append(" 2>&1");
+		//Ejecucion y lectura del comando: Save Hausdorff Distance Value
+		stream = popen(cmdDistHauss.c_str(),"r");
+		//La lectura es una sola vez
+		if(stream && fgets(buffer, max_buffer, stream) != NULL){
+			//agregamos el valor al actual acumulador de hausdorff distance
+ 			hausdorffDistanceValue = atof(buffer);
+			hausdorffDistanceAcum += hausdorffDistanceValue;
+		}
+
+		//Almacenamos el actual valor de hausdorff en un archivo
+		//std::string cmdDistHauss("cat " + logfilename + " | tail -n 1 | awk '{print $2}' >> valuesHaussdorffDistance.txt");
+		//std::system(cmdDistHauss.c_str());
+		hausdorffDistances << "HaussDist "<< currentIndexTest << " : " << hausdorffDistanceValue << std::endl;	
+
+
 
 		//Leer Transformacion de Salida
 
@@ -251,21 +282,7 @@ int main(int argc, char *argv[]){
 		ty_error += t_ty;
 		tz_error += t_tz;
 		sg_error += t_sg;
-
-
-		//std::cout << "newangle versor: " << newangle << std::endl;	
-		/*
-		std::cout << "rx_error: " << rx_error << std::endl;
-		std::cout << "ry_error: " << ry_error << std::endl;
-		std::cout << "rz_error: " << rz_error << std::endl;
-
-		std::cout << "tx_error: " << tx_error << std::endl;
-		std::cout << "ty_error: " << ty_error << std::endl;
-		std::cout << "tz_error: " << tz_error << std::endl;
-
-		std::cout << "sg_error: " << sg_error << std::endl;
-		*/
-		
+			
 		myfile << "Registro num " << currentIndexTest << std::endl;	
 		myfile << "rx_error: " << t_rx << std::endl;
 		myfile << "ry_error: " << t_ry << std::endl;
@@ -278,18 +295,10 @@ int main(int argc, char *argv[]){
 		myfile << "sg_error: " << t_sg << std::endl;
 		myfile << std::endl;
 		
-
-
 	}
-	/*
-	std::cout << "Rx_final_Error: " << sqrt(rx_error/numImagenes) << std::endl;
-	std::cout << "Ry_final_Error: " << sqrt(ry_error/numImagenes) << std::endl;
-	std::cout << "Rz_final_Error: " << sqrt(rz_error/numImagenes) << std::endl;
-	std::cout << "Tx_final_Error: " << sqrt(tx_error/numImagenes) << std::endl;
-	std::cout << "Ty_final_Error: " << sqrt(ty_error/numImagenes) << std::endl;
-	std::cout << "Tz_final_Error: " << sqrt(tz_error/numImagenes) << std::endl;
-	std::cout << "Sg_final_Error: " << sqrt(sg_error/numImagenes) << std::endl;
-	*/
+	
+	hausdorffDistanceAcum /= numImagenes;
+	hausdorffDistances << "AverageTestHausdorffDistance: "<< hausdorffDistanceAcum;
 	myfile << "Rx_final_Error: " << sqrt(rx_error/numImagenes) << std::endl;
 	myfile << "Ry_final_Error: " << sqrt(ry_error/numImagenes) << std::endl;
 	myfile << "Rz_final_Error: " << sqrt(rz_error/numImagenes) << std::endl;
@@ -301,7 +310,7 @@ int main(int argc, char *argv[]){
 	cputimer.Stop();
 	
 	myfile << "Registrations took " << cputimer.GetMean() << " seconds.\n" << std::endl;
-
-
+	hausdorffDistances.close();
+	myfile.close();
 	return 0;
 }

@@ -1,13 +1,10 @@
-
-
 #include "utils.h"
-
 
 Utilitarios::Utilitarios(){
 }
 
 void Utilitarios::convertEulerToVersor(float &rx, float &ry, float &rz, double &ax, double &ay, double &az, double &angle){
-	
+
 	const double dtr = (atan(1.0) * 4.0)/180.0;
 
 	//Conversion de Euler a Versor
@@ -49,34 +46,34 @@ void Utilitarios::unirVectorWithAngle(float &rx, float &ry, float &rz, double &v
 		std::cerr<< "Error norma de vector del versor es cercano a  cero"<<std::endl;
 	}else{
 
-	double cosangle = cos(angle/2.0);
-	double sinangle = sin(angle/2.0);
-	
-	double factor = sinangle/ axisnorm;
+		double cosangle = cos(angle/2.0);
+		double sinangle = sin(angle/2.0);
 
-	vx = ax * factor;
-	vy = ay * factor;
-	vz = az * factor;
-	
-	newangulo = cosangle;	}
+		double factor = sinangle/ axisnorm;
+
+		vx = ax * factor;
+		vy = ay * factor;
+		vz = az * factor;
+
+		newangulo = cosangle;	}
 }
 
 void Utilitarios::convertVersorToEuler(float &x, float &y, float &z, float &w, float &rx, float &ry, float &rz){
 	float t0 = +2.0 * (w * x + y * z);
-        float t1 = +1.0 - 2.0 * (x * x + y * y);
-        rx = atan(t0/ t1);
+	float t1 = +1.0 - 2.0 * (x * x + y * y);
+	rx = atan(t0/ t1);
 
-        float t2 = +2.0 * (w * y - z * x);
- 	t2 = (t2 > +1.0) ? +1.0 : t2;
+	float t2 = +2.0 * (w * y - z * x);
+	t2 = (t2 > +1.0) ? +1.0 : t2;
 	t2 = (t2 < -1.0) ? -1.0 : t2;
-        ry = asin(t2);
+	ry = asin(t2);
 
-        float t3 = +2.0 * (w * z + x * y);
-        float t4 = +1.0 - 2.0 * (y * y + z * z);
-        rz = atan(t3/ t4);
+	float t3 = +2.0 * (w * z + x * y);
+	float t4 = +1.0 - 2.0 * (y * y + z * z);
+	rz = atan(t3/ t4);
 }
 
-void Utilitarios::compareVols(std::string  newvolume, std::string  imagendef, int numTest){
+void Utilitarios::compareVols(std::string logfilename, std::string  dirnewvolume, std::string  dirimagedef, int indexTest){
 	const unsigned int Dimensions = 3;
 	typedef itk::Image<short int, Dimensions> imagenDefType;	
 	typedef itk::Image<short int, Dimensions> newvolumeType;
@@ -84,11 +81,12 @@ void Utilitarios::compareVols(std::string  newvolume, std::string  imagendef, in
 	//Leyendo las imagenes
 	typedef itk::ImageFileReader<imagenDefType> defReaderType;
 	defReaderType::Pointer defreader = defReaderType::New();
-	defreader->SetFileName(imagendef.c_str());
-
+	std::string filenameimagedef = dirimagedef + "imagenDef_" + std::to_string(indexTest) + ".mha";
+	defreader->SetFileName(filenameimagedef.c_str());
 	typedef itk::ImageFileReader<newvolumeType> newvolumeReaderType;
 	newvolumeReaderType::Pointer newvolumereader = newvolumeReaderType::New();
-	newvolumereader->SetFileName(newvolume.c_str());
+	std::string filenamenewvolume = dirnewvolume + std::to_string(indexTest) + "/newVolumen.mha";
+	newvolumereader->SetFileName(filenamenewvolume.c_str());
 
 	//Variable para las imagenes
 
@@ -142,24 +140,57 @@ void Utilitarios::compareVols(std::string  newvolume, std::string  imagendef, in
 	resample->SetInput(imageDeformable);
 
 
-	newvolumeType::Pointer output = resample->GetOutput();
+	newvolumeType::ConstPointer imagedefnewsize = resample->GetOutput();
+	/*
+	   std::cout << "Output size: " << newVolume->GetBufferedRegion().GetSize() << std::endl;
+	   std::cout << "Spacing: " << newVolume->GetSpacing()<<std::endl;
+	   std::cout << "Origin: " << newVolume->GetOrigin()<<std::endl;
 
-	std::cout << "Output size: " << newVolume->GetBufferedRegion().GetSize() << std::endl;
-	std::cout << "Spacing: " << newVolume->GetSpacing()<<std::endl;
-	std::cout << "Origin: " << newVolume->GetOrigin()<<std::endl;
-
-	std::cout << "Output size: " << output->GetBufferedRegion().GetSize() << std::endl;
-	std::cout << "Spacing: " << output->GetSpacing()<<std::endl;
-	std::cout << "Origin: " << output->GetOrigin()<<std::endl; 
-
+	   std::cout << "Output size: " << output->GetBufferedRegion().GetSize() << std::endl;
+	   std::cout << "Spacing: " << output->GetSpacing()<<std::endl;
+	   std::cout << "Origin: " << output->GetOrigin()<<std::endl; 
+	   */
 	typedef itk::ImageFileWriter<newvolumeType> WriterType;	
 	std::cout << "Writing output... " << std::endl;
 	WriterType::Pointer outputWriter = WriterType::New();
-	outputWriter->SetFileName("output.mha");
-	outputWriter->SetInput(output);
+	std::string dirsalida = dirnewvolume + std::to_string(indexTest) + "/";
+	outputWriter->SetFileName(dirsalida + "imagedefnewsize.mha");
+	outputWriter->SetInput(imagedefnewsize);
 	outputWriter->Update();
 
-
+	//aplicar Hausdorff distance entre ambos volumenes
+	computeHausdorffDistance(logfilename, imagedefnewsize, newVolume);	
 
 
 }
+
+void Utilitarios::computeHausdorffDistance(std::string logfilename, typename itk::Image<short int,3>::ConstPointer a, typename itk::Image<short int, 3>::ConstPointer b){
+	//Open the logfilename and append this data
+	std::ofstream logfile;
+	logfile.open(logfilename, std::ios_base::app);	
+	
+	const unsigned int Dimensions = 3;
+	typedef itk::Image<short int, Dimensions> imageType;
+
+	typedef itk::HausdorffDistanceImageFilter < imageType, imageType > HausdorffDistanceImageFilterType;
+	HausdorffDistanceImageFilterType::Pointer hausdorffFilter = HausdorffDistanceImageFilterType::New();
+	hausdorffFilter->SetInput1(a.GetPointer());
+	hausdorffFilter->SetInput2(b.GetPointer());
+	/*
+	   typedef itk::StatisticsImageFilter < FloatImageType > StatisticsFilterType;
+	   StatisticsFilterType ::Pointer statistics1 = StatisticsFilterType::New();
+	   statistics1->SetInput(reader->GetOutput());
+
+	   StatisticsFilterType ::Pointer statistics2 = StatisticsFilterType::New();
+	   statistics2->SetInput(normalizeFilter->GetOutput());
+	   */
+	hausdorffFilter->Update();
+
+	logfile << "HausdorffDistance: " << hausdorffFilter->GetHausdorffDistance() << std::endl;
+	logfile << "HD_Average: " << hausdorffFilter->GetAverageHausdorffDistance() << std::endl;
+	logfile.close();
+	//std::cout<<"Distance: " << hausdorffFilter->GetHausdorffDistance();
+	//std::cout<<"Average: " << hausdorffFilter->GetAverageHausdorffDistance();
+
+}
+

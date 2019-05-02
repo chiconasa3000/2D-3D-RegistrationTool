@@ -145,9 +145,10 @@ void ScriptBuilder::buildScript(){
 		//El volumen reconstruido, la distancia de housdorff y las estadisticas
 		//seran activadas ya que requiere una carga adicional para el registro
 		if(compareVols){
-			string fileNuevoVolumen = strDir + "/newvolume.mha";
-			string fileDeforVolumen = "../outputData/ImagesDefs/Images/imagenDef_" + std::to_string(indexTest) + ".mha"; 
-			util->compareVols(fileNuevoVolumen, fileDeforVolumen, indexTest);
+            string fileNuevoVolumen = "../outputData/resultsReg_";
+            string fileDeforVolumen = "../outputData/ImagesDefs/Images/";
+	    string logFileNameTest = strDir + "/" + nameLogRegistro;
+			util->compareVols(logFileNameTest, fileNuevoVolumen, fileDeforVolumen, indexTest);
 		}			
 		
 	}else if(tipoScript.compare("CreateImageSetSimilarity")==0){

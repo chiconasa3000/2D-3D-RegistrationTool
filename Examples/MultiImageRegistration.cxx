@@ -1003,7 +1003,7 @@ int main(int argc, char* argv[] )
 
 		//Eliminar datos innecesarios del log de resultados
 		std::string cmdPickResults ="";
-		cmdPickResults = cmdPickResults + "cat " + logFileName + " | sed -n -e :a -e '1,35!{P;N;D;};N;ba' | sed 1,10d > newlog.txt";
+		cmdPickResults = cmdPickResults + "cat " + logFileName + " | sed -n -e :a -e '1,37!{P;N;D;};N;ba' | sed 1,10d > newlog.txt";
 		int result = std::system(cmdPickResults.c_str());
 
 		//Separar el log de resultados por cada nivel de resolucion
