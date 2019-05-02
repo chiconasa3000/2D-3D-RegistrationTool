@@ -188,7 +188,6 @@ int main(int argc, char* argv[] )
 	char * logFileName = NULL;
 
 	bool writeFinalVol = false;
-	bool compareVols = false;
 	bool writeStatistics = false;
 
 	bool ok;	
@@ -300,11 +299,6 @@ int main(int argc, char* argv[] )
 			argc--; argv++;
 			ok = true;
 			writeFinalVol = true;
-		}
-		if ((ok == false) && (strcmp(argv[1], "-compareVols") == 0)){
-			argc--; argv++;
-			ok = true;
-			compareVols = true;
 		}
 		if ((ok == false) && (strcmp(argv[1], "-writeStatistics") == 0)){
 			argc--; argv++;
@@ -978,64 +972,12 @@ int main(int argc, char* argv[] )
 		timer.Stop("Tiempo de Transformacion");
 
 		timer.ExpandedReport(logregistro);
-
-		if(compareVols){
-			logregistro << "Compare Volumenes Activado"<<std::endl;
-
-			//Ambas imagenes deben tener el mismo origen, espaciado y tamaño
-			//Aplicaremos Resampling entre la deformada y el nuevo volumen
-
-			//El orden no altera mas valor cuando es [deformada a nuevo volumen]
-			//El orden no altera menos valor cuando es [nuevo volumen a deformada] (elegida)
-
-			//Proceso de Resampling
-
-			//Lectura de Imagenes
-			//New Volume: resamplerVol->GetOutput() 
-
-		}
 	
 	}
+    if(writeStatistics){
+
+    }
 	
-
-	if(writeStatistics){
-		logregistro << "Realizar Estadisticas" << std::endl;
-
-		//Eliminar datos innecesarios del log de resultados
-		std::string cmdPickResults ="";
-		cmdPickResults = cmdPickResults + "cat " + logFileName + " | sed -n -e :a -e '1,37!{P;N;D;};N;ba' | sed 1,10d > newlog.txt";
-		int result = std::system(cmdPickResults.c_str());
-
-		//Separar el log de resultados por cada nivel de resolucion
-		std::string cmdDivideResults("awk '/^Resolution/{close(file);file = \"../outputData/resultsReg_0/\" $2 $NF \".txt\"; next}  /./{print >> file}' newlog.txt");
-		std::system(cmdDivideResults.c_str());
-
-		//Recorrer cada archivo de registro
-		for(int i=0;i<numLevels;i++){
-
-			//Solo seleccionar ciertas columnas para el plot
-			std::string nameloginLevel("../outputData/resultsReg_0/level" + std::to_string(i));
-			std::string cmdChooseCols("gawk -i inplace '{print $2 \"\\t\" $4 \"\\t\" $6 \"\\t\" $8 \"\\t\" $10}' " + nameloginLevel+".txt");
-			std::system(cmdChooseCols.c_str());
-
-			//writing the plot with respective logfile
-			std::string namePlotFile("../outputData/resultsReg_0/plot_temp" + std::to_string(i) + ".gnup");
-			std::ofstream plot_temp(namePlotFile);
-			plot_temp << "set terminal postscript portrait" << "\n";
-			plot_temp << "set xlabel \"Iteration No.\"" << "\n";
-			plot_temp << "set ylabel \"NormalizedGradientCorrelation\" " << "\n"; 
-			plot_temp << "set output \"../outputData/resultsReg_0/ImageRegistrationTraceMetric"+std::to_string(i)+".eps\""<<"\n";
-			plot_temp << "plot \"../outputData/resultsReg_0/level"+std::to_string(i)+
-				".txt\" using 1:2 notitle with lines lt 1, \"../outputData/resultsReg_0/level"+std::to_string(i)+
-				".txt\" using 1:2 notitle with points lt 0 pt 12 ps 1" << "\n";
-
-			plot_temp.close();
-
-			std::string nameCmdPlot("gnuplot ../outputData/resultsReg_0/plot_temp" + std::to_string(i) + ".gnup");
-			std::system(nameCmdPlot.c_str());
-
-		}
-	}
 	logregistro.close();
 
 	//----------------------------------------------------------------------------

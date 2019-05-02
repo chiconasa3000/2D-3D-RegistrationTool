@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.8.2, 2019-05-01T14:26:51. -->
+<!-- Written by QtCreator 4.8.2, 2019-05-02T01:21:56. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -65,7 +65,7 @@
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Imported Kit</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Imported Kit</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{d86e109c-b4ee-40ec-938b-3b0b54df0086}</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">1</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">5</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
@@ -355,7 +355,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mydebug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mybuild</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.1">
     <value type="bool" key="Analyzer.QmlProfiler.AggregateTraces">false</value>
@@ -411,7 +411,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mydebug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mybuild</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.2">
     <value type="bool" key="Analyzer.QmlProfiler.AggregateTraces">false</value>
@@ -467,7 +467,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mydebug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mybuild</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.3">
     <value type="bool" key="Analyzer.QmlProfiler.AggregateTraces">false</value>
@@ -523,7 +523,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mydebug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mybuild</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.4">
     <value type="bool" key="Analyzer.QmlProfiler.AggregateTraces">false</value>
@@ -579,7 +579,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mydebug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mybuild</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.5">
     <value type="bool" key="Analyzer.QmlProfiler.AggregateTraces">false</value>
@@ -627,7 +627,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.multiTesting
 /home/chris/frameworks/Cpu-midas-journal-800/</value>
-    <value type="QString" key="RunConfiguration.Arguments">-numImag 1 -originVol ../inputData/pelvisSegmIntensityLPI.mha -targetVol ../inputData/pelvisSegmIntensityLPI.mha -compareVols</value>
+    <value type="QString" key="RunConfiguration.Arguments">-numImag 2 -originVol ../inputData/pelvisSegmIntensityLPI.mha -targetVol ../inputData/pelvisSegmIntensityLPI.mha -compareVols -writeStatistics</value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
@@ -635,7 +635,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mydebug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mybuild</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.6">
     <value type="bool" key="Analyzer.QmlProfiler.AggregateTraces">false</value>
@@ -691,7 +691,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mydebug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mybuild</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.7">
     <value type="bool" key="Analyzer.QmlProfiler.AggregateTraces">false</value>
@@ -747,7 +747,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mydebug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/chris/frameworks/Cpu-midas-journal-800/mybuild</value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">8</value>
   </valuemap>

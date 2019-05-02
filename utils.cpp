@@ -189,8 +189,45 @@ void Utilitarios::computeHausdorffDistance(std::string logfilename, typename itk
 	logfile << "HausdorffDistance: " << hausdorffFilter->GetHausdorffDistance() << std::endl;
 	logfile << "HD_Average: " << hausdorffFilter->GetAverageHausdorffDistance() << std::endl;
 	logfile.close();
-	//std::cout<<"Distance: " << hausdorffFilter->GetHausdorffDistance();
-	//std::cout<<"Average: " << hausdorffFilter->GetAverageHausdorffDistance();
 
+}
+void Utilitarios::createStats(int numLevels, std::string logfilename, std::string dir_resultados, int indexTest){
+
+    //Eliminar datos innecesarios del log de resultados
+    std::string cmdPickResults("cat " + logfilename + " | sed -n -e :a -e '1,36!{P;N;D;};N;ba' | sed 1,10d > newlog.txt");
+    int result = std::system(cmdPickResults.c_str());
+
+    //Separar el log de resultados por cada nivel de resolucion
+    std::string directorioResultados = dir_resultados + std::to_string(indexTest) +"/";
+    std::string cmdDivideResults("awk '/^Resolution/{close(file);file = \"" + directorioResultados + "\" $2 $NF \".txt\"; next}  /./{print >> file}' newlog.txt");
+    std::system(cmdDivideResults.c_str());
+
+    //Recorrer cada archivo de registro
+    for(int i=0;i<numLevels;i++){
+
+        //Solo seleccionar ciertas columnas para el plot
+        std::string nameloginLevel(directorioResultados + "level" + std::to_string(i));
+        std::string cmdChooseCols("gawk -i inplace '{print $2 \"\\t\" $4 \"\\t\" $6 \"\\t\" $8 \"\\t\" $10}' " + nameloginLevel+".txt");
+        std::system(cmdChooseCols.c_str());
+
+        //writing the plot with respective logfile
+        std::string namePlotFile(directorioResultados + "plot_temp" + std::to_string(i) + ".gnup");
+
+        std::ofstream plot_temp(namePlotFile);
+        plot_temp << "set terminal postscript portrait" << "\n";
+        plot_temp << "set xlabel \"Iteration No.\"" << "\n";
+        plot_temp << "set ylabel \"NormalizedGradientCorrelation\" " << "\n";
+
+        plot_temp << "set output \"" + directorioResultados + "ImageRegistrationProgressMetric"+std::to_string(i)+".eps\""<<"\n";
+        plot_temp << "plot \"" + nameloginLevel +
+            ".txt\" using 1:2 notitle with lines lt 1, \"" + nameloginLevel +
+            ".txt\" using 1:2 notitle with points lt 0 pt 12 ps 1" << "\n";
+
+        plot_temp.close();
+
+        std::string nameCmdPlot("gnuplot " + namePlotFile);
+        std::system(nameCmdPlot.c_str());
+
+    }
 }
 

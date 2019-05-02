@@ -48,6 +48,10 @@ void ScriptBuilder::setCompareVols(bool flagCompVols){
 	this->compareVols = flagCompVols;
 }
 
+void ScriptBuilder::setWriteStatistics(bool flagWriteStast){
+    this->writestatistics = flagWriteStast;
+}
+
 void ScriptBuilder::asignarScript(string nombreScript){
 
     if(nombreScript.compare("MultiImageRegistration")==0){
@@ -107,8 +111,9 @@ void ScriptBuilder::buildScript(){
 
 		//Nro de Niveles de Resolucion y 
 		//sus respectivos factores de escala en cada nivel de resolución
-		string numLevels = "-numLevels 4 ";
-		comman += numLevels;
+        int nroLevels = 4;
+        string numLevels = "-numLevels "+std::to_string(nroLevels)+" ";
+        comman += numLevels;
 
 		string schedule = "-schedule 6 3 2 1 ";
 		comman += schedule;
@@ -129,27 +134,23 @@ void ScriptBuilder::buildScript(){
 		string activeNewVol = "-writeFinalVol ";
 		comman += activeNewVol;
 
-		string activeStatistics = "-writeStatistics ";
-		comman += activeStatistics;
+        //string activeStatistics = "-writeStatistics ";
+        //comman += activeStatistics;
 		
 
-
-		//Ejecución de POPEN
 		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
 		GetStdoutFromCommand(comman);
-		//Escribiendo el archivo con el stream del comando ejecutado
-		//ofstream out(outputDir+"/" + nameLogRegistro);
-		//out << outputTextRegistration << endl;
-		//out.close();
-	
+        string fileNuevoVolumen = "../outputData/resultsReg_";
+        string fileDeforVolumen = "../outputData/ImagesDefs/Images/";
+        string logFileNameTest = strDir + "/" + nameLogRegistro;
 		//El volumen reconstruido, la distancia de housdorff y las estadisticas
 		//seran activadas ya que requiere una carga adicional para el registro
 		if(compareVols){
-            string fileNuevoVolumen = "../outputData/resultsReg_";
-            string fileDeforVolumen = "../outputData/ImagesDefs/Images/";
-	    string logFileNameTest = strDir + "/" + nameLogRegistro;
 			util->compareVols(logFileNameTest, fileNuevoVolumen, fileDeforVolumen, indexTest);
-		}			
+        }
+        if(writestatistics){
+            util->createStats(nroLevels, logFileNameTest, fileNuevoVolumen, indexTest);
+        }
 		
 	}else if(tipoScript.compare("CreateImageSetSimilarity")==0){
 		//Activar modo Verbose

@@ -20,7 +20,8 @@ private:
 	float rotVol[3] = {0.0, 0.0, 0.0};
 	float trasVol[3] = {0.0, 0.0, 0.0};
 	float generalScale=1.0;
-	bool compareVols = false;	 
+    bool compareVols = false;
+    bool writestatistics = false;
 public:
 	void setIndexTest(int indexTest);
 	void setNumTests(int numTests);
@@ -31,7 +32,8 @@ public:
 	void setRotation(float rx, float ry, float rz);
 	void setTranslation(float tx, float ty, float tz);
 	void setScale(float scale);
-	void setCompareVols(bool flagCompVols);	
+    void setCompareVols(bool flagCompVols);
+    void setWriteStatistics(bool writestatistics);
 	void setTargetVolume(string inputVol);	
 	void setOriginVolume(string inputVol);	
 

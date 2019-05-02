@@ -21,4 +21,5 @@ public:
 	void unirVectorWithAngle(float &rx, float &ry, float&rz, double &vx, double &vy, double &vz, double &newangle);
 	void compareVols(std::string logfilename, std::string newvolume, std::string imagendef, int numTest);
 	void computeHausdorffDistance(std::string logfilename, typename itk::Image<short int, 3>::ConstPointer a, itk::Image<short int,3>::ConstPointer b);
+    void createStats(int numLevels, std::string logfilename, std::string dir_resultados, int indexTest);
 };

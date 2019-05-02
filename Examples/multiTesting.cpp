@@ -56,7 +56,10 @@ int main(int argc, char *argv[]){
 	char *target_volume = NULL;
 	
 	//Bandera de Comparacion de Volumenes
-	bool comparevolumes = false;	 
+    bool comparevolumes = false;
+
+    //Bandera de Escritura de Estadisticas
+    bool writestatistics = false;
 	//Bandera de lectura satisfactoria
 	bool ok;
 
@@ -136,6 +139,13 @@ int main(int argc, char *argv[]){
 			comparevolumes = true;
 		}
 
+        if((ok == false) && (strcmp(argv[1], "-writeStatistics") == 0))
+        {
+            argc--; argv++;
+            ok = true;
+            writestatistics = true;
+        }
+
 	}
 
 	ScriptBuilder *scriptbuilder = new ScriptBuilder();
@@ -145,6 +155,15 @@ int main(int argc, char *argv[]){
 	scriptbuilder->setRotation(rx,ry,rz);
 	scriptbuilder->setTranslation(tx,ty,tz);
 	scriptbuilder->setScale(sg);
+
+    //Asignacion de banderas para comparacion de volumenes y estadisticas
+    if(comparevolumes){
+        scriptbuilder->setCompareVols(true);
+    }
+    if(writestatistics){
+        scriptbuilder->setWriteStatistics(true);
+    }
+    //Creacion de Imagenes Deformadas
 	scriptbuilder->asignarScript("CreateImageSetSimilarity");	
 	scriptbuilder->buildScript();	
 	
@@ -201,9 +220,6 @@ int main(int argc, char *argv[]){
 		//Generar el registro de imagenes
 		scriptbuilder->asignarScript("MultiImageRegistration");
 		//Comparacion de Volumenes solo en caso que este activado
-		if(comparevolumes){
-			scriptbuilder->setCompareVols(true);
-		}
 		scriptbuilder->buildScript();
 		
 		//Obtener las lineas correspondientes a la distancia de hausdorff
