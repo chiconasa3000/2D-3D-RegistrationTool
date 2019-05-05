@@ -44,6 +44,14 @@ void ScriptBuilder::setTranslation(float tx, float ty, float tz){
 	trasVol[2] = tz;
 }
 
+void ScriptBuilder::setCompareVols(bool flagCompVols){
+	this->compareVols = flagCompVols;
+}
+
+void ScriptBuilder::setWriteStatistics(bool flagWriteStast){
+    this->writestatistics = flagWriteStast;
+}
+
 void ScriptBuilder::asignarScript(string nombreScript){
 
     if(nombreScript.compare("MultiImageRegistration")==0){
@@ -67,17 +75,18 @@ void ScriptBuilder::buildScript(){
 
 
 	if(tipoScript.compare("MultiImageRegistration")==0){
-	
+		//Creando Clase de ayuda para la comparacion de volumenes
+		Utilitarios *util = new Utilitarios();
 		//Modelo 3D a registrar
-		string movingImage = origin_volume + " ";
+		string movingImage = "-movingImage " +origin_volume + " ";
 		comman += movingImage;
 
 		//Nro de imagenes a registrar
-		string numImages = "2 ";
+		string numImages = "-numFixedImages 2 ";
 		comman += numImages;
 
 		//1er Imagen 2D Fija (DRR o imagen virtual)
-		string fixed1Image = "../outputData/virtualImages/pelvisHealthy_ap_"+to_string(indexTest)+".mha ";
+		string fixed1Image = "-f0 ../outputData/virtualImages/pelvisHealthy_ap_"+to_string(indexTest)+".mha ";
 		comman += fixed1Image;
 
 		//Punto Focal de la 1era Imagen 2D
@@ -85,7 +94,7 @@ void ScriptBuilder::buildScript(){
 		comman += focal1Point;
 
 		//2da Imagen 2D Fija (DRR o imagen virtual)
-		string fixed2Image = "../outputData/virtualImages/pelvisHealthy_ml_"+to_string(indexTest)+".mha ";
+		string fixed2Image = "-f1 ../outputData/virtualImages/pelvisHealthy_ml_"+to_string(indexTest)+".mha ";
 		comman += fixed2Image;
 
 		//Punto Focal de la 2da Imagen 2D
@@ -93,62 +102,56 @@ void ScriptBuilder::buildScript(){
 		comman += focal2Point;
 
 		//Tolerancia de la metrica para terminar la optimización
-		string stepTolerance = "0.02 ";
+		string stepTolerance = "-steptolerance 0.02 ";
 		comman += stepTolerance;
 
 		//Tamanio de Paso
-		string stepSize = "4.0 ";
+		string stepSize = "-stepsize 4.0 ";
 		comman += stepSize;
 
 		//Nro de Niveles de Resolucion y 
 		//sus respectivos factores de escala en cada nivel de resolución
-		//string schedule = "4 6 4 2 1 ";
-		string schedule = "4 6 3 2 1 ";
+        int nroLevels = 4;
+        string numLevels = "-numLevels "+std::to_string(nroLevels)+" ";
+        comman += numLevels;
+
+		string schedule = "-schedule 6 3 2 1 ";
 		comman += schedule;
 
 		//TODO: Create Directory for every test
 		//Directorio de Salida de los resultados del registro
-		string outputDir ="../outputData/resultsReg_"+to_string(indexTest) + " ";
+		string strDir = "../outputData/resultsReg_"+to_string(indexTest);
+		string outputDir ="-outputDirectory " + strDir + " ";
 		comman += outputDir;
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
-		string nameLogRegistro;
-		string cabezera = "LogMultiImageRegistration_"+to_string(indexTest);
-		nameLogRegistro += cabezera;
+		string nameLogRegistro = "LogMultiImageRegistration_"+to_string(indexTest);
 
-		//datos adicionales en el nombre del archivo a LogRegisterIteration
-
-		//LogRegisterIteration + numero de imagenes
-		replace(numImages.begin(), numImages.end(), ' ', '_');
-		nameLogRegistro += numImages;
-
-		//LogRegisterIteration + numero de imagenes + step tolerance
-        replace(stepTolerance.begin(), stepTolerance.end(), ' ', '_');
-		nameLogRegistro += stepTolerance;
-
-		//LogRegisterIteration + numero de imagenes + step tolerance + size step
-		replace(stepSize.begin(), stepSize.end(), ' ', '_');
-		nameLogRegistro += stepSize;
-
-		//LogRegisterIteration + numero de imagenes + step tolerance + size step + schedule
-		replace(schedule.begin(), schedule.end(), ' ', '_');
-		nameLogRegistro +=  schedule;
-		nameLogRegistro += ".txt";
-
-        replace(outputDir.begin(), outputDir.end(), ' ', '/');
 		//Nombre del Archivo de Registro
-        string logFileName = outputDir + nameLogRegistro + " ";
+		string logFileName = "-logfilename " + strDir +"/"+ nameLogRegistro + " ";
 		comman += logFileName;	
+
+		string activeNewVol = "-writeFinalVol ";
+		comman += activeNewVol;
+
+        //string activeStatistics = "-writeStatistics ";
+        //comman += activeStatistics;
 		
-        //Ejecución de POPEN
-        //Para conseguir el stream cuando ejecutamos el comando que hemos construido
-        GetStdoutFromCommand(comman);
-		//Escribiendo el archivo con el stream del comando ejecutado
-		//ofstream out(outputDir+"/" + nameLogRegistro);
-		//out << outputTextRegistration << endl;
-		//out.close();
 
-
+		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
+		GetStdoutFromCommand(comman);
+        string fileNuevoVolumen = "../outputData/resultsReg_";
+        string fileDeforVolumen = "../outputData/ImagesDefs/Images/";
+        string logFileNameTest = strDir + "/" + nameLogRegistro;
+		//El volumen reconstruido, la distancia de housdorff y las estadisticas
+		//seran activadas ya que requiere una carga adicional para el registro
+		if(compareVols){
+			util->compareVols(logFileNameTest, fileNuevoVolumen, fileDeforVolumen, indexTest);
+        }
+        if(writestatistics){
+            util->createStats(nroLevels, logFileNameTest, fileNuevoVolumen, indexTest);
+        }
+		
 	}else if(tipoScript.compare("CreateImageSetSimilarity")==0){
 		//Activar modo Verbose
 		comman += "-v ";
@@ -174,7 +177,7 @@ void ScriptBuilder::buildScript(){
 		comman += "-sg "+ to_string(generalScale)+" ";
 		
 		//Modelo 3D a registrar
-        string movingImage = "-inputVol " + target_volume + " ";
+        	string movingImage = "-inputVol " + target_volume + " ";
 		comman += movingImage;
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
@@ -193,12 +196,12 @@ void ScriptBuilder::buildScript(){
 		//ofstream out(outputDir + nameLogRegistro);
 		//out << outputTextRegistration << endl;
 		//out.close();
-		
+	
 		//Ejecución de POPEN
 		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
 		GetStdoutFromCommand(comman);
 
-
+		
 
 
 	}else if(tipoScript.compare("genVirtualImage")==0){
@@ -236,10 +239,10 @@ void ScriptBuilder::buildScript(){
 			comman += puntoFocal;
 
 			//Tamanio de la Image Virtual
-			tamanio = "-size 452 225 ";
+			tamanio = "-size 334 214 ";
 			comman += tamanio;
 			//Resolucion de la Imagen Virtual
-			resolucionImagen = "-res 0.6641 1 ";
+			resolucionImagen = "-res 1 1 ";
 			comman += resolucionImagen;
 
 			//Nombre de la Imagen Virtual
@@ -262,10 +265,10 @@ void ScriptBuilder::buildScript(){
 			comman += puntoFocal;
 
 			//Tamanio de la Image Virtual
-			tamanio = "-size 253 225 ";
+			tamanio = "-size 179 214 ";
 			comman += tamanio;
 			//Resolucion de la Imagen Virtual
-			resolucionImagen = "-res 0.6641 1 ";
+			resolucionImagen = "-res 1 1 ";
 			comman += resolucionImagen;
 
 			//Nombre de la Imagen Virtual
@@ -279,7 +282,7 @@ void ScriptBuilder::buildScript(){
 		}
 
 		//Umbral de Hounsfield
-		string threshold = "-threshold 0 ";
+		string threshold = "-threshold 100 ";
 		comman += threshold;
 
 		//Volumen de Entrada

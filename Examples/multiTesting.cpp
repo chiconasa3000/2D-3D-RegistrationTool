@@ -6,7 +6,6 @@
 #include <sstream>
 #include "scriptBuilder.h"
 #include <itkTransformFileReader.h>
-#include "utils.h"
 #include <fstream>
 #include "itkTimeProbe.h"
 
@@ -21,7 +20,10 @@ using namespace std;
 
 
 int main(int argc, char *argv[]){	
-
+	
+	//Acumulador de distancia de hausdorff
+	float hausdorffDistanceValue = 0.0;
+	float hausdorffDistanceAcum = 0.0;
 	//Valores de entrada para la transformacion inicial
 	float rx = 0.0;
 	float ry = 0.0;
@@ -52,7 +54,12 @@ int main(int argc, char *argv[]){
 	
 	//Volumen Movible:
 	char *target_volume = NULL;
-	 
+	
+	//Bandera de Comparacion de Volumenes
+    bool comparevolumes = false;
+
+    //Bandera de Escritura de Estadisticas
+    bool writestatistics = false;
 	//Bandera de lectura satisfactoria
 	bool ok;
 
@@ -125,6 +132,19 @@ int main(int argc, char *argv[]){
 			origin_volume = argv[1];
 			argc--; argv++;
 		}
+		if((ok == false) && (strcmp(argv[1], "-compareVols") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			comparevolumes = true;
+		}
+
+        if((ok == false) && (strcmp(argv[1], "-writeStatistics") == 0))
+        {
+            argc--; argv++;
+            ok = true;
+            writestatistics = true;
+        }
 
 	}
 
@@ -135,10 +155,23 @@ int main(int argc, char *argv[]){
 	scriptbuilder->setRotation(rx,ry,rz);
 	scriptbuilder->setTranslation(tx,ty,tz);
 	scriptbuilder->setScale(sg);
+
+    //Asignacion de banderas para comparacion de volumenes y estadisticas
+    if(comparevolumes){
+        scriptbuilder->setCompareVols(true);
+    }
+    if(writestatistics){
+        scriptbuilder->setWriteStatistics(true);
+    }
+    //Creacion de Imagenes Deformadas
 	scriptbuilder->asignarScript("CreateImageSetSimilarity");	
 	scriptbuilder->buildScript();	
+	
 
-
+	//Archivo log para los valores de distancia de hausdorff
+	ofstream hausdorffDistances;
+	hausdorffDistances.open("HausdorffDistances.txt");
+	//Archivo log para los errores de parametros de transformacion	
 	ofstream myfile;
 	myfile.open("RMSE_Registro.txt");	
 
@@ -186,7 +219,33 @@ int main(int argc, char *argv[]){
 
 		//Generar el registro de imagenes
 		scriptbuilder->asignarScript("MultiImageRegistration");
+		//Comparacion de Volumenes solo en caso que este activado
 		scriptbuilder->buildScript();
+		
+		//Obtener las lineas correspondientes a la distancia de hausdorff
+		std::string nameLogRegistro = "LogMultiImageRegistration_"+to_string(currentIndexTest);
+		std::string logfilename = "../outputData/resultsReg_"+to_string(currentIndexTest) + "/" + nameLogRegistro; 
+		
+		FILE * stream; //salida en el cmd
+		const int max_buffer = 6; //nro de cifras del valor de hausdorff
+		char buffer[max_buffer]; //string que guarda el valor de hausdorff
+		std::string cmdDistHauss = "cat " + logfilename + " | tail -n 1 | awk '{print $2}'"; 
+		cmdDistHauss.append(" 2>&1");
+		//Ejecucion y lectura del comando: Save Hausdorff Distance Value
+		stream = popen(cmdDistHauss.c_str(),"r");
+		//La lectura es una sola vez
+		if(stream && fgets(buffer, max_buffer, stream) != NULL){
+			//agregamos el valor al actual acumulador de hausdorff distance
+ 			hausdorffDistanceValue = atof(buffer);
+			hausdorffDistanceAcum += hausdorffDistanceValue;
+		}
+
+		//Almacenamos el actual valor de hausdorff en un archivo
+		//std::string cmdDistHauss("cat " + logfilename + " | tail -n 1 | awk '{print $2}' >> valuesHaussdorffDistance.txt");
+		//std::system(cmdDistHauss.c_str());
+		hausdorffDistances << "HaussDist "<< currentIndexTest << " : " << hausdorffDistanceValue << std::endl;	
+
+
 
 		//Leer Transformacion de Salida
 
@@ -217,11 +276,9 @@ int main(int argc, char *argv[]){
 		std::cout<< baseTransform->GetParameters() << std::endl;
 
 		//adaptar los euler a su forma versor
-		//Utilitarios * util = new Utilitarios();
-
 		//double vx,vy,vz,newangle;
 		//util->unirVectorWithAngle(rx,ry,rz,vx,vy,vz,newangle);
-		
+				
 		double t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
 
 		t_rx = pow(baseTransform_2->GetParameters()[0] - baseTransform->GetParameters()[0],2.0);
@@ -241,21 +298,7 @@ int main(int argc, char *argv[]){
 		ty_error += t_ty;
 		tz_error += t_tz;
 		sg_error += t_sg;
-
-
-		//std::cout << "newangle versor: " << newangle << std::endl;	
-		/*
-		std::cout << "rx_error: " << rx_error << std::endl;
-		std::cout << "ry_error: " << ry_error << std::endl;
-		std::cout << "rz_error: " << rz_error << std::endl;
-
-		std::cout << "tx_error: " << tx_error << std::endl;
-		std::cout << "ty_error: " << ty_error << std::endl;
-		std::cout << "tz_error: " << tz_error << std::endl;
-
-		std::cout << "sg_error: " << sg_error << std::endl;
-		*/
-		
+			
 		myfile << "Registro num " << currentIndexTest << std::endl;	
 		myfile << "rx_error: " << t_rx << std::endl;
 		myfile << "ry_error: " << t_ry << std::endl;
@@ -267,19 +310,11 @@ int main(int argc, char *argv[]){
 
 		myfile << "sg_error: " << t_sg << std::endl;
 		myfile << std::endl;
-
-
-
+		
 	}
-	/*
-	std::cout << "Rx_final_Error: " << sqrt(rx_error/numImagenes) << std::endl;
-	std::cout << "Ry_final_Error: " << sqrt(ry_error/numImagenes) << std::endl;
-	std::cout << "Rz_final_Error: " << sqrt(rz_error/numImagenes) << std::endl;
-	std::cout << "Tx_final_Error: " << sqrt(tx_error/numImagenes) << std::endl;
-	std::cout << "Ty_final_Error: " << sqrt(ty_error/numImagenes) << std::endl;
-	std::cout << "Tz_final_Error: " << sqrt(tz_error/numImagenes) << std::endl;
-	std::cout << "Sg_final_Error: " << sqrt(sg_error/numImagenes) << std::endl;
-	*/
+	
+	hausdorffDistanceAcum /= numImagenes;
+	hausdorffDistances << "AverageTestHausdorffDistance: "<< hausdorffDistanceAcum;
 	myfile << "Rx_final_Error: " << sqrt(rx_error/numImagenes) << std::endl;
 	myfile << "Ry_final_Error: " << sqrt(ry_error/numImagenes) << std::endl;
 	myfile << "Rz_final_Error: " << sqrt(rz_error/numImagenes) << std::endl;
@@ -291,7 +326,7 @@ int main(int argc, char *argv[]){
 	cputimer.Stop();
 	
 	myfile << "Registrations took " << cputimer.GetMean() << " seconds.\n" << std::endl;
-
-
+	hausdorffDistances.close();
+	myfile.close();
 	return 0;
 }

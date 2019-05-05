@@ -599,8 +599,8 @@ int main(int argc, char *argv[]){
 			std::cerr << err << std::endl; 
 		} 
 	}
+	timer.ExpandedReport(logregistro);	
 	logregistro.close();
-	timer.Report();
 	return 0;
 }
 
