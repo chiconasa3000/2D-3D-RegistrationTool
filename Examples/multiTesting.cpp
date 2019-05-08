@@ -51,15 +51,15 @@ int main(int argc, char *argv[]){
 
 	//Volumen Referencia : InputData
 	char *origin_volume = NULL;
-	
+
 	//Volumen Movible:
 	char *target_volume = NULL;
-	
-	//Bandera de Comparacion de Volumenes
-    bool comparevolumes = false;
 
-    //Bandera de Escritura de Estadisticas
-    bool writestatistics = false;
+	//Bandera de Comparacion de Volumenes
+	bool comparevolumes = false;
+
+	//Bandera de Escritura de Estadisticas
+	bool writestatistics = false;
 	//Bandera de lectura satisfactoria
 	bool ok;
 
@@ -156,25 +156,29 @@ int main(int argc, char *argv[]){
 	scriptbuilder->setTranslation(tx,ty,tz);
 	scriptbuilder->setScale(sg);
 
-    //Asignacion de banderas para comparacion de volumenes y estadisticas
-    if(comparevolumes){
-        scriptbuilder->setCompareVols(true);
-    }
-    if(writestatistics){
-        scriptbuilder->setWriteStatistics(true);
-    }
-    //Creacion de Imagenes Deformadas
+	//Asignacion de banderas para comparacion de volumenes y estadisticas
+	if(comparevolumes){
+		scriptbuilder->setCompareVols(true);
+	}
+	if(writestatistics){
+		scriptbuilder->setWriteStatistics(true);
+	}
+	//Creacion de Imagenes Deformadas
 	scriptbuilder->asignarScript("CreateImageSetSimilarity");	
 	scriptbuilder->buildScript();	
-	
+
 
 	//Archivo log para los valores de distancia de hausdorff
 	ofstream hausdorffDistances;
-	hausdorffDistances.open("HausdorffDistances.txt");
+	hausdorffDistances.open("../outputData/HausdorffDistances.txt");
 	//Archivo log para los errores de parametros de transformacion	
 	ofstream myfile;
-	myfile.open("RMSE_Registro.txt");	
+	myfile.open("../outputData/RMSE_Registro.txt");	
+	
+	//utilitarios para la creacion de estadisticas	
+	Utilitarios *utils = new Utilitarios();
 
+	
 	itk::TimeProbe cputimer;
 	cputimer.Start();
 	//Recorrer el numero de pruebas
@@ -222,7 +226,8 @@ int main(int argc, char *argv[]){
 		//Comparacion de Volumenes solo en caso que este activado
 		scriptbuilder->buildScript();
 		
-		//Obtener las lineas correspondientes a la distancia de hausdorff
+		//Lectura de las Distancias de Hausdorff de cada registro dentro del archivo Log
+		
 		std::string nameLogRegistro = "LogMultiImageRegistration_"+to_string(currentIndexTest);
 		std::string logfilename = "../outputData/resultsReg_"+to_string(currentIndexTest) + "/" + nameLogRegistro; 
 		
@@ -244,7 +249,6 @@ int main(int argc, char *argv[]){
 		//std::string cmdDistHauss("cat " + logfilename + " | tail -n 1 | awk '{print $2}' >> valuesHaussdorffDistance.txt");
 		//std::system(cmdDistHauss.c_str());
 		hausdorffDistances << "HaussDist "<< currentIndexTest << " : " << hausdorffDistanceValue << std::endl;	
-
 
 
 		//Leer Transformacion de Salida
@@ -278,18 +282,52 @@ int main(int argc, char *argv[]){
 		//adaptar los euler a su forma versor
 		//double vx,vy,vz,newangle;
 		//util->unirVectorWithAngle(rx,ry,rz,vx,vy,vz,newangle);
-				
+		
+		double gt_rx, gt_ry, gt_rz, gt_tx, gt_ty, gt_tz, gt_sg, rg_rx, rg_ry, rg_rz, rg_tx, rg_ty, rg_tz, rg_sg;		
+		//Captura de valores de transformacion
+		gt_rx = baseTransform_2->GetParameters()[0];
+		gt_ry = baseTransform_2->GetParameters()[1];
+		gt_rz = baseTransform_2->GetParameters()[2];
+		gt_tx = baseTransform_2->GetParameters()[3];
+		gt_ty = baseTransform_2->GetParameters()[4];
+		gt_tz = baseTransform_2->GetParameters()[5];
+		gt_sg = baseTransform_2->GetParameters()[6];
+	
+		rg_rx = baseTransform->GetParameters()[0];
+		rg_ry = baseTransform->GetParameters()[1];
+		rg_rz = baseTransform->GetParameters()[2];
+		rg_tx = baseTransform->GetParameters()[3];
+		rg_ty = baseTransform->GetParameters()[4];
+		rg_tz = baseTransform->GetParameters()[5];
+		rg_sg = baseTransform->GetParameters()[6];
+		
+		//Archivo log de cada test para almacenar los valores de los parametros de transformacion el antes y el despues
+		string filenameTransValue = "../outputData/valueTransf" + cindex + ".txt";
+		ofstream fileTransValue;
+		fileTransValue.open(filenameTransValue);
+
+		//Escritura de los valores de los parametros de transformacion
+		fileTransValue << "#\tGroundTruth\tRegistration"<<std::endl;
+		fileTransValue << "Rx\t" + to_string(gt_rx) + "\t" + to_string(rg_rx) << std::endl;
+		fileTransValue << "Ry\t" + to_string(gt_ry) + "\t" + to_string(rg_ry) << std::endl;
+		fileTransValue << "Rz\t" + to_string(gt_rz) + "\t" + to_string(rg_rz) << std::endl;
+		fileTransValue << "Tx\t" + to_string(gt_tx) + "\t" + to_string(rg_tx) << std::endl;
+		fileTransValue << "Ty\t" + to_string(gt_ty) + "\t" + to_string(rg_ty) << std::endl;
+		fileTransValue << "Tz\t" + to_string(gt_tz) + "\t" + to_string(rg_tz) << std::endl;
+		fileTransValue << "Sg\t" + to_string(gt_sg) + "\t" + to_string(rg_sg) << std::endl;
+		fileTransValue.close();
+
 		double t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
 
-		t_rx = pow(baseTransform_2->GetParameters()[0] - baseTransform->GetParameters()[0],2.0);
-		t_ry = pow(baseTransform_2->GetParameters()[1] - baseTransform->GetParameters()[1],2.0);
-		t_rz = pow(baseTransform_2->GetParameters()[2] - baseTransform->GetParameters()[2],2.0);
+		t_rx = pow(gt_rx - rg_rx, 2.0);
+		t_ry = pow(gt_ry - rg_ry, 2.0);
+		t_rz = pow(gt_rz - rg_rz, 2.0);
 
-		t_tx = pow(baseTransform_2->GetParameters()[3] - baseTransform->GetParameters()[3],2.0);
-		t_ty = pow(baseTransform_2->GetParameters()[4] - baseTransform->GetParameters()[4],2.0);
-		t_tz = pow(baseTransform_2->GetParameters()[5] - baseTransform->GetParameters()[5],2.0);
+		t_tx = pow(gt_tx - rg_tx, 2.0);
+		t_ty = pow(gt_ty - rg_ty, 2.0);
+		t_tz = pow(gt_tz - rg_tz, 2.0);
 
-		t_sg = pow(baseTransform_2->GetParameters()[6]- baseTransform->GetParameters()[6],2.0);
+		t_sg = pow(gt_sg - rg_sg, 2.0);
 		
 		rx_error += t_rx;
 		ry_error += t_ry;
@@ -311,8 +349,12 @@ int main(int argc, char *argv[]){
 		myfile << "sg_error: " << t_sg << std::endl;
 		myfile << std::endl;
 		
-	}
+		//Generar las graficas de valores de transformacion por cada prueba
+		std::string dirres = "../outputData/resultsReg_"+to_string(currentIndexTest) + "/"; 
+		utils->createStatsOfTransValues(dirres,filenameTransValue,currentIndexTest);
 	
+	}
+
 	hausdorffDistanceAcum /= numImagenes;
 	hausdorffDistances << "AverageTestHausdorffDistance: "<< hausdorffDistanceAcum;
 	myfile << "Rx_final_Error: " << sqrt(rx_error/numImagenes) << std::endl;

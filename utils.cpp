@@ -231,3 +231,51 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
     }
 }
 
+void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfilename,int numTest){
+
+	std::string data;
+	FILE * stream; //salida en el cmd
+	const int max_buffer = 20; //nro de cifras del valor de hausdorff
+	char buffer[max_buffer]; //string que guarda el valor de hausdorff
+	std::string cmdDistHauss = "cat " + logfilename + " | sed 2,4d"; 
+	cmdDistHauss.append(" 2>&1");
+	//Ejecucion y lectura del comando: Save Hausdorff Distance Value
+	stream = popen(cmdDistHauss.c_str(),"r");
+	//La lectura es una sola vez
+	if(stream)
+		while(!feof(stream)) 
+			if(fgets(buffer, max_buffer, stream) != NULL){
+				//agregamos el valor al actual acumulador de hausdorff distance
+				data.append(buffer);
+			}
+		pclose(stream);
+	//Esta data debera ser incluida en el comando del plot
+	 //writing the plot with respective logfile
+        std::string namePlotFile( dirRes + "plotValueTrans" + std::to_string(numTest) + ".gnup");
+
+        std::ofstream plot_temp(namePlotFile);
+        plot_temp << "set terminal postscript color" << "\n";
+        plot_temp << "set output \"" + dirRes + "ValueTraslationScale"+std::to_string(numTest)+".eps\""<<"\n";
+	
+	plot_temp << "green = \"#80bfaa\"; skyblue = \"#55a0d5\"";
+	plot_temp << "set yrange [-20:20]";
+		
+	plot_temp << "set style data histogram";
+	plot_temp << "set style histogram cluster gap 1";
+	plot_temp << "set style fill solid";
+	plot_temp << "set boxwidth 0.9";
+	plot_temp << "set xtics format \"\"";
+	plot_temp << "set grid ytics";
+	plot_temp << "set ylabel \"Valor de Parametros de Transformacion (mm)\"";
+	plot_temp << "set xlabel \"Parametros de Traslacion y Escala\"";
+	plot_temp << "set title \"Diferencia entre los valores del GroundTruth y el de Registro de los Parametros de Transformacion\"";
+	
+
+
+        plot_temp.close();
+
+        std::string nameCmdPlot("gnuplot " + namePlotFile);
+        std::system(nameCmdPlot.c_str());
+	
+}
+
