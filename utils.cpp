@@ -256,25 +256,27 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
         std::ofstream plot_temp(namePlotFile);
         plot_temp << "set terminal postscript color" << "\n";
         plot_temp << "set output \"" + dirRes + "ValueTraslationScale"+std::to_string(numTest)+".eps\""<<"\n";
-	
-	plot_temp << "green = \"#80bfaa\"; skyblue = \"#55a0d5\"";
-	plot_temp << "set yrange [-20:20]";
-		
-	plot_temp << "set style data histogram";
-	plot_temp << "set style histogram cluster gap 1";
-	plot_temp << "set style fill solid";
-	plot_temp << "set boxwidth 0.9";
-	plot_temp << "set xtics format \"\"";
-	plot_temp << "set grid ytics";
-	plot_temp << "set ylabel \"Valor de Parametros de Transformacion (mm)\"";
-	plot_temp << "set xlabel \"Parametros de Traslacion y Escala\"";
-	plot_temp << "set title \"Diferencia entre los valores del GroundTruth y el de Registro de los Parametros de Transformacion\"";
-	
+	plot_temp << "green = \"#80bfaa\"; skyblue = \"#55a0d5\""<<"\n";
+	plot_temp << "set yrange [-20:20]"<<"\n";	
+	plot_temp << "set style data histogram"<<"\n";
+	plot_temp << "set style histogram cluster gap 1"<<"\n";
+	plot_temp << "set style fill solid"<<"\n";
+	plot_temp << "set boxwidth 0.9"<<"\n";
+	plot_temp << "set xtics format \"\""<<"\n";
+	plot_temp << "set grid ytics"<<"\n";
+	plot_temp << "set ylabel \"Valor de Parametros de Transformacion (mm)\""<<"\n";
+	plot_temp << "set xlabel \"Parametros de Traslacion y Escala\""<<"\n";
+	plot_temp << "set title \"Diferencia entre los valores del GroundTruth y el de Registro de los Parametros de Transformacion\""<<"\n";
+	plot_temp << "plot \"-\" using 2:xtic(1) with histogram title \"GroundTruth\" linecolor rgb green, \\"<<"\n";
+	plot_temp << "'' using 3 with histogram title \"Registration\" linecolor rgb skyblue, \\"<<"\n";
+	plot_temp << "'' u 0:2:2 with labels font \"Helvetica, 10\" offset char -3,0.5 title \"\", \\"<<"\n";
+	plot_temp << "'' u 0:3:3 with labels font \"Helvetica, 10\" offset char 3,0.5 title \"\" \\"<<"\n";
+	//aqui es lo diferente para cada archivo las 3 ultimas lineas
+	//lo demas se repite auque seria bueno solo modificar esto.
+	plot_temp << data; 
+	plot_temp.close();
 
-
-        plot_temp.close();
-
-        std::string nameCmdPlot("gnuplot " + namePlotFile);
+	std::string nameCmdPlot("gnuplot " + namePlotFile);
         std::system(nameCmdPlot.c_str());
 	
 }
