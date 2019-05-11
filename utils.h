@@ -25,4 +25,6 @@ public:
 	void createStatsOfTransValues(std::string dirres,std::string logfilename,int numTest);
 	void getBaseElementsVersor(double &vx, double &vy, double &vz, double &rx, double &ry, double &rz);
 
+	void createStatsOfErrors(int numTest);
+
 };

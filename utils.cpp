@@ -280,3 +280,21 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 	
 }
 
+
+void Utilitarios::createStatsOfErrors(int numImags){
+	int numColsPlot = numImags + 1;
+	std::string fixNumColsCmd("");
+	fixNumColsCmd += "sed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"]' ../cmdPlots/spyder4.gnup"; 
+	std::system(fixNumColsCmd.c_str());
+	
+	std::string fileoutput("");
+	fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%.eps\",tag)'";	
+	std::system(fileoutput.c_str());
+	
+	//writing the plot with respective logfile
+        std::string namePlotFile("../cmdPlots/spyder4.gnup");
+	std::string nameCmdPlot("gnuplot " + namePlotFile);
+        std::system(nameCmdPlot.c_str());
+	
+}
+

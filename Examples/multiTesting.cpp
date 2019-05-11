@@ -395,8 +395,10 @@ int main(int argc, char *argv[]){
 
 	cputimer.Stop();
 
-	myfile << "Registrations took " << cputimer.GetMean() << " seconds.\n" << std::endl;
+	//myfile << "Registrations took " << cputimer.GetMean() << " seconds.\n" << std::endl;
 	hausdorffDistances.close();
 	myfile.close();
+	//Una vez creado el archivo de errores Podemos llamar al plot
+	utils->createStatsOfErrors(numImagenes);
 	return 0;
 }
