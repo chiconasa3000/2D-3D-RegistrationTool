@@ -3,6 +3,8 @@
 The Most Beautiful Tool to Understand or Realize the registration on medical images
 2D/3D Registration using itk framework
 
+ ![Image of Yaktocat](https://drive.google.com/drive/u/0/folders/1Dve-bJEHJTk7PDzOQj9U85eVQPJyIpjUi)
+
 ## Test registration process by default using all specific commands
 
 ```
