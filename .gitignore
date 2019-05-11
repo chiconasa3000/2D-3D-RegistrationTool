@@ -16,3 +16,4 @@ mydebug
 GenDRRs/*.DS_Store
 *.swp
 inputData/ImagesDefs/*
+inputData/brokenPelvisCenteredScale.mha
