@@ -177,7 +177,21 @@ int main(int argc, char *argv[]){
 	//utilitarios para la creacion de estadisticas	
 	Utilitarios *utils = new Utilitarios();
 
-	
+	//Buffer para acumular etiquetas de errores
+	std::string srx="", sry="", srz="", stx="", sty="", stz="", ssg="",csrx="";	
+	std::string etq="";
+	//Cabezeras iniciales en el log de errores
+	etq += "#Level\t#Test";	
+	srx += "Rotx\t1";
+	sry += "Roty\t2";
+	srz += "Rotz\t3";
+	stx += "Trax\t4";
+	sty += "Tray\t5";
+	stz += "Traz\t6";
+	ssg += "Sca\t7";
+	csrx += "Rotx\t1";
+
+
 	itk::TimeProbe cputimer;
 	cputimer.Start();
 	//Recorrer el numero de pruebas
@@ -339,18 +353,16 @@ int main(int argc, char *argv[]){
 		ty_error += t_ty;
 		tz_error += t_tz;
 		sg_error += t_sg;
-			
-		myfile << "Registro num " << currentIndexTest << std::endl;	
-		myfile << "rx_error: " << t_rx << std::endl;
-		myfile << "ry_error: " << t_ry << std::endl;
-		myfile << "rz_error: " << t_rz << std::endl;
-
-		myfile << "tx_error: " << t_tx << std::endl;
-		myfile << "ty_error: " << t_ty << std::endl;
-		myfile << "tz_error: " << t_tz << std::endl;
-
-		myfile << "sg_error: " << t_sg << std::endl;
-		myfile << std::endl;
+		
+		etq  = etq + "\t" + "#Error" + cindex;		
+		srx += "\t" + std::to_string(t_rx);	
+		sry += "\t" + std::to_string(t_ry);		
+		srz += "\t" + std::to_string(t_rz);
+		stx += "\t" + std::to_string(t_tx);
+		sty += "\t" + std::to_string(t_ty);
+		stz += "\t" + std::to_string(t_tz);
+		ssg += "\t" + std::to_string(t_sg);		
+		csrx += "\t" + std::to_string(t_rx);	
 		
 		//Generar las graficas de valores de transformacion por cada prueba
 		std::string dirres = "../outputData/resultsReg_"+to_string(currentIndexTest) + "/"; 
@@ -360,16 +372,29 @@ int main(int argc, char *argv[]){
 
 	hausdorffDistanceAcum /= numImagenes;
 	hausdorffDistances << "AverageTestHausdorffDistance: "<< hausdorffDistanceAcum;
-	myfile << "Rx_final_Error: " << sqrt(rx_error/numImagenes) << std::endl;
-	myfile << "Ry_final_Error: " << sqrt(ry_error/numImagenes) << std::endl;
-	myfile << "Rz_final_Error: " << sqrt(rz_error/numImagenes) << std::endl;
-	myfile << "Tx_final_Error: " << sqrt(tx_error/numImagenes) << std::endl;
-	myfile << "Ty_final_Error: " << sqrt(ty_error/numImagenes) << std::endl;
-	myfile << "Tz_final_Error: " << sqrt(tz_error/numImagenes) << std::endl;
-	myfile << "Sg_final_Error: " << sqrt(sg_error/numImagenes) << std::endl;
+	
+	etq = etq + "\t" + "#FinalError";		
+	srx += "\t" + std::to_string(sqrt(rx_error/numImagenes));	
+	sry += "\t" + std::to_string(sqrt(ry_error/numImagenes));		
+	srz += "\t" + std::to_string(sqrt(rz_error/numImagenes));
+	stx += "\t" + std::to_string(sqrt(tx_error/numImagenes));
+	sty += "\t" + std::to_string(sqrt(ty_error/numImagenes));
+	stz += "\t" + std::to_string(sqrt(tz_error/numImagenes));
+	ssg += "\t" + std::to_string(sqrt(sg_error/numImagenes));		
+	csrx += "\t" + std::to_string(sqrt(rx_error/numImagenes));
+
+	myfile << etq << std::endl;
+	myfile << srx << std::endl;
+	myfile << sry << std::endl;
+	myfile << srz << std::endl;
+	myfile << stx << std::endl;
+	myfile << sty << std::endl;
+	myfile << stz << std::endl;
+	myfile << ssg << std::endl;
+	myfile << csrx << std::endl;
 
 	cputimer.Stop();
-	
+
 	myfile << "Registrations took " << cputimer.GetMean() << " seconds.\n" << std::endl;
 	hausdorffDistances.close();
 	myfile.close();
