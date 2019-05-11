@@ -8,7 +8,6 @@
 #include <itkTransformFileReader.h>
 #include <fstream>
 #include "itkTimeProbe.h"
-
 using namespace std;
 
 
@@ -206,7 +205,6 @@ int main(int argc, char *argv[]){
 		std::cout<<"Parameters Deformed Volume Transform"<<std::endl;
 		std::cout<< baseTransform_2->GetParameters() << std::endl;
 
-
 		//Actualizando el actual index para seleccionar una especifica
 		//imagen deformada y generar especificas imagenes virtuales	
 		scriptbuilder->setIndexTest(currentIndexTest);
@@ -278,12 +276,13 @@ int main(int argc, char *argv[]){
 
 		std::cout<<"Current Parameters Transform"<<std::endl;
 		std::cout<< baseTransform->GetParameters() << std::endl;
-
+	
 		//adaptar los euler a su forma versor
 		//double vx,vy,vz,newangle;
 		//util->unirVectorWithAngle(rx,ry,rz,vx,vy,vz,newangle);
 		
-		double gt_rx, gt_ry, gt_rz, gt_tx, gt_ty, gt_tz, gt_sg, rg_rx, rg_ry, rg_rz, rg_tx, rg_ty, rg_tz, rg_sg;		
+		double gt_rx, gt_ry, gt_rz, gt_tx, gt_ty, gt_tz, gt_sg, rg_rx, rg_ry, rg_rz, rg_tx, rg_ty, rg_tz, rg_sg;	
+		double ngt_rx,ngt_ry,ngt_rz, nrg_rx, nrg_ry, nrg_rz;	
 		//Captura de valores de transformacion
 		gt_rx = baseTransform_2->GetParameters()[0];
 		gt_ry = baseTransform_2->GetParameters()[1];
@@ -292,7 +291,9 @@ int main(int argc, char *argv[]){
 		gt_ty = baseTransform_2->GetParameters()[4];
 		gt_tz = baseTransform_2->GetParameters()[5];
 		gt_sg = baseTransform_2->GetParameters()[6];
-	
+
+		//cast from versor to euler	
+		utils->getBaseElementsVersor(gt_rx, gt_ry, gt_rz, ngt_rx, ngt_ry, ngt_rz);		
 		rg_rx = baseTransform->GetParameters()[0];
 		rg_ry = baseTransform->GetParameters()[1];
 		rg_rz = baseTransform->GetParameters()[2];
@@ -300,7 +301,9 @@ int main(int argc, char *argv[]){
 		rg_ty = baseTransform->GetParameters()[4];
 		rg_tz = baseTransform->GetParameters()[5];
 		rg_sg = baseTransform->GetParameters()[6];
-		
+	
+		utils->getBaseElementsVersor(rg_rx, rg_ry, rg_rz, nrg_rx, nrg_ry, nrg_rz);	
+	
 		//Archivo log de cada test para almacenar los valores de los parametros de transformacion el antes y el despues
 		string filenameTransValue = "../outputData/valueTransf" + cindex + ".txt";
 		ofstream fileTransValue;
@@ -308,9 +311,9 @@ int main(int argc, char *argv[]){
 
 		//Escritura de los valores de los parametros de transformacion
 		fileTransValue << "#\tGroundTruth\tRegistration"<<std::endl;
-		fileTransValue << "Rx\t" + to_string(gt_rx) + "\t" + to_string(rg_rx) << std::endl;
-		fileTransValue << "Ry\t" + to_string(gt_ry) + "\t" + to_string(rg_ry) << std::endl;
-		fileTransValue << "Rz\t" + to_string(gt_rz) + "\t" + to_string(rg_rz) << std::endl;
+		fileTransValue << "Rx\t" + to_string(ngt_rx) + "\t" + to_string(nrg_rx) << std::endl;
+		fileTransValue << "Ry\t" + to_string(ngt_ry) + "\t" + to_string(nrg_ry) << std::endl;
+		fileTransValue << "Rz\t" + to_string(ngt_rz) + "\t" + to_string(nrg_rz) << std::endl;
 		fileTransValue << "Tx\t" + to_string(gt_tx) + "\t" + to_string(rg_tx) << std::endl;
 		fileTransValue << "Ty\t" + to_string(gt_ty) + "\t" + to_string(rg_ty) << std::endl;
 		fileTransValue << "Tz\t" + to_string(gt_tz) + "\t" + to_string(rg_tz) << std::endl;
@@ -319,9 +322,9 @@ int main(int argc, char *argv[]){
 
 		double t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
 
-		t_rx = pow(gt_rx - rg_rx, 2.0);
-		t_ry = pow(gt_ry - rg_ry, 2.0);
-		t_rz = pow(gt_rz - rg_rz, 2.0);
+		t_rx = pow(ngt_rx - nrg_rx, 2.0);
+		t_ry = pow(ngt_ry - nrg_ry, 2.0);
+		t_rz = pow(ngt_rz - nrg_rz, 2.0);
 
 		t_tx = pow(gt_tx - rg_tx, 2.0);
 		t_ty = pow(gt_ty - rg_ty, 2.0);

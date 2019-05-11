@@ -58,19 +58,36 @@ void Utilitarios::unirVectorWithAngle(float &rx, float &ry, float &rz, double &v
 		newangulo = cosangle;	}
 }
 
-void Utilitarios::convertVersorToEuler(float &x, float &y, float &z, float &w, float &rx, float &ry, float &rz){
+
+void Utilitarios::getBaseElementsVersor(double &vx, double &vy, double &vz, double &rx, double &ry, double &rz){
+	//Conseguir el factor K
+	double k = sqrt(pow(vx,2) + pow(vy,2) + pow(vz,2));
+	//Consiguiendo el angulo en su forma inicial
+	float angle = asin(k)*2;
+	
+	//consiguiendo los axis ejes del versor
+	float ax = vx/k;
+	float ay = vy/k;
+	float az = vz/k;
+	
+	//usar el convert Versor to Euler con los valores dados
+	convertVersorToEuler(ax,ay,az, angle, rx, ry, rz);
+		
+}
+
+void Utilitarios::convertVersorToEuler(float &x, float &y, float &z, float &w, double &rx, double &ry, double &rz){
 	float t0 = +2.0 * (w * x + y * z);
 	float t1 = +1.0 - 2.0 * (x * x + y * y);
-	rx = atan(t0/ t1);
+	rz = atan(t0/ t1);
 
 	float t2 = +2.0 * (w * y - z * x);
 	t2 = (t2 > +1.0) ? +1.0 : t2;
 	t2 = (t2 < -1.0) ? -1.0 : t2;
-	ry = asin(t2);
+	rx = asin(t2);
 
 	float t3 = +2.0 * (w * z + x * y);
 	float t4 = +1.0 - 2.0 * (y * y + z * z);
-	rz = atan(t3/ t4);
+	ry = atan(t3/ t4);
 }
 
 void Utilitarios::compareVols(std::string logfilename, std::string  dirnewvolume, std::string  dirimagedef, int indexTest){
@@ -233,24 +250,7 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
 
 void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfilename,int numTest){
 
-	std::string data;
-	FILE * stream; //salida en el cmd
-	const int max_buffer = 20; //nro de cifras del valor de hausdorff
-	char buffer[max_buffer]; //string que guarda el valor de hausdorff
-	std::string cmdDistHauss = "cat " + logfilename + " | sed 2,4d"; 
-	cmdDistHauss.append(" 2>&1");
-	//Ejecucion y lectura del comando: Save Hausdorff Distance Value
-	stream = popen(cmdDistHauss.c_str(),"r");
-	//La lectura es una sola vez
-	if(stream)
-		while(!feof(stream)) 
-			if(fgets(buffer, max_buffer, stream) != NULL){
-				//agregamos el valor al actual acumulador de hausdorff distance
-				data.append(buffer);
-			}
-		pclose(stream);
-	//Esta data debera ser incluida en el comando del plot
-	 //writing the plot with respective logfile
+	//writing the plot with respective logfile
         std::string namePlotFile( dirRes + "plotValueTrans" + std::to_string(numTest) + ".gnup");
 
         std::ofstream plot_temp(namePlotFile);
@@ -267,13 +267,12 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 	plot_temp << "set ylabel \"Valor de Parametros de Transformacion (mm)\""<<"\n";
 	plot_temp << "set xlabel \"Parametros de Traslacion y Escala\""<<"\n";
 	plot_temp << "set title \"Diferencia entre los valores del GroundTruth y el de Registro de los Parametros de Transformacion\""<<"\n";
-	plot_temp << "plot \"-\" using 2:xtic(1) with histogram title \"GroundTruth\" linecolor rgb green, \\"<<"\n";
+	plot_temp << "plot \"../outputData/valueTransf"<< std::to_string(numTest) <<".txt" <<"\" using 2:xtic(1) with histogram title \"GroundTruth\" linecolor rgb green, \\"<<"\n";
 	plot_temp << "'' using 3 with histogram title \"Registration\" linecolor rgb skyblue, \\"<<"\n";
 	plot_temp << "'' u 0:2:2 with labels font \"Helvetica, 10\" offset char -3,0.5 title \"\", \\"<<"\n";
 	plot_temp << "'' u 0:3:3 with labels font \"Helvetica, 10\" offset char 3,0.5 title \"\" \\"<<"\n";
 	//aqui es lo diferente para cada archivo las 3 ultimas lineas
 	//lo demas se repite auque seria bueno solo modificar esto.
-	plot_temp << data; 
 	plot_temp.close();
 
 	std::string nameCmdPlot("gnuplot " + namePlotFile);
