@@ -24,13 +24,13 @@ set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
 set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
 set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 
-a1_max = 7e-05 
-a2_max = 3e-06
-a3_max = 5e-07
-a4_max = 7
-a5_max = 2e-02
-a6_max = 19
-a7_max = 4e-05
+a1_max = 1 
+a2_max = 1
+a3_max = 1
+a4_max = 1
+a5_max = 1
+a6_max = 1
+a7_max = 1
 a1_min = 0
 a2_min = 0
 a3_min = 0
@@ -55,10 +55,10 @@ unset ytics
 set rrange [0:1]
 set title "Error de Parametros de Transformacion"
 
-do for [COL=3:10]
+do for [COL=3:4] {
 	tag = COL-2
-	set output sprintf("spyder%d.eps",tag)
-	plot "spyder3.dat" using \
+set output sprintf("../outputData/spyder%d.eps",tag)
+	plot "../outputData/RMSE_Registro.txt" using \
 	($2==1 ? a1:\
 	($2==2 ? a2:\
 	($2==3 ? a3:\

@@ -231,7 +231,7 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
         std::string namePlotFile(directorioResultados + "plot_temp" + std::to_string(i) + ".gnup");
 
         std::ofstream plot_temp(namePlotFile);
-        plot_temp << "set terminal postscript portrait" << "\n";
+        plot_temp << "set terminal postscript landscape" << "\n";
         plot_temp << "set xlabel \"Iteration No.\"" << "\n";
         plot_temp << "set ylabel \"NormalizedGradientCorrelation\" " << "\n";
 
@@ -254,7 +254,7 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
         std::string namePlotFile( dirRes + "plotValueTrans" + std::to_string(numTest) + ".gnup");
 
         std::ofstream plot_temp(namePlotFile);
-        plot_temp << "set terminal postscript color" << "\n";
+        plot_temp << "set terminal postscript landscape color" << "\n";
         plot_temp << "set output \"" + dirRes + "ValueTraslationScale"+std::to_string(numTest)+".eps\""<<"\n";
 	plot_temp << "green = \"#80bfaa\"; skyblue = \"#55a0d5\""<<"\n";
 	plot_temp << "set yrange [-20:20]"<<"\n";	
@@ -282,13 +282,13 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 
 
 void Utilitarios::createStatsOfErrors(int numImags){
-	int numColsPlot = numImags + 1;
+    int numColsPlot = numImags + 3;
 	std::string fixNumColsCmd("");
-	fixNumColsCmd += "sed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"]' ../cmdPlots/spyder4.gnup"; 
+	fixNumColsCmd += "sed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup"; 
 	std::system(fixNumColsCmd.c_str());
 	
 	std::string fileoutput("");
-	fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%.eps\",tag)'";	
+    fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.eps\",tag)' ../cmdPlots/spyder4.gnup";
 	std::system(fileoutput.c_str());
 	
 	//writing the plot with respective logfile
