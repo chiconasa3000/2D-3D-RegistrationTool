@@ -6,7 +6,7 @@ set style fill solid
 set title "Separacion entre el Modelo GroundTruth y el Modelo Reconstruido de diferentes Registros"
 set xlabel "Numero de Registro"
 set ylabel "Medidad de Separacion (mm)"
-plot 'hdgeneral.txt' using 4:xtic(2) with boxes notitle,\
+plot '../outputData/hdgeneral.txt' using 4:xtic(2) with boxes notitle,\
 '' u 0:4:4 with labels font "Helvetica, 10" offset char 0,0.5 notitle 
 
 

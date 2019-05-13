@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.7.0, 2019-05-11T18:51:37. -->
+<!-- Written by QtCreator 4.7.0, 2019-05-13T05:17:35. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -489,7 +489,7 @@
      <value type="int">13</value>
      <value type="int">14</value>
     </valuelist>
-    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.Arguments">-numImag 1 -originVol ../inputData/pelvisSegmIntensityLPI.mha -targetVol ../inputData/pelvisSegmIntensityLPI.mha -compareVols -writeStatistics</value>
+    <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.Arguments">-numImag 1 -originVol ../inputData/pelvisSegmIntensityLPI.mha -targetVol ../inputData/ImagesDefs/Images/hippelviswoman0.mha  -compareVols -writeStatistics</value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory"></value>
     <value type="QString" key="CMakeProjectManager.CMakeRunConfiguration.UserWorkingDirectory.default">/home/christian/framework/Cpu-midas-journal-800/mydebug</value>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>

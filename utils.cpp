@@ -300,13 +300,13 @@ void Utilitarios::createStatsOfErrors(int numImags){
 
 
 	std::string defineRange("");	
-	defineRange += "sed -e '/a1_max =/c\\a1_max = "+ std::to_string(nmaxRange) + "'"+ 
-		"-e '/a2_max =/c\\a2_max = "+ std::to_string(nmaxRange) + "'" +
-		"-e '/a3_max =/c\\a3_max = "+ std::to_string(nmaxRange) + "'" +
-		"-e '/a4_max =/c\\a4_max = "+ std::to_string(nmaxRange) + "'" +
-		"-e '/a5_max =/c\\a5_max = "+ std::to_string(nmaxRange) + "'" +
-		"-e '/a6_max =/c\\a6_max = "+ std::to_string(nmaxRange) + "'" +
-		"-e '/a7_max =/c\\a7_max = "+ std::to_string(nmaxRange) + "'" + "../cmdPlots/spyder4.gnup";
+    defineRange += "sed -i -e '/a1_max =/c\\a1_max = "+ std::to_string(nmaxRange) + "'"+
+        " -e '/a2_max =/c\\a2_max = "+ std::to_string(nmaxRange) + "'" +
+        " -e '/a3_max =/c\\a3_max = "+ std::to_string(nmaxRange) + "'" +
+        " -e '/a4_max =/c\\a4_max = "+ std::to_string(nmaxRange) + "'" +
+        " -e '/a5_max =/c\\a5_max = "+ std::to_string(nmaxRange) + "'" +
+        " -e '/a6_max =/c\\a6_max = "+ std::to_string(nmaxRange) + "'" +
+        " -e '/a7_max =/c\\a7_max = "+ std::to_string(nmaxRange) + "'" + " ../cmdPlots/spyder4.gnup";
 	std::system(defineRange.c_str());
 
 	int numColsPlot = numImags + 3;
@@ -326,7 +326,7 @@ void Utilitarios::createStatsOfErrors(int numImags){
 }
 
 void Utilitarios::createStatsBarHausdorff(){
-	std::string cmdDelLastLineHausDist("sed -n -e :a -e '1,1!{P;N;D;};N;ba' HausdorffDistances.txt > ../outputData/hdgeneral.txt");
+    std::string cmdDelLastLineHausDist("sed -n -e :a -e '1,1!{P;N;D;};N;ba' ../outputData/HausdorffDistances.txt > ../outputData/hdgeneral.txt");
 	std::system(cmdDelLastLineHausDist.c_str());
 
 	std::string namePlotFile("../cmdPlots/barhdist.gnup");
@@ -337,7 +337,7 @@ void Utilitarios::createStatsBarHausdorff(){
 
 void Utilitarios::createStatsBoxPlotsTypeTransParams(){
 	std::string cmdTransposeRMSE("");
-	cmdTransposeRMSE += "cat RMSE_Registro.txt |sed -n -e :a -e '1,1!{P;N;D;};N;ba' | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | awk -f transposeTable.awk > newRMSE_Registro.txt";
+	cmdTransposeRMSE += "cat ../outputData/RMSE_Registro.txt |sed -n -e :a -e '1,1!{P;N;D;};N;ba' | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | awk -f transposeTable.awk > ../outputData/newRMSE_Registro.txt";
 	std::system(cmdTransposeRMSE.c_str());
 	
 	std::string namePlotFile("../cmdPlots/boxplotTranfParams.gnup");

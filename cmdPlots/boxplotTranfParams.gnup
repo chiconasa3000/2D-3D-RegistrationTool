@@ -18,4 +18,4 @@ set title "Distribucion de Errores por Tipo de Parametro de Transformacion"
 set ylabel "Error(grados,mm,factor)"
 set xlabel "Tipo de Parametro de Transformacion"
 plot for[i=1:7] \
-'newRMSE_Registro.txt' using (i):i
+'../outputData/newRMSE_Registro.txt' using (i):i
