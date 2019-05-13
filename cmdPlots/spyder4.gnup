@@ -1,4 +1,5 @@
-set terminal postscript portrait
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "spyderplot" butt dashlength 1.0
+
 set polar
 set angles degrees
 
@@ -24,13 +25,13 @@ set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
 set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
 set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 
-a1_max = 13.140000
-a2_max = 13.140000
-a3_max = 13.140000
-a4_max = 13.140000
-a5_max = 13.140000
-a6_max = 13.140000
-a7_max = 13.140000
+a1_max = 14.550000
+a2_max = 14.550000
+a3_max = 14.550000
+a4_max = 14.550000
+a5_max = 14.550000
+a6_max = 14.550000
+a7_max = 14.550000
 a1_min = 0
 a2_min = 0
 a3_min = 0
@@ -57,7 +58,7 @@ set title "Error de Parametros de Transformacion"
 
 do for [COL=3:4] {
 	tag = COL-2
-set output sprintf("../outputData/spyder%d.eps",tag)
+set output sprintf("../outputData/spyder%d.svg",tag)
 	plot "../outputData/RMSE_Registro.txt" using \
 	($2==1 ? a1:\
 	($2==2 ? a2:\

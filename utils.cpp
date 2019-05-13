@@ -231,11 +231,11 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
         std::string namePlotFile(directorioResultados + "plot_temp" + std::to_string(i) + ".gnup");
 
         std::ofstream plot_temp(namePlotFile);
-        plot_temp << "set terminal postscript landscape" << "\n";
+        plot_temp << "set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name \"metricevolution\" butt dashlength 1.0"  << "\n";
         plot_temp << "set xlabel \"Iteration No.\"" << "\n";
         plot_temp << "set ylabel \"NormalizedGradientCorrelation\" " << "\n";
-
-        plot_temp << "set output \"" + directorioResultados + "ImageRegistrationProgressMetric"+std::to_string(i)+".eps\""<<"\n";
+	plot_temp << "set title \"Metric Evolution Level " << std::to_string(i) << "\""<<"\n";
+        plot_temp << "set output \"" + directorioResultados + "ImageRegistrationProgressMetric"+std::to_string(i)+".svg\""<<"\n";
         plot_temp << "plot \"" + nameloginLevel +
             ".txt\" using 1:2 notitle with lines lt 1, \"" + nameloginLevel +
             ".txt\" using 1:2 notitle with points lt 0 pt 12 ps 1" << "\n";
@@ -253,9 +253,9 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 	//writing the plot with respective logfile
         std::string namePlotFile( dirRes + "plotValueTrans" + std::to_string(numTest) + ".gnup");
 
-        std::ofstream plot_temp(namePlotFile);
-        plot_temp << "set terminal postscript landscape color" << "\n";
-        plot_temp << "set output \"" + dirRes + "ValueTraslationScale"+std::to_string(numTest)+".eps\""<<"\n";
+	std::ofstream plot_temp(namePlotFile);
+	plot_temp << "set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name \"BoxPlotTransformation\" butt dashlength 1.0" << "\n";
+	plot_temp << "set output \"" + dirRes + "ValueTraslationScale"+std::to_string(numTest)+".svg\""<<"\n";
 	plot_temp << "green = \"#80bfaa\"; skyblue = \"#55a0d5\""<<"\n";
 	plot_temp << "set yrange [-20:20]"<<"\n";	
 	plot_temp << "set style data histogram"<<"\n";
@@ -315,7 +315,7 @@ void Utilitarios::createStatsOfErrors(int numImags){
 	std::system(fixNumColsCmd.c_str());
 
 	std::string fileoutput("");
-	fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.eps\",tag)' ../cmdPlots/spyder4.gnup";
+	fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
 	std::system(fileoutput.c_str());
 
 	//writing the plot with respective logfile
