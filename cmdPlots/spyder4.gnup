@@ -55,7 +55,7 @@ unset ytics
 set rrange [0:1]
 set title "Error de Parametros de Transformacion"
 
-do for [COL=3:4] {
+do for [COL=3:5] {
 	tag = COL-2
 set output sprintf("../outputData/spyder%d.eps",tag)
 	plot "../outputData/RMSE_Registro.txt" using \

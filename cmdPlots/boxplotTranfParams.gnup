@@ -1,0 +1,21 @@
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "BoxPlotTransformation" butt dashlength 1.0
+set output '../outputData/boxplotTransfParams.svg'
+
+set border 2 front lt black linewidth 1.000 dashtype solid
+set boxwidth 0.5 absolute
+set style fill   solid 0.50 border lt -1
+unset key
+set pointsize 0.5
+set grid ytics
+set style data boxplot
+set xtics border in scale 0,0 nomirror norotate  autojustify
+set xtics  norangelimit
+set xtics ("Rx" 1,"Ry" 2,"Rz" 3, "Tx" 4, "Ty" 5, "Tz" 6, "Sg" 7)
+#set xtics ("Rx" 1,"Ry" 2)
+set ytics border in scale 1,0.5 nomirror norotate  autojustify
+set yrange [*:*] noreverse nowriteback
+set title "Distribucion de Errores por Tipo de Parametro de Transformacion"
+set ylabel "Error(grados,mm,factor)"
+set xlabel "Tipo de Parametro de Transformacion"
+plot for[i=1:7] \
+'newRMSE_Registro.txt' using (i):i

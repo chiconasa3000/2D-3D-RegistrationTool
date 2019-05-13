@@ -400,5 +400,7 @@ int main(int argc, char *argv[]){
 	myfile.close();
 	//Una vez creado el archivo de errores Podemos llamar al plot
 	utils->createStatsOfErrors(numImagenes);
+	utils->createStatsBarHausdorff();
+	utils->createStatsBoxPlotsTypeTransParams();
 	return 0;
 }

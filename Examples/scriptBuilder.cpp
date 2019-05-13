@@ -239,7 +239,7 @@ void ScriptBuilder::buildScript(){
 			comman += puntoFocal;
 
 			//Tamanio de la Image Virtual
-            tamanio = "-size 337 250 ";
+           	 	tamanio = "-size 334 214 ";
 			comman += tamanio;
 			//Resolucion de la Imagen Virtual
 			resolucionImagen = "-res 1 1 ";
@@ -265,7 +265,7 @@ void ScriptBuilder::buildScript(){
 			comman += puntoFocal;
 
 			//Tamanio de la Image Virtual
-            tamanio = "-size 182 250 ";
+            		tamanio = "-size 179 214 ";
 			comman += tamanio;
 			//Resolucion de la Imagen Virtual
 			resolucionImagen = "-res 1 1 ";

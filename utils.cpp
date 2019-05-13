@@ -282,19 +282,66 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 
 
 void Utilitarios::createStatsOfErrors(int numImags){
-    int numColsPlot = numImags + 3;
+	
+	//obtener al mayor error de RMSE_registro para considerar el mayor rango para el spyder
+	
+	std::string command("sort -t, -nk3 ../outputData/RMSE_Registro.txt | tail -1 | awk '{$1=\"\"; $2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
+	std::string maxRange = "";
+	FILE * stream;
+	const int max_buffer = 6;
+	char buffer[max_buffer];
+	command.append(" 2>&1");
+	stream = popen(command.c_str(),"r");
+	if(stream && fgets(buffer,max_buffer,stream) != NULL){
+		maxRange.append(buffer);
+	}
+
+	double nmaxRange = atof(maxRange.c_str()) + 1;		
+
+
+	std::string defineRange("");	
+	defineRange += "sed -e '/a1_max =/c\\a1_max = "+ std::to_string(nmaxRange) + "'"+ 
+		"-e '/a2_max =/c\\a2_max = "+ std::to_string(nmaxRange) + "'" +
+		"-e '/a3_max =/c\\a3_max = "+ std::to_string(nmaxRange) + "'" +
+		"-e '/a4_max =/c\\a4_max = "+ std::to_string(nmaxRange) + "'" +
+		"-e '/a5_max =/c\\a5_max = "+ std::to_string(nmaxRange) + "'" +
+		"-e '/a6_max =/c\\a6_max = "+ std::to_string(nmaxRange) + "'" +
+		"-e '/a7_max =/c\\a7_max = "+ std::to_string(nmaxRange) + "'" + "../cmdPlots/spyder4.gnup";
+	std::system(defineRange.c_str());
+
+	int numColsPlot = numImags + 3;
 	std::string fixNumColsCmd("");
 	fixNumColsCmd += "sed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup"; 
 	std::system(fixNumColsCmd.c_str());
-	
+
 	std::string fileoutput("");
-    fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.eps\",tag)' ../cmdPlots/spyder4.gnup";
+	fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.eps\",tag)' ../cmdPlots/spyder4.gnup";
 	std::system(fileoutput.c_str());
-	
+
 	//writing the plot with respective logfile
-        std::string namePlotFile("../cmdPlots/spyder4.gnup");
+	std::string namePlotFile("../cmdPlots/spyder4.gnup");
 	std::string nameCmdPlot("gnuplot " + namePlotFile);
-        std::system(nameCmdPlot.c_str());
-	
+	std::system(nameCmdPlot.c_str());
+
 }
 
+void Utilitarios::createStatsBarHausdorff(){
+	std::string cmdDelLastLineHausDist("sed -n -e :a -e '1,1!{P;N;D;};N;ba' HausdorffDistances.txt > ../outputData/hdgeneral.txt");
+	std::system(cmdDelLastLineHausDist.c_str());
+
+	std::string namePlotFile("../cmdPlots/barhdist.gnup");
+	std::string nameCmdPlot("gnuplot "+namePlotFile);
+	std::system(nameCmdPlot.c_str());
+
+}
+
+void Utilitarios::createStatsBoxPlotsTypeTransParams(){
+	std::string cmdTransposeRMSE("");
+	cmdTransposeRMSE += "cat RMSE_Registro.txt |sed -n -e :a -e '1,1!{P;N;D;};N;ba' | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | awk -f transposeTable.awk > newRMSE_Registro.txt";
+	std::system(cmdTransposeRMSE.c_str());
+	
+	std::string namePlotFile("../cmdPlots/boxplotTranfParams.gnup");
+	std::string nameCmdPlot("gnuplot "+namePlotFile);
+	std::system(nameCmdPlot.c_str());
+
+}
