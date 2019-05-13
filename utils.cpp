@@ -337,7 +337,7 @@ void Utilitarios::createStatsBarHausdorff(){
 
 void Utilitarios::createStatsBoxPlotsTypeTransParams(){
 	std::string cmdTransposeRMSE("");
-	cmdTransposeRMSE += "cat ../outputData/RMSE_Registro.txt |sed -n -e :a -e '1,1!{P;N;D;};N;ba' | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | awk -f transposeTable.awk > ../outputData/newRMSE_Registro.txt";
+	cmdTransposeRMSE += "cat ../outputData/RMSE_Registro.txt |sed -n -e :a -e '1,1!{P;N;D;};N;ba' | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | awk -f ../cmdPlots/transposeTable.awk > ../outputData/newRMSE_Registro.txt";
 	std::system(cmdTransposeRMSE.c_str());
 	
 	std::string namePlotFile("../cmdPlots/boxplotTranfParams.gnup");
