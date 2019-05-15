@@ -286,7 +286,7 @@ void Utilitarios::createStatsOfErrors(int numImags){
 	//obtener al mayor error de RMSE_registro para considerar el mayor rango para el spyder
 	
 	//std::string command("sort -nk3 ../outputData/RMSE_Registro.txt | tail -1 | awk '{$1=\"\"; $2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
-	std::string command(   "cat ../outputData/RMSE_Registro.txt |sed -n -e :a -e '1,1!{P;N;D;};N;ba' | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
+	std::string command(   "cat ../outputData/RMSE_Registro.txt | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
 	std::string maxRange = "";
 	FILE * stream;
 	const int max_buffer = 6;

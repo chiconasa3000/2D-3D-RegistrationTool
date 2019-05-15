@@ -336,15 +336,15 @@ int main(int argc, char *argv[]){
 
 		double t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
 
-		t_rx = ngt_rx - nrg_rx;
-		t_ry = ngt_ry - nrg_ry;
-		t_rz = ngt_rz - nrg_rz;
+		t_rx = abs(ngt_rx - nrg_rx);
+		t_ry = abs(ngt_ry - nrg_ry);
+		t_rz = abs(ngt_rz - nrg_rz);
 
-		t_tx = gt_tx - rg_tx;
-		t_ty = gt_ty - rg_ty;
-		t_tz = gt_tz - rg_tz;
+		t_tx = abs(gt_tx - rg_tx);
+		t_ty = abs(gt_ty - rg_ty);
+		t_tz = abs(gt_tz - rg_tz);
 
-		t_sg = gt_sg - rg_sg;
+		t_sg = abs(gt_sg - rg_sg);
 		
 		rx_error += pow(t_rx,2.0);
 		ry_error += pow(t_ry,2.0);
