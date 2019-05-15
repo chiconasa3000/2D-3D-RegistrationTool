@@ -323,7 +323,7 @@ int main( int argc, char * argv[] )
 			//Scale Factor (no podemos afectar mucho la escala)
 			//sin escalas grandes obviarian informacion de la imagen
 			//escala entre 1.0 y 1.5 
-			similarityParameters[6] = ((double)rand()/RAND_MAX)*(1.5 -  1.0) + 1.0;
+			similarityParameters[6] = ((double)rand()/RAND_MAX)*(1.4 -  1.0) + 1.0;
 			//similarityParameters[6] = 1;
 
 			similarityTransform->SetParameters(similarityParameters);

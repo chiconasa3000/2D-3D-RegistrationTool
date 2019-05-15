@@ -264,7 +264,7 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 	plot_temp << "set boxwidth 0.9"<<"\n";
 	plot_temp << "set xtics format \"\""<<"\n";
 	plot_temp << "set grid ytics"<<"\n";
-	plot_temp << "set ylabel \"Valor de Parametros de Transformacion (mm)\""<<"\n";
+	plot_temp << "set ylabel \"Valor de Parametros de Transformacion (grades,mm,factor)\""<<"\n";
 	plot_temp << "set xlabel \"Parametros de Traslacion y Escala\""<<"\n";
 	plot_temp << "set title \"Diferencia entre los valores del GroundTruth y el de Registro de los Parametros de Transformacion\""<<"\n";
 	plot_temp << "plot \"../outputData/valueTransf"<< std::to_string(numTest) <<".txt" <<"\" using 2:xtic(1) with histogram title \"GroundTruth\" linecolor rgb green, \\"<<"\n";
@@ -285,7 +285,8 @@ void Utilitarios::createStatsOfErrors(int numImags){
 	
 	//obtener al mayor error de RMSE_registro para considerar el mayor rango para el spyder
 	
-	std::string command("sort -t, -nk3 ../outputData/RMSE_Registro.txt | tail -1 | awk '{$1=\"\"; $2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
+	//std::string command("sort -nk3 ../outputData/RMSE_Registro.txt | tail -1 | awk '{$1=\"\"; $2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
+	std::string command(   "cat ../outputData/RMSE_Registro.txt |sed -n -e :a -e '1,1!{P;N;D;};N;ba' | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
 	std::string maxRange = "";
 	FILE * stream;
 	const int max_buffer = 6;
@@ -300,22 +301,22 @@ void Utilitarios::createStatsOfErrors(int numImags){
 
 
 	std::string defineRange("");	
-    defineRange += "sed -i -e '/a1_max =/c\\a1_max = "+ std::to_string(nmaxRange) + "'"+
-        " -e '/a2_max =/c\\a2_max = "+ std::to_string(nmaxRange) + "'" +
-        " -e '/a3_max =/c\\a3_max = "+ std::to_string(nmaxRange) + "'" +
-        " -e '/a4_max =/c\\a4_max = "+ std::to_string(nmaxRange) + "'" +
-        " -e '/a5_max =/c\\a5_max = "+ std::to_string(nmaxRange) + "'" +
-        " -e '/a6_max =/c\\a6_max = "+ std::to_string(nmaxRange) + "'" +
-        " -e '/a7_max =/c\\a7_max = "+ std::to_string(nmaxRange) + "'" + " ../cmdPlots/spyder4.gnup";
+    defineRange += "gsed -i 's/a1_max =.*/a1_max = "+ std::to_string(nmaxRange) + "/g"+
+        "; s/a2_max =.*/a2_max = "+ std::to_string(nmaxRange) + "/g" +
+        "; s/a3_max =.*/a3_max = "+ std::to_string(nmaxRange) + "/g" +
+        "; s/a4_max =.*/a4_max = "+ std::to_string(nmaxRange) + "/g" +
+        "; s/a5_max =.*/a5_max = "+ std::to_string(nmaxRange) + "/g" +
+        "; s/a6_max =.*/a6_max = "+ std::to_string(nmaxRange) + "/g" +
+        "; s/a7_max =.*/a7_max = "+ std::to_string(nmaxRange) + "/g'" + " ../cmdPlots/spyder4.gnup";
 	std::system(defineRange.c_str());
 
 	int numColsPlot = numImags + 3;
 	std::string fixNumColsCmd("");
-	fixNumColsCmd += "sed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup"; 
+	fixNumColsCmd += "gsed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup"; 
 	std::system(fixNumColsCmd.c_str());
 
 	std::string fileoutput("");
-	fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
+	fileoutput += "gsed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
 	std::system(fileoutput.c_str());
 
 	//writing the plot with respective logfile

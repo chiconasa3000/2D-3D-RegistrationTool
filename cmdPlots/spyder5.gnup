@@ -25,13 +25,13 @@ set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
 set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
 set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 
-a1_max = 2.523000
-a2_max = 2.523000
-a3_max = 2.523000
-a4_max = 2.523000
-a5_max = 2.523000
-a6_max = 2.523000
-a7_max = 2.523000
+a1_max = 2.354000
+a2_max = 2.354000
+a3_max = 2.354000
+a4_max = 2.354000
+a5_max = 2.354000
+a6_max = 2.354000
+a7_max = 2.354000
 a1_min = 0
 a2_min = 0
 a3_min = 0
@@ -45,17 +45,18 @@ set label "Rotacion Y" at cos(a2),sin(a2) center offset char -1,1
 set label "Rotacion Z" at cos(a3),sin(a3) center offset char -1,-1
 set label "Traslacion X" at cos(a4),sin(a4) center offset char 0,-1
 set label "Traslacion Y" at cos(a5),sin(a5) center offset char 3,0
-set label "Traslacion Z" at cos(a6),sin(a6) center offset char -1,-1
+set label "Traslacion Z" at cos(a6),sin(a6) center offset char 3,0
 set label "Escala" at cos(a7),sin(a7) center offset char 3,0
 
 set xrange [-1:1]
 set yrange [-1:1]
+
 unset xtics
 unset ytics
 set rrange [0:1]
 set title "Error de Parametros de Transformacion"
 
-do for [COL=3:13] {
+do for [COL=3:4] {
 	tag = COL-2
 set output sprintf("../outputData/spyder%d.svg",tag)
 	plot "../outputData/RMSE_Registro.txt" using \

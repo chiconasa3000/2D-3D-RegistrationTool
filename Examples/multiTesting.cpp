@@ -8,6 +8,7 @@
 #include <itkTransformFileReader.h>
 #include <fstream>
 #include "itkTimeProbe.h"
+#include <iomanip>
 using namespace std;
 
 
@@ -322,7 +323,6 @@ int main(int argc, char *argv[]){
 		string filenameTransValue = "../outputData/valueTransf" + cindex + ".txt";
 		ofstream fileTransValue;
 		fileTransValue.open(filenameTransValue);
-
 		//Escritura de los valores de los parametros de transformacion
 		fileTransValue << "#\tGroundTruth\tRegistration"<<std::endl;
 		fileTransValue << "Rx\t" + to_string(ngt_rx) + "\t" + to_string(nrg_rx) << std::endl;
@@ -336,23 +336,23 @@ int main(int argc, char *argv[]){
 
 		double t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
 
-		t_rx = pow(ngt_rx - nrg_rx, 2.0);
-		t_ry = pow(ngt_ry - nrg_ry, 2.0);
-		t_rz = pow(ngt_rz - nrg_rz, 2.0);
+		t_rx = ngt_rx - nrg_rx;
+		t_ry = ngt_ry - nrg_ry;
+		t_rz = ngt_rz - nrg_rz;
 
-		t_tx = pow(gt_tx - rg_tx, 2.0);
-		t_ty = pow(gt_ty - rg_ty, 2.0);
-		t_tz = pow(gt_tz - rg_tz, 2.0);
+		t_tx = gt_tx - rg_tx;
+		t_ty = gt_ty - rg_ty;
+		t_tz = gt_tz - rg_tz;
 
-		t_sg = pow(gt_sg - rg_sg, 2.0);
+		t_sg = gt_sg - rg_sg;
 		
-		rx_error += t_rx;
-		ry_error += t_ry;
-		rz_error += t_rz;
-		tx_error += t_tx;
-		ty_error += t_ty;
-		tz_error += t_tz;
-		sg_error += t_sg;
+		rx_error += pow(t_rx,2.0);
+		ry_error += pow(t_ry,2.0);
+		rz_error += pow(t_rz,2.0);
+		tx_error += pow(t_tx,2.0);
+		ty_error += pow(t_ty,2.0);
+		tz_error += pow(t_tz,2.0);
+		sg_error += pow(t_sg,2.0);
 		
 		etq  = etq + "\t" + "#Error" + cindex;		
 		srx += "\t" + std::to_string(t_rx);	
@@ -399,8 +399,8 @@ int main(int argc, char *argv[]){
 	hausdorffDistances.close();
 	myfile.close();
 	//Una vez creado el archivo de errores Podemos llamar al plot
-	utils->createStatsOfErrors(numImagenes);
 	utils->createStatsBarHausdorff();
 	utils->createStatsBoxPlotsTypeTransParams();
+	utils->createStatsOfErrors(numImagenes);
 	return 0;
 }
