@@ -406,8 +406,10 @@ int main( int argc, char * argv[] )
 			
 			logregistro << "Deformacion Aplicada = " << std::endl;
 			logregistro << " Rotation Degrees = [ " << rx << ", "<< ry << ", " << rz  << " ]"<<std::endl;
-			logregistro << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
-			logregistro << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
+            logregistro << "Axis = [ " << ax << ", " << ay << ", " << az << " ]" << std::endl;
+            logregistro << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
+            logregistro << "Angle = " << angle << std::endl;
+            logregistro << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
 			logregistro << " Scale  = " << EscalaXYZ << std::endl;
 
 			//std::cout << "Deformacion Aplicada = " << std::endl;

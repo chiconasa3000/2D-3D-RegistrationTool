@@ -17,8 +17,8 @@ void Utilitarios::convertEulerToVersor(float &rx, float &ry, float &rz, double &
 	double c3 = cos(rz*dtr/2);
 	double s3 = sin(rz*dtr/2);
 
-	double aw = c1*c2*c3 - s1*s2*s3;
-	ax = c1*c2*s3 + s1*s2*c3;
+    double aw = c1*c2*c3 + s1*s2*s3;//cambio de signo
+    ax = c1*c2*s3 - s1*s2*c3;//cambio de signo
 	ay = s1*c2*c3 + c1*s2*s3;
 	az = c1*s2*c3 - s1*c2*s3;
 
@@ -70,24 +70,26 @@ void Utilitarios::getBaseElementsVersor(double &vx, double &vy, double &vz, doub
 	float ay = vy/k;
 	float az = vz/k;
 	
+	
+	double newangle = cos(angle/2.0);
 	//usar el convert Versor to Euler con los valores dados
-	convertVersorToEuler(ax,ay,az, angle, rx, ry, rz);
+	convertVersorToEuler(vx,vy,vz, newangle, rx, ry, rz);
 		
 }
 
-void Utilitarios::convertVersorToEuler(float &x, float &y, float &z, float &w, double &rx, double &ry, double &rz){
-	float t0 = +2.0 * (w * x + y * z);
-	float t1 = +1.0 - 2.0 * (x * x + y * y);
-	rz = atan(t0/ t1);
+void Utilitarios::convertVersorToEuler(double &x, double &y, double &z, double &w, double &rx, double &ry, double &rz){
+    double t0 = +2.0 * (w * x + y * z);
+    double t1 = +1.0 - 2.0 * (x * x + y * y);
+    rz = atan2(t0, t1);
 
-	float t2 = +2.0 * (w * y - z * x);
+    double t2 = +2.0 * (w * y - z * x);
 	t2 = (t2 > +1.0) ? +1.0 : t2;
 	t2 = (t2 < -1.0) ? -1.0 : t2;
 	rx = asin(t2);
 
-	float t3 = +2.0 * (w * z + x * y);
-	float t4 = +1.0 - 2.0 * (y * y + z * z);
-	ry = atan(t3/ t4);
+    double t3 = +2.0 * (w * z + x * y);
+    double t4 = +1.0 - 2.0 * (y * y + z * z);
+    ry = atan2(t3,t4);
 }
 
 void Utilitarios::compareVols(std::string logfilename, std::string  dirnewvolume, std::string  dirimagedef, int indexTest){
@@ -312,11 +314,11 @@ void Utilitarios::createStatsOfErrors(int numImags){
 
 	int numColsPlot = numImags + 3;
 	std::string fixNumColsCmd("");
-	fixNumColsCmd += "gsed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup"; 
+    fixNumColsCmd += "sed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup";
 	std::system(fixNumColsCmd.c_str());
 
 	std::string fileoutput("");
-	fileoutput += "gsed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
+    fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
 	std::system(fileoutput.c_str());
 
 	//writing the plot with respective logfile
