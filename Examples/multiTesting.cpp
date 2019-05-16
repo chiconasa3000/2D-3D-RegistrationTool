@@ -62,8 +62,7 @@ int main(int argc, char *argv[]){
 	bool writestatistics = false;
 	//Bandera de lectura satisfactoria
 	bool ok;
-
-
+	
 	//Initialization de variables
 	while(argc > 1){
 		ok = false;
@@ -308,7 +307,7 @@ int main(int argc, char *argv[]){
 		gt_sg = baseTransform_2->GetParameters()[6];
 
 		//cast from versor to euler	
-		utils->getBaseElementsVersor(gt_rx, gt_ry, gt_rz, ngt_rx, ngt_ry, ngt_rz);		
+		utils->convertVersorToEuler(gt_rx, gt_ry, gt_rz, ngt_rx, ngt_ry, ngt_rz);		
 		rg_rx = baseTransform->GetParameters()[0];
 		rg_ry = baseTransform->GetParameters()[1];
 		rg_rz = baseTransform->GetParameters()[2];
@@ -317,10 +316,10 @@ int main(int argc, char *argv[]){
 		rg_tz = baseTransform->GetParameters()[5];
 		rg_sg = baseTransform->GetParameters()[6];
 	
-		utils->getBaseElementsVersor(rg_rx, rg_ry, rg_rz, nrg_rx, nrg_ry, nrg_rz);	
+		utils->convertVersorToEuler(rg_rx, rg_ry, rg_rz, nrg_rx, nrg_ry, nrg_rz);
 	
 		//Archivo log de cada test para almacenar los valores de los parametros de transformacion el antes y el despues
-		string filenameTransValue = "../outputData/valueTransf" + cindex + ".txt";
+		string filenameTransValue = "../outputData/resultsReg" + cindex + "/valueTransf" + cindex + ".txt";
 		ofstream fileTransValue;
 		fileTransValue.open(filenameTransValue);
 		//Escritura de los valores de los parametros de transformacion

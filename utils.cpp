@@ -61,35 +61,47 @@ void Utilitarios::unirVectorWithAngle(float &rx, float &ry, float &rz, double &v
 
 void Utilitarios::getBaseElementsVersor(double &vx, double &vy, double &vz, double &rx, double &ry, double &rz){
 	//Conseguir el factor K
-	double k = sqrt(pow(vx,2) + pow(vy,2) + pow(vz,2));
+	//double k = sqrt(pow(vx,2) + pow(vy,2) + pow(vz,2));
 	//Consiguiendo el angulo en su forma inicial
-	float angle = asin(k)*2;
-	
+	//float angle = asin(k)*2;
 	//consiguiendo los axis ejes del versor
-	float ax = vx/k;
-	float ay = vy/k;
-	float az = vz/k;
-	
-	
-	double newangle = cos(angle/2.0);
+	//float ax = vx/k;
+	//float ay = vy/k;
+	//float az = vz/k;	
+	//double newangle = cos(angle/2.0);
 	//usar el convert Versor to Euler con los valores dados
-	convertVersorToEuler(vx,vy,vz, newangle, rx, ry, rz);
+	//convertVersorToEuler(vx,vy,vz, newangle, rx, ry, rz);
+	//Convertir de radianes a grados
+	
 		
 }
 
-void Utilitarios::convertVersorToEuler(double &x, double &y, double &z, double &w, double &rx, double &ry, double &rz){
-    double t0 = +2.0 * (w * x + y * z);
-    double t1 = +1.0 - 2.0 * (x * x + y * y);
-    rz = atan2(t0, t1);
 
-    double t2 = +2.0 * (w * y - z * x);
+void Utilitarios::convertVersorToEuler(double &vx, double &vy, double &vz, double &rx, double &ry, double &rz){
+
+	//Obteniendo el angulo nuevo con respecto a Vx, Vy, Vz es decir el super W :P
+	double k = sqrt(pow(vx,2) + pow(vy,2) + pow(vz,2));
+	float angle = asin(k)*2;
+	double w = cos(angle/2.0); //super W
+
+	double t0 = +2.0 * (w * vx + vy * vz);
+	double t1 = +1.0 - 2.0 * (vx * vx + vy * vy);
+	rz = atan2(t0, t1);
+
+	double t2 = +2.0 * (w * vy - vz * vx);
 	t2 = (t2 > +1.0) ? +1.0 : t2;
 	t2 = (t2 < -1.0) ? -1.0 : t2;
 	rx = asin(t2);
 
-    double t3 = +2.0 * (w * z + x * y);
-    double t4 = +1.0 - 2.0 * (y * y + z * z);
-    ry = atan2(t3,t4);
+	double t3 = +2.0 * (w * vz + vx * vy);
+	double t4 = +1.0 - 2.0 * (vy * vy + vz * vz);
+	ry = atan2(t3,t4);
+	
+	//convert radians to degrees
+	rx = rx * rtd;
+	ry = ry * rtd;
+	rz = rz * rtd;	
+
 }
 
 void Utilitarios::compareVols(std::string logfilename, std::string  dirnewvolume, std::string  dirimagedef, int indexTest){
@@ -253,29 +265,20 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
 void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfilename,int numTest){
 
 	//writing the plot with respective logfile
-        std::string namePlotFile( dirRes + "plotValueTrans" + std::to_string(numTest) + ".gnup");
+	//dirRes = ../outputData/resultsReg0
+	std::string nameOutputImagePlot("ValueTraslationScale" + std::to_string(numTest) + ".svg");	
+	std::string newPlotParamsValuesDir("set output \"" + dirRes + nameOutputImagePlot);
+	std::string namePlotFile(dirRes + "plotValueTrans"  + std::to_string(numTest) + ".gnup");
+	
+	//Replace the name of the plot and the outputname graph 
+	std::string replaceNewNamePlot("");
+    	std::string replaceNameOutputPlotCmd("gsed '/set output/c\\" + newPlotParamsValuesDir + " " + namePlotFile);
+	std::system(replaceNameOutputPlotCmd.c_str());
 
-	std::ofstream plot_temp(namePlotFile);
-	plot_temp << "set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name \"BoxPlotTransformation\" butt dashlength 1.0" << "\n";
-	plot_temp << "set output \"" + dirRes + "ValueTraslationScale"+std::to_string(numTest)+".svg\""<<"\n";
-	plot_temp << "green = \"#80bfaa\"; skyblue = \"#55a0d5\""<<"\n";
-	plot_temp << "set yrange [-20:20]"<<"\n";	
-	plot_temp << "set style data histogram"<<"\n";
-	plot_temp << "set style histogram cluster gap 1"<<"\n";
-	plot_temp << "set style fill solid"<<"\n";
-	plot_temp << "set boxwidth 0.9"<<"\n";
-	plot_temp << "set xtics format \"\""<<"\n";
-	plot_temp << "set grid ytics"<<"\n";
-	plot_temp << "set ylabel \"Valor de Parametros de Transformacion (grades,mm,factor)\""<<"\n";
-	plot_temp << "set xlabel \"Parametros de Traslacion y Escala\""<<"\n";
-	plot_temp << "set title \"Diferencia entre los valores del GroundTruth y el de Registro de los Parametros de Transformacion\""<<"\n";
-	plot_temp << "plot \"../outputData/valueTransf"<< std::to_string(numTest) <<".txt" <<"\" using 2:xtic(1) with histogram title \"GroundTruth\" linecolor rgb green, \\"<<"\n";
-	plot_temp << "'' using 3 with histogram title \"Registration\" linecolor rgb skyblue, \\"<<"\n";
-	plot_temp << "'' u 0:2:2 with labels font \"Helvetica, 10\" offset char -3,0.5 title \"\", \\"<<"\n";
-	plot_temp << "'' u 0:3:3 with labels font \"Helvetica, 10\" offset char 3,0.5 title \"\" \\"<<"\n";
-	//aqui es lo diferente para cada archivo las 3 ultimas lineas
-	//lo demas se repite auque seria bueno solo modificar esto.
-	plot_temp.close();
+	//Change the name of inputFile respectivily
+	std::string nameNewReadingFilePlot("plot \"../outputData/resultsReg"+std::to_string(numTest) + "/valueTransf" + std::to_string(numTest) + ".txt using 2:xtic(1) with histogram title \"GroundTruth\" linecolor rgb green, \\");
+    	std::string replaceInputFileNameCmd("gsed -i '/plot/c\\" + nameNewReadingFilePlot + " " + namePlotFile);
+	std::system(replaceInputFileNameCmd.c_str());
 
 	std::string nameCmdPlot("gnuplot " + namePlotFile);
         std::system(nameCmdPlot.c_str());
@@ -314,11 +317,11 @@ void Utilitarios::createStatsOfErrors(int numImags){
 
 	int numColsPlot = numImags + 3;
 	std::string fixNumColsCmd("");
-    fixNumColsCmd += "sed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup";
+    fixNumColsCmd += "gsed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup";
 	std::system(fixNumColsCmd.c_str());
 
 	std::string fileoutput("");
-    fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
+    fileoutput += "gsed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
 	std::system(fileoutput.c_str());
 
 	//writing the plot with respective logfile
@@ -329,7 +332,7 @@ void Utilitarios::createStatsOfErrors(int numImags){
 }
 
 void Utilitarios::createStatsBarHausdorff(){
-    std::string cmdDelLastLineHausDist("sed -n -e :a -e '1,1!{P;N;D;};N;ba' ../outputData/HausdorffDistances.txt > ../outputData/hdgeneral.txt");
+    std::string cmdDelLastLineHausDist("gsed -n -e :a -e '1,1!{P;N;D;};N;ba' ../outputData/HausdorffDistances.txt > ../outputData/hdgeneral.txt");
 	std::system(cmdDelLastLineHausDist.c_str());
 
 	std::string namePlotFile("../cmdPlots/barhdist.gnup");
