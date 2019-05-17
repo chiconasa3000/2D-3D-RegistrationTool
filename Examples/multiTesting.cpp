@@ -319,7 +319,7 @@ int main(int argc, char *argv[]){
 		utils->convertVersorToEuler(rg_rx, rg_ry, rg_rz, nrg_rx, nrg_ry, nrg_rz);
 	
 		//Archivo log de cada test para almacenar los valores de los parametros de transformacion el antes y el despues
-		string filenameTransValue = "../outputData/resultsReg" + cindex + "/valueTransf" + cindex + ".txt";
+		string filenameTransValue = "../outputData/resultsReg_" + cindex + "/valueTransf" + cindex + ".txt";
 		ofstream fileTransValue;
 		fileTransValue.open(filenameTransValue);
 		//Escritura de los valores de los parametros de transformacion

@@ -272,12 +272,12 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 	
 	//Replace the name of the plot and the outputname graph 
 	std::string replaceNewNamePlot("");
-    	std::string replaceNameOutputPlotCmd("gsed '/set output/c\\" + newPlotParamsValuesDir + " " + namePlotFile);
+    	std::string replaceNameOutputPlotCmd("gsed '/set output/c\\" + newPlotParamsValuesDir + "\"' ../cmdPlots/plotValueTransGen.gnup > " + namePlotFile);
 	std::system(replaceNameOutputPlotCmd.c_str());
 
 	//Change the name of inputFile respectivily
-	std::string nameNewReadingFilePlot("plot \"../outputData/resultsReg"+std::to_string(numTest) + "/valueTransf" + std::to_string(numTest) + ".txt using 2:xtic(1) with histogram title \"GroundTruth\" linecolor rgb green, \\");
-    	std::string replaceInputFileNameCmd("gsed -i '/plot/c\\" + nameNewReadingFilePlot + " " + namePlotFile);
+	std::string nameNewReadingFilePlot("plot \"../outputData/resultsReg_"+std::to_string(numTest) + "/valueTransf" + std::to_string(numTest) + ".txt\"\\\\");
+    	std::string replaceInputFileNameCmd("gsed -i '/plot/c\\" + nameNewReadingFilePlot + "' "+namePlotFile);
 	std::system(replaceInputFileNameCmd.c_str());
 
 	std::string nameCmdPlot("gnuplot " + namePlotFile);
