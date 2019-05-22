@@ -34,7 +34,8 @@ int main(int argc, char *argv[]){
 	float tz = 0.0;
 
 	float sg = 1.0;
-
+	
+	int threshold = 0;
 	//Error Acumulado Al cuadrado
 	float rx_error = 0.0;
 	float ry_error = 0.0;
@@ -138,12 +139,21 @@ int main(int argc, char *argv[]){
 			comparevolumes = true;
 		}
 
-        if((ok == false) && (strcmp(argv[1], "-writeStatistics") == 0))
-        {
-            argc--; argv++;
-            ok = true;
-            writestatistics = true;
-        }
+		if((ok == false) && (strcmp(argv[1], "-threshold") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			threshold = atoi(argv[1]); 
+			argc--; argv++;
+		}
+
+
+		if((ok == false) && (strcmp(argv[1], "-writeStatistics") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			writestatistics = true;
+		}
 
 	}
 
@@ -154,7 +164,7 @@ int main(int argc, char *argv[]){
 	scriptbuilder->setRotation(rx,ry,rz);
 	scriptbuilder->setTranslation(tx,ty,tz);
 	scriptbuilder->setScale(sg);
-
+	scriptbuilder->setThreshold(threshold);
 	//Asignacion de banderas para comparacion de volumenes y estadisticas
 	if(comparevolumes){
 		scriptbuilder->setCompareVols(true);

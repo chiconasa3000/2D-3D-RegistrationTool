@@ -22,7 +22,9 @@ private:
 	float generalScale=1.0;
     bool compareVols = false;
     bool writestatistics = false;
+	int genthreshold = 0;
 public:
+	void setThreshold(int umbral);
 	void setIndexTest(int indexTest);
 	void setNumTests(int numTests);
 	void setTipoProy(string tipoProy);

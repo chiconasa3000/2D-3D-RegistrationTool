@@ -4,6 +4,10 @@ ScriptBuilder::ScriptBuilder(){
 	//TODO: To do something :p
 }
 
+void ScriptBuilder::setThreshold(int number){
+	this->genthreshold = number;
+}
+
 void ScriptBuilder::setOriginVolume(string input){
 	this->origin_volume = input;
 }
@@ -291,7 +295,7 @@ void ScriptBuilder::buildScript(){
 		}
 
 		//Umbral de Hounsfield
-		string threshold = "-threshold 100 ";
+		string threshold = "-threshold " + std::to_string(this->genthreshold) + " ";
 		comman += threshold;
 
 		//Volumen de Entrada
