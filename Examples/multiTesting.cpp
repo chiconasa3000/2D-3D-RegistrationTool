@@ -295,8 +295,8 @@ int main(int argc, char *argv[]){
 		//double vx,vy,vz,newangle;
 		//util->unirVectorWithAngle(rx,ry,rz,vx,vy,vz,newangle);
 		
-		double gt_rx, gt_ry, gt_rz, gt_tx, gt_ty, gt_tz, gt_sg, rg_rx, rg_ry, rg_rz, rg_tx, rg_ty, rg_tz, rg_sg;	
-		double ngt_rx,ngt_ry,ngt_rz, nrg_rx, nrg_ry, nrg_rz;	
+		float gt_rx, gt_ry, gt_rz, gt_tx, gt_ty, gt_tz, gt_sg, rg_rx, rg_ry, rg_rz, rg_tx, rg_ty, rg_tz, rg_sg;	
+		float ngt_rx,ngt_ry,ngt_rz, nrg_rx, nrg_ry, nrg_rz;	
 		//Captura de valores de transformacion
 		gt_rx = baseTransform_2->GetParameters()[0];
 		gt_ry = baseTransform_2->GetParameters()[1];
@@ -322,6 +322,7 @@ int main(int argc, char *argv[]){
 		string filenameTransValue = "../outputData/resultsReg_" + cindex + "/valueTransf" + cindex + ".txt";
 		ofstream fileTransValue;
 		fileTransValue.open(filenameTransValue);
+		
 		//Escritura de los valores de los parametros de transformacion
 		fileTransValue << "#\tGroundTruth\tRegistration"<<std::endl;
 		fileTransValue << "Rx\t" + to_string(ngt_rx) + "\t" + to_string(nrg_rx) << std::endl;
@@ -333,7 +334,7 @@ int main(int argc, char *argv[]){
 		fileTransValue << "Sg\t" + to_string(gt_sg) + "\t" + to_string(rg_sg) << std::endl;
 		fileTransValue.close();
 
-		double t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
+		float t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
 
 		t_rx = abs(ngt_rx - nrg_rx);
 		t_ry = abs(ngt_ry - nrg_ry);

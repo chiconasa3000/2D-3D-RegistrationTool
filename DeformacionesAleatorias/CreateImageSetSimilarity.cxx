@@ -195,12 +195,12 @@ int main( int argc, char * argv[] )
 	}
 
 	//Archivo de Registro LOG
-	std::ofstream logregistro(logfilename);
+	std::ofstream logregistro;
 		
 	if(verbose)
 	{
         if (inputImageFile){
-			logregistro  << "Input image: "  << inputImageFile  << std::endl;
+			//logregistro  << "Input image: "  << inputImageFile  << std::endl;
             std::cout << "Input image: "  << inputImageFile  << std::endl;
         }
     }
@@ -383,6 +383,11 @@ int main( int argc, char * argv[] )
 		itksys::SystemTools::MakeDirectory( (fName + folderName + "/Images/").c_str() );
 		fName = fName + folderName + "/Images/" + "imagenDef_"+ fnameStream.str();
 		fName += (Dimension == 2) ? ".png" : ".mha";
+		
+		//Build the name of logfile
+		string fulllogfilename="";
+		fulllogfilename = fulllogfilename + folderName  + logfilename + ".txt";
+		logregistro.open(fulllogfilename);
 
 		writer->SetFileName( fName.c_str() );
 		logregistro << "Writing " << fName.c_str() << std::endl; 
@@ -406,10 +411,10 @@ int main( int argc, char * argv[] )
 			
 			logregistro << "Deformacion Aplicada = " << std::endl;
 			logregistro << " Rotation Degrees = [ " << rx << ", "<< ry << ", " << rz  << " ]"<<std::endl;
-            logregistro << "Axis = [ " << ax << ", " << ay << ", " << az << " ]" << std::endl;
-            logregistro << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
-            logregistro << "Angle = " << angle << std::endl;
-            logregistro << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
+            		logregistro << "Axis = [ " << ax << ", " << ay << ", " << az << " ]" << std::endl;
+            		logregistro << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
+            		logregistro << "Angle = " << angle << std::endl;
+            		logregistro << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
 			logregistro << " Scale  = " << EscalaXYZ << std::endl;
 
 			//std::cout << "Deformacion Aplicada = " << std::endl;

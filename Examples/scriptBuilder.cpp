@@ -182,15 +182,15 @@ void ScriptBuilder::buildScript(){
 
 		//Construimos un archivo que almacena todo el stream del comando ejecutado
 		string nameLogRegistro;
-		string cabezera = "LogCreateDefImageWithSimilarity_" + to_string(indexTest);
+		string cabezera = "LogCreateDefImageWithSimilarity_";
 		nameLogRegistro += cabezera;
 		
 		replace(outputDir.begin(), outputDir.end(), ' ', '/');
 
-		nameLogRegistro += ".txt";
+		//nameLogRegistro += ".txt";
 		
 		//Asignando el nombre del archivo log
-		string logfilename = "-logFileName " + outputDir + nameLogRegistro;
+		string logfilename = "-logFileName " + nameLogRegistro;
 		comman += logfilename;		
 		//Escribiendo el archivo con el stream del comando ejecutado
 		//ofstream out(outputDir + nameLogRegistro);
@@ -239,7 +239,7 @@ void ScriptBuilder::buildScript(){
 			comman += puntoFocal;
 
 			//Tamanio de la Image Virtual
-           	 	tamanio = "-size 337 250 ";
+           	 	tamanio = "-size 334 214 ";
 			comman += tamanio;
 			//Resolucion de la Imagen Virtual
 			resolucionImagen = "-res 1 1 ";
@@ -265,7 +265,7 @@ void ScriptBuilder::buildScript(){
 			comman += puntoFocal;
 
 			//Tamanio de la Image Virtual
-            		tamanio = "-size 182 250 ";
+            		tamanio = "-size 179 214 ";
 			comman += tamanio;
 			//Resolucion de la Imagen Virtual
 			resolucionImagen = "-res 1 1 ";
@@ -282,7 +282,7 @@ void ScriptBuilder::buildScript(){
 		}
 
 		//Umbral de Hounsfield
-		string threshold = "-threshold 0 ";
+		string threshold = "-threshold 100 ";
 		comman += threshold;
 
 		//Volumen de Entrada
