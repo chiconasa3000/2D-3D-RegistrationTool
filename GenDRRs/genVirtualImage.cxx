@@ -62,11 +62,11 @@ int main(int argc, char *argv[]){
 
 	float threshold = 0.;			//virtual image threshold
 
-	int dxx = 452;				//pixels number virtual image in x
-	int dyy = 225;				//pixels number virtual image in y
+	int dxx = 0;				//pixels number virtual image in x
+	int dyy = 0;				//pixels number virtual image in y
 
-	float im_sx = 1;			//virtual image spacing in x
-	float im_sy = 1;			//virtual image spacing in y
+	float im_sx = 0;			//virtual image spacing in x
+	float im_sy = 0;			//virtual image spacing in y
 
 	float o2Dx;				//virtual image origin in x
 	float o2Dy;				//virtual image origin in y
@@ -434,7 +434,7 @@ int main(int argc, char *argv[]){
 	similarityParameters = transform->GetParameters();
 
 
-	//Read image properties in order to build our isocenter
+	//Read image properties in case of user don't insert size, spacing origin or isocenter
 	MovingImageType::PointType imOrigin = image->GetOrigin();
 	MovingImageType::SpacingType imRes = image->GetSpacing();
 
@@ -444,7 +444,31 @@ int main(int argc, char *argv[]){
 	InputImageRegionType imRegion = image->GetBufferedRegion();
 	InputImageSizeType imSize = imRegion.GetSize();
 
-	TransformType::InputPointType isocenter;
+	if(im_sx == 0 && im_sy == 0 && dxx == 0 && dyy == 0){
+		//capturar del propio volumen
+		if(strcmp(type_projection,"AP")==0){
+			dxx = imSize[0];
+			dyy = imSize[2];
+			im_sx = imRes[0];
+			im_sy = imRes[2];
+		}else
+		if(strcmp(type_projection,"ML")==0){
+			dxx = imSize[1];
+			dyy = imSize[2];
+			im_sx = imRes[1];
+			im_sy = imRes[2];
+		}else{
+			dxx = 500;
+			dyy = 500;
+			im_sx = 1;
+			im_sy = 1;
+
+		}	
+	}
+
+	
+	
+	//TransformType::InputPointType isocenter;
 	
 	//El centro de la trasnformacion ya no es necesario ya que este va de acuerdo al patched
 	//ademas el centro siempre es seteado a (0,0,0)

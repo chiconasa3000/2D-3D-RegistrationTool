@@ -232,7 +232,7 @@ int main(int argc, char *argv[]){
 		scriptbuilder->asignarScript("genVirtualImage");
 		scriptbuilder->setTipoProy("ML");
 		scriptbuilder->buildScript();
-
+		
 		//Generar el registro de imagenes
 		scriptbuilder->asignarScript("MultiImageRegistration");
 		//Comparacion de Volumenes solo en caso que este activado

@@ -4,6 +4,12 @@ Utilitarios::Utilitarios(){
 }
 
 
+/*void Utilitarios::getSizeAndSpacingFromImage(std::string imageFileName){
+
+	
+
+}*/
+
 void Utilitarios::round2Decimals(float &number){
 	number = ceil(number*100)/100;
 }

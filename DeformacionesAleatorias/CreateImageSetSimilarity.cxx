@@ -386,7 +386,7 @@ int main( int argc, char * argv[] )
 		
 		//Build the name of logfile
 		string fulllogfilename="";
-		fulllogfilename = fulllogfilename + folderName  + logfilename + ".txt";
+		fulllogfilename = fulllogfilename + folderName  + logfilename + std::to_string(i) + ".txt";
 		logregistro.open(fulllogfilename);
 
 		writer->SetFileName( fName.c_str() );
