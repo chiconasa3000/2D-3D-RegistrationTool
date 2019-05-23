@@ -56,6 +56,10 @@ void ScriptBuilder::setWriteStatistics(bool flagWriteStast){
     this->writestatistics = flagWriteStast;
 }
 
+void ScriptBuilder::setRandMode(bool randmode){
+	this->randMode = randmode;
+}
+
 void ScriptBuilder::asignarScript(string nombreScript){
 
     if(nombreScript.compare("MultiImageRegistration")==0){
@@ -161,10 +165,11 @@ void ScriptBuilder::buildScript(){
 		//Activar modo Verbose
 		comman += "-v ";
 
-		//Mode Random
-		comman += "-rnd ";
-		comman += "-rnd_sem ";
-
+		if(randMode){
+			//Mode Random
+			comman += "-rnd ";
+			comman += "-rnd_sem ";
+		}
 		//Directorio de Salida
 		comman += "-folderName ";
 		//TODO: Create Directory for every test

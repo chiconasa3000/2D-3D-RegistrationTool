@@ -61,6 +61,10 @@ int main(int argc, char *argv[]){
 
 	//Bandera de Escritura de Estadisticas
 	bool writestatistics = false;
+	
+	//Bandera de modo aleatorio de parametros iniciales
+	bool randmode = false;
+
 	//Bandera de lectura satisfactoria
 	bool ok;
 	
@@ -154,6 +158,12 @@ int main(int argc, char *argv[]){
 			ok = true;
 			writestatistics = true;
 		}
+		if((ok == false) && (strcmp(argv[1], "-randMode") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			randmode = true;
+		}
 
 	}
 
@@ -171,6 +181,9 @@ int main(int argc, char *argv[]){
 	}
 	if(writestatistics){
 		scriptbuilder->setWriteStatistics(true);
+	}
+	if(randmode){
+		scriptbuilder->setRandMode(true);
 	}
 	//Creacion de Imagenes Deformadas
 	scriptbuilder->asignarScript("CreateImageSetSimilarity");	

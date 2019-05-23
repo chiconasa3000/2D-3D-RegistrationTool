@@ -373,7 +373,7 @@ int main( int argc, char * argv[] )
 		fnameStream << i ;
 
 		//Write the transform files
-		itk::TransformFileWriterTemplate<double>::Pointer transformFileWriter =  itk::TransformFileWriterTemplate<double>::New();
+		itk::TransformFileWriterTemplate<float>::Pointer transformFileWriter =  itk::TransformFileWriterTemplate<float>::New();
 		itksys::SystemTools::MakeDirectory( (fName + folderName + "/TransformFiles/").c_str() );
 		string fileName = fName + folderName + "/TransformFiles/" + "transfSim_" +fnameStream.str() + ".txt";
 		transformFileWriter->SetFileName(fileName.c_str());

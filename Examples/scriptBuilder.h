@@ -22,6 +22,7 @@ private:
 	float generalScale=1.0;
     bool compareVols = false;
     bool writestatistics = false;
+	bool randMode = false;
 	int genthreshold = 0;
 public:
 	void setThreshold(int umbral);
@@ -36,6 +37,7 @@ public:
 	void setScale(float scale);
     void setCompareVols(bool flagCompVols);
     void setWriteStatistics(bool writestatistics);
+	void setRandMode(bool randmode);
 	void setTargetVolume(string inputVol);	
 	void setOriginVolume(string inputVol);	
 
