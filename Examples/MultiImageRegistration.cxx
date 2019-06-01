@@ -19,7 +19,7 @@
 #include <itkTransformFileReader.h>
 #include <itkTransformFileWriter.h>
 #include "itkTimeProbesCollectorBase.h"
-
+#include "utils.h"
 #include "itkNormalizedGradientCorrelationMultiImageToImageMetric.h"
 
 #include "itkMultiResolutionMultiImageToImageRegistrationMethod.h"
@@ -73,12 +73,13 @@ class RegistrationObserver : public itk::Command
 				logoptimizer = "Resolution level " + std::to_string(registration->GetCurrentLevel()) + "\n";
 				logRegistration->write(logoptimizer.c_str(),logoptimizer.size());			
 				std::cout << std::endl << "Resolution level " << registration->GetCurrentLevel() << std::endl;
-				//Half step length and tolerance in each level
-				//OptimizerType* optimizer = dynamic_cast<OptimizerType*>(registration->GetOptimizer() );
+				//Reducir a la mitad la tolerancia de parametros y el tamaño de paso en la busqueda de valores
+				//los dos a la mitad en cada nivel de resolucion, en la ultima ambos deben ser de muy bajo valor
+				OptimizerType* optimizer = dynamic_cast<OptimizerType*>(registration->GetOptimizer() );
 
-				//optimizer->SetStepLength( 0.5 * optimizer->GetStepLength() );
+				optimizer->SetStepLength( 0.5 * optimizer->GetStepLength() );
 				//std::cout << "StepLength set to " << optimizer->GetStepLength() << std::endl;
-				//optimizer->SetStepTolerance( 0.5 * optimizer->GetStepTolerance() );
+				optimizer->SetStepTolerance( 0.5 * optimizer->GetStepTolerance() );
 				//std::cout << "StepTolerance set to " << optimizer->GetStepTolerance() << std::endl;
 			}
 		}
@@ -258,21 +259,21 @@ int main(int argc, char* argv[] )
 			numLevels = atoi(argv[1]);
 			argc--; argv++;
 			//Confiamos en el que anterior parametro existe
-            if(numLevels != 0 && (ok == true) && (strcmp(argv[1],"-schedule")==0)){
+			if(numLevels != 0 && (ok == true) && (strcmp(argv[1],"-schedule")==0)){
 				int contLevels = 0;
 				while(contLevels < numLevels){
 					argc--; argv++;
 					ok = true;
-                    resolutions.push_back(atoi(argv[1]));
+					resolutions.push_back(atoi(argv[1]));
 					contLevels++;
 				}
-                argc--; argv++;
+				argc--; argv++;
 			}else{
 				std::cerr<<"Falta Nro de Niveles "<<std::endl; 
 			}
 
 		}
-		
+
 		if ((ok == false) && (strcmp(argv[1], "-outputDirectory") == 0))
 		{
 			argc--; argv++;
@@ -975,7 +976,8 @@ int main(int argc, char* argv[] )
 	
 	}
     if(writeStatistics){
-
+	Utilitarios *util = new Utilitarios();
+	util->createStats(4,"resultsReg_14/logexample.txt","resultsReg_",14);
     }
 	
 	logregistro.close();

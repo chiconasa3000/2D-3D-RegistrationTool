@@ -326,43 +326,6 @@ namespace itk {
 				interp->SetInputImage( m_MovingImage );
 			}
 
-			////Calculate the Moving Image gradient, if necessary
-			//    if ( m_ComputeGradient )
-			//      {
-			//      this->ComputeGradient();
-			//      }
-
-			/** It should print with index*/
-
-			//I suppose that transform is applied first according to the first image then the second image is applied
-			//PARAMETRIZATION (fixed, moving, interpolator, transform)
-
-			//Por seguridad se mantendra la direccion de la imagen movible original en un temporal
-			/*MovingImagePointer destImage = MovingImageType::New().GetPointer(); //variable
-			MovingImageConstPointer sourceImage = m_MovingImage; //constant
-
-			destImage->CopyInformation(sourceImage);
-
-			destImage->SetRegions(sourceImage->GetLargestPossibleRegion());
-			destImage->SetBufferedRegion(sourceImage->GetLargestPossibleRegion());
-			destImage->SetSpacing(sourceImage->GetSpacing());
-			destImage->SetOrigin(sourceImage->GetOrigin());
-			destImage->Allocate();
-			destImage->Update();
-
-			itk::ImageRegionConstIterator<MovingImageType> inputIterator(sourceImage, sourceImage->GetLargestPossibleRegion());
-			itk::ImageRegionIterator<MovingImageType> outputIterator(destImage, destImage->GetLargestPossibleRegion());
-
-			while(!inputIterator.IsAtEnd())
-			{
-				outputIterator.Set(inputIterator.Get());
-				++inputIterator;
-				++outputIterator;
-			}
-
-			*/		
-
-
 				
 			for( unsigned int fImg=0; fImg < FImgTotal; fImg++ )
 			{
@@ -373,20 +336,7 @@ namespace itk {
 				{
 					m_MultiMetric[fImg]->SetFixedImageMask( m_FixedMultiImageMask[fImg] );
 				}
-
-				//La metrica individualiza tanto la imagen movible como la imagen fija
-				//lo que haremos sera fijar la misma orientacion de la imagen fija
-				//para la imagen movible
-
-				//Se asume que esto no afectara la imagen movible original
-				//ya que es un atributo propio de la clase
-
-				//asumiendo tambien que no es afectada por el primer cambio de la imagen
-				//la imagen movible ya que la direccion es una matriz que afecta
-				//como una matriz de rotacion tras ya una rotacion hecha previamente
-
-				//destImage->SetDirection(m_FixedMultiImage[fImg]->GetDirection()); 	
-			
+		
 				m_MultiMetric[fImg]->SetMovingImage( m_MovingImage );
 				//m_MultiMetric[fImg]->SetMovingImageMask( m_MovingImageMask );
 				m_MultiMetric[fImg]->SetInterpolator( m_MultiInterpolator[fImg] );

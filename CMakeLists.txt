@@ -100,8 +100,12 @@ target_link_libraries(CreateImageSetSimilarity ${Libraries})
 
 
 #Registro de Imagenes
-add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx  ${HeaderFiles})
+add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx utils.cpp ${HeaderFiles})
 target_link_libraries(MultiImageRegistration ${Libraries})
+
+#Visualizacion del Registro
+add_executable(VisualRegister Examples/visualRegister.cpp utils.cpp)
+target_link_libraries(VisualRegister ${Libraries})
 
 
 #install(FILES ${HeaderFiles} DESTINATION include COMPONENT Development)
