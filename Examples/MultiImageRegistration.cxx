@@ -190,7 +190,6 @@ int main(int argc, char* argv[] )
 
 	bool writeFinalVol = false;
 	bool writeStatistics = false;
-
 	bool ok;	
 	while(argc > 1){
 		ok = false;
@@ -977,7 +976,7 @@ int main(int argc, char* argv[] )
 	}
     if(writeStatistics){
 	Utilitarios *util = new Utilitarios();
-	util->createStats(4,"resultsReg_14/logexample.txt","resultsReg_",14);
+	util->createStats(4,"../outputData/log.txt","../outputData",0);
     }
 	
 	logregistro.close();

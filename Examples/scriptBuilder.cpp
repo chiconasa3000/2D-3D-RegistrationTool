@@ -111,11 +111,11 @@ void ScriptBuilder::buildScript(){
 		comman += focal2Point;
 
 		//Tolerancia de la metrica para terminar la optimización
-		string stepTolerance = "-steptolerance 0.02 ";
+		string stepTolerance = "-steptolerance 0.03 ";
 		comman += stepTolerance;
 
 		//Tamanio de Paso
-		string stepSize = "-stepsize 4.0 ";
+		string stepSize = "-stepsize 3.0 ";
 		comman += stepSize;
 
 		//Nro de Niveles de Resolucion y 
@@ -124,7 +124,7 @@ void ScriptBuilder::buildScript(){
 		string numLevels = "-numLevels "+std::to_string(nroLevels)+" ";
 		comman += numLevels;
 
-		string schedule = "-schedule 6 3 2 1 ";
+		string schedule = "-schedule 4 3 2 1 ";
 		comman += schedule;
 
 		//TODO: Create Directory for every test

@@ -306,7 +306,7 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 
 	//Replace the name of the plot and the outputname graph 
 	std::string replaceNewNamePlot("");
-	std::string replaceNameOutputPlotCmd("gsed '/set output/c\\" + newPlotParamsValuesDir + "\"' ../cmdPlots/plotValueTransGen.gnup > " + namePlotFile);
+	std::string replaceNameOutputPlotCmd(" gsed '/set output/c\\" + newPlotParamsValuesDir + "\"' ../cmdPlots/plotValueTransGen.gnup > " + namePlotFile);
 	std::system(replaceNameOutputPlotCmd.c_str());
 
 	//Change the name of inputFile respectivily
