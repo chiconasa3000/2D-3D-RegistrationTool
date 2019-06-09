@@ -31,6 +31,7 @@
 #include <string>
 #include <itksys/SystemTools.hxx>
 #include <vector>
+#include "itkNormalizeImageFilter.h"
 /**
  * MultiImageRegistration
  *
@@ -339,8 +340,13 @@ int main(int argc, char* argv[] )
 	RegistrationObserverType::Pointer registrationObserver = RegistrationObserverType::New();
 	//the registration add the registraton observer in order to show some datas
 	registration->AddObserver( itk::IterationEvent(), registrationObserver );
-
-
+	
+	//Variable para normalizacion de imagenes con mismo contraste
+	/*using FixedNormalizeFilterType = itk::NormalizeImageFilter< FixedImageType, FixedImageType >;
+	using MovingNormalizeFilterType = itk::NormalizeImageFilter< MovingImageType, MovingImageType>;
+	FixedNormalizeFilterType::Pointer fixedNormalizer = FixedNormalizeFilterType::New();
+	MovingNormalizeFilterType::Pointer movingNormalizer = MovingNormalizeFilterType::New();	
+	*/
 	//----------------------------------------------------------------------------
 	// Create the transform
 	//----------------------------------------------------------------------------
@@ -372,7 +378,7 @@ int main(int argc, char* argv[] )
 		return EXIT_FAILURE;
 	}
 
-
+	//movingNormalizer->SetInput(movingReader->GetOutput());
 	registration->SetMovingImage( movingReader->GetOutput() ); //Imagen Movible consu informacion de intensidad completa 
 
 	MovingImagePyramidType::Pointer movingPyramidFilter = MovingImagePyramidType::New();
@@ -413,6 +419,10 @@ int main(int argc, char* argv[] )
 		}
 
 		FixedImageConstPointer fixedImage = fixedReader->GetOutput();
+		
+		//normalizar la imagen fija
+		//fixedNormalizer->SetInput(fixedImage);
+	
 		registration->AddFixedImage( fixedImage ); //Imagen Fija leida con threhosld 0 con 0 255 seteado en el generador
 
 		registration->AddFixedImageRegion( fixedImage->GetBufferedRegion() );
@@ -470,12 +480,12 @@ int main(int argc, char* argv[] )
 	//sera la sexta parte del total 100/6 = 16.6 o cuarta parte 100/4 = 25.0
 	OptimizerType::ScalesType scales( ParTotal );
 	scales.Fill(itk::NumericTraits<OptimizerType::ScalesType::ValueType>::One);
-	scales[0] = 25.0;
-	scales[1] = 25.0;
-	scales[2] = 25.0;
-	scales[3] = 1.0/200.0;
-	scales[4] = 1.0/200.0;
-	scales[5] = 1.0/200.0;
+	scales[0] = 1.0*10.0;
+	scales[1] = 1.0*10.0;
+	scales[2] = 1.0*10.0;
+	scales[3] = 1.0/256.3;
+	scales[4] = 1.0/256.3;
+	scales[5] = 1.0/256.3;
 	scales[6] = 1.0;
 
 	optimizer->SetScales( scales );
@@ -705,6 +715,7 @@ int main(int argc, char* argv[] )
 
 
 	//Print parameters using in the registration
+
 	logregistro << "StepTolerance "<< optimizer->GetStepTolerance()<<std::endl; 
 	logregistro <<  "StepLength "<< optimizer->GetStepLength()<<std::endl; 
 	logregistro <<  "Schedules"<< resolutions[0]<<" "<<resolutions[1]<<" "<<resolutions[2]<<std::endl; 
@@ -976,7 +987,7 @@ int main(int argc, char* argv[] )
 	}
     if(writeStatistics){
 	Utilitarios *util = new Utilitarios();
-	util->createStats(4,"../outputData/log.txt","../outputData",0);
+	//util->createStats(4,"../outputData/log.txt","../outputData",0);
     }
 	
 	logregistro.close();

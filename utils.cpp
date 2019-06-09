@@ -246,6 +246,7 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
 
 	std::ofstream plot_temp;
 
+	std::string nameCmdPlot("");
 	//Recorrer cada archivo de registro
 	for(int i=0;i<numLevels;i++){
 		//Solo seleccionar ciertas columnas para el plot
@@ -268,10 +269,10 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
 			".txt\" using 1:2 notitle with points lt 0 pt 12 ps 1" << "\n";
 		plot_temp.close();
 
-		std::string nameCmdPlot("gnuplot " + namePlotFile);
+		nameCmdPlot="gnuplot " + namePlotFile;
 		std::system(nameCmdPlot.c_str());
 
-		//Plot para la Trans vs Iteración (Traslación Z)
+		/*//Plot para la Trans vs Iteración (Traslación Z)
 
 		std::string plotTraceTransf(directorioResultados + "traceTrans" + std::to_string(i) + ".gnup");
 
@@ -290,9 +291,48 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
 	
 		nameCmdPlot = "gnuplot " + plotTraceTransf;
 		std::system(nameCmdPlot.c_str());
+		*/
 
 
+	}
 
+	//std::vector<std::string> listLabels = {"RxRy","RxRz","RyRz","TxTy","TxTz","TyTz","TxSg","TySg","TzSg"};
+	//std::vector<<std::string> listIndex = {"3:4","3:5","4:5","6:7","6:8","7:8","6:9","7:9","8:9"}; 
+
+	std::vector<std::vector<std::string>> vlabelsTransf(9, std::vector<std::string>(3));
+	vlabelsTransf[0][0] = "Rx"; vlabelsTransf[0][1] = "Ry"; vlabelsTransf[0][2] = "3:4";
+	vlabelsTransf[1][0] = "Rx"; vlabelsTransf[1][1] = "Rz"; vlabelsTransf[1][2] = "3:5";
+	vlabelsTransf[2][0] = "Ry"; vlabelsTransf[2][1] = "Rz"; vlabelsTransf[2][2] = "4:5";
+	vlabelsTransf[3][0] = "Tx"; vlabelsTransf[3][1] = "Ty"; vlabelsTransf[3][2] = "6:7";
+	vlabelsTransf[4][0] = "Tx"; vlabelsTransf[4][1] = "Tz"; vlabelsTransf[4][2] = "6:8";
+	vlabelsTransf[5][0] = "Ty"; vlabelsTransf[5][1] = "Tz"; vlabelsTransf[5][2] = "7:8";
+	vlabelsTransf[6][0] = "Tx"; vlabelsTransf[6][1] = "Sg"; vlabelsTransf[6][2] = "6:9";
+	vlabelsTransf[7][0] = "Ty"; vlabelsTransf[7][1] = "Sg"; vlabelsTransf[7][2] = "7:9";
+	vlabelsTransf[8][0] = "Tz"; vlabelsTransf[8][1] = "Sg"; vlabelsTransf[8][2] = "8:9";
+
+
+	std::string filelevel(directorioResultados + "level3");
+
+	for(int i=0; i<9; i++){
+
+		//Evaluacion para la Transformacion vs Metrica
+		std::string plotTraceTransf(directorioResultados + "traceTrans"+std::to_string(i)+".gnup");
+
+		plot_temp.open(plotTraceTransf, std::ios_base::app);
+		plot_temp << "set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name \"traceevolution\" butt dashlength 1.0"  << "\n";
+		plot_temp << "set xlabel \""+ vlabelsTransf[i][0]  +"\"" << "\n";
+		plot_temp << "set ylabel \""+ vlabelsTransf[i][1]  +"\" " << "\n";
+		plot_temp << "set title \"Param Transf Evolution Last Level" << "\""<<"\n";
+		plot_temp << "set parametric"<<"\n";
+		plot_temp << "set size square"<<"\n";
+		plot_temp << "set output \"" + directorioResultados + "TraceTransf" + std::to_string(i) + ".svg\""<<"\n";
+		plot_temp << "plot \"" + filelevel +
+			".txt\" using "+ vlabelsTransf[i][2]+" notitle with lines lt 1, \"" + filelevel +
+			".txt\" using "+vlabelsTransf[i][2]+" notitle with points lt 0 pt 12 ps 1" << "\n";
+		plot_temp.close();
+
+		nameCmdPlot = "gnuplot " + plotTraceTransf;
+		std::system(nameCmdPlot.c_str());
 	}
 }
 
