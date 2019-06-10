@@ -272,32 +272,8 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
 		nameCmdPlot="gnuplot " + namePlotFile;
 		std::system(nameCmdPlot.c_str());
 
-		/*//Plot para la Trans vs Iteración (Traslación Z)
-
-		std::string plotTraceTransf(directorioResultados + "traceTrans" + std::to_string(i) + ".gnup");
-
-		plot_temp.open(plotTraceTransf, std::ios_base::app);
-		plot_temp << "set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name \"traceevolution\" butt dashlength 1.0"  << "\n";
-		plot_temp << "set xlabel \"Rotacion en X.\"" << "\n";
-		plot_temp << "set ylabel \"Rotacion en Y\" " << "\n";
-		plot_temp << "set title \"Param Transf Evolution Level " << std::to_string(i) << "\""<<"\n";
-		plot_temp << "set parametric"<<"\n";
-		plot_temp << "set size square"<<"\n";
-		plot_temp << "set output \"" + directorioResultados + "TraceTransf"+std::to_string(i)+".svg\""<<"\n";
-		plot_temp << "plot \"" + nameloginLevel +
-			".txt\" using 3:4 notitle with lines lt 1, \"" + nameloginLevel +
-			".txt\" using 3:4 notitle with points lt 0 pt 12 ps 1" << "\n";
-		plot_temp.close();
-	
-		nameCmdPlot = "gnuplot " + plotTraceTransf;
-		std::system(nameCmdPlot.c_str());
-		*/
-
 
 	}
-
-	//std::vector<std::string> listLabels = {"RxRy","RxRz","RyRz","TxTy","TxTz","TyTz","TxSg","TySg","TzSg"};
-	//std::vector<<std::string> listIndex = {"3:4","3:5","4:5","6:7","6:8","7:8","6:9","7:9","8:9"}; 
 
 	std::vector<std::vector<std::string>> vlabelsTransf(9, std::vector<std::string>(3));
 	vlabelsTransf[0][0] = "Rx"; vlabelsTransf[0][1] = "Ry"; vlabelsTransf[0][2] = "3:4";
@@ -337,26 +313,56 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
 }
 
 void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfilename,int numTest){
+	
+	//Separacion del archivo de valores de transformacion por grados,mm,escala
+	std::string nameValoresTransformacion("../outputData/resultsReg_"+std::to_string(numTest) + "/valueTransf" + std::to_string(numTest));
+	
+	//Parametros de Rotacion
+	std::string valRota("head -4 " + nameValoresTransformacion + ".txt > " + nameValoresTransformacion + "0.txt");
+	std::system(valRota.c_str());	
+	
+	//Parametros de Traslacion
+	std::string valTras("tail -4 " + nameValoresTransformacion + ".txt | sed -n -e :a -e '1,1!{P;N;D;};N;ba' > " + nameValoresTransformacion + "1.txt");
+	std::system(valTras.c_str());
 
-	//writing the plot with respective logfile
-	//dirRes = ../outputData/resultsReg0
-	std::string nameOutputImagePlot("ValueTraslationScale" + std::to_string(numTest) + ".svg");	
-	std::string newPlotParamsValuesDir("set output \"" + dirRes + nameOutputImagePlot);
-	std::string namePlotFile(dirRes + "plotValueTrans"  + std::to_string(numTest) + ".gnup");
+	//Parametro de Escala
+	std::string valScal("tail -1 " + nameValoresTransformacion + ".txt > " + nameValoresTransformacion + "2.txt");
+	std::system(valScal.c_str());
 
-	//Replace the name of the plot and the outputname graph 
-	std::string replaceNewNamePlot("");
-	std::string replaceNameOutputPlotCmd(" gsed '/set output/c\\" + newPlotParamsValuesDir + "\"' ../cmdPlots/plotValueTransGen.gnup > " + namePlotFile);
-	std::system(replaceNameOutputPlotCmd.c_str());
+	//0 = rotation
+	//1 = traslacion
+	//2 = escala
+	
+	std::vector<std::string> ylabels = {"Valores en Grados","Valores en Milimetros","Valores en Unidades"};
+	std::vector<std::string> xlabels = {"Parametros de Rotacion","Parametros de Traslacion","Parametro de Escala"};
 
-	//Change the name of inputFile respectivily
-	std::string nameNewReadingFilePlot("plot \"../outputData/resultsReg_"+std::to_string(numTest) + "/valueTransf" + std::to_string(numTest) + ".txt\"\\\\");
-	std::string replaceInputFileNameCmd("gsed -i '/plot/c\\" + nameNewReadingFilePlot + "' "+namePlotFile);
-	std::system(replaceInputFileNameCmd.c_str());
+	for(int i=0;i<3;i++){
+		//writing the plot with respective logfile
+		std::string nameOutputImagePlot("ValueTransf" + std::to_string(numTest) + std::to_string(i)  + ".svg");	
+		std::string newPlotParamsValuesDir("set output \"" + dirRes + nameOutputImagePlot);
+		std::string namePlotFile(dirRes + "plotValueTransf"  + std::to_string(numTest) + std::to_string(i) + ".gnup");
 
-	std::string nameCmdPlot("gnuplot " + namePlotFile);
-	std::system(nameCmdPlot.c_str());
+		//Replace the name of the plot and the outputname graph 
+		std::string replaceNewNamePlot("");
+		std::string replaceNameOutputPlotCmd(" sed '/set output/c\\" + newPlotParamsValuesDir + "\"' ../cmdPlots/plotValueTransGen.gnup > " + namePlotFile);
+		std::system(replaceNameOutputPlotCmd.c_str());
 
+		//Change the name of inputFile respectivily
+		std::string nameNewReadingFilePlot("plot \""+ nameValoresTransformacion + std::to_string(i) + ".txt\"\\\\");
+		std::string replaceInputFileNameCmd("sed -i '/plot/c\\" + nameNewReadingFilePlot + "' "+namePlotFile);
+		std::system(replaceInputFileNameCmd.c_str());
+		
+		//Change the ylabel of the plot
+		std::string changeylabel="";
+		changeylabel = "sed -i '/set ylabel/c\\set ylabel \""+ylabels[i]+"\"' "+namePlotFile;
+		std::system(changeylabel.c_str());
+		std::string changexlabel="";
+		changexlabel = "sed -i '/set xlabel/c\\set xlabel \""+xlabels[i]+"\"' " + namePlotFile;
+		std::system(changexlabel.c_str());
+
+		std::string nameCmdPlot("gnuplot " + namePlotFile);
+		std::system(nameCmdPlot.c_str());
+	}
 }
 
 
@@ -380,7 +386,7 @@ void Utilitarios::createStatsOfErrors(int numImags){
 
 
 	std::string defineRange("");	
-	defineRange += "gsed -i 's/a1_max =.*/a1_max = "+ std::to_string(nmaxRange) + "/g"+
+	defineRange += "sed -i 's/a1_max =.*/a1_max = "+ std::to_string(nmaxRange) + "/g"+
 		"; s/a2_max =.*/a2_max = "+ std::to_string(nmaxRange) + "/g" +
 		"; s/a3_max =.*/a3_max = "+ std::to_string(nmaxRange) + "/g" +
 		"; s/a4_max =.*/a4_max = "+ std::to_string(nmaxRange) + "/g" +
@@ -391,11 +397,11 @@ void Utilitarios::createStatsOfErrors(int numImags){
 
 	int numColsPlot = numImags + 3;
 	std::string fixNumColsCmd("");
-	fixNumColsCmd += "gsed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup";
+	fixNumColsCmd += "sed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup";
 	std::system(fixNumColsCmd.c_str());
 
 	std::string fileoutput("");
-	fileoutput += "gsed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
+	fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
 	std::system(fileoutput.c_str());
 
 	//writing the plot with respective logfile
@@ -406,7 +412,7 @@ void Utilitarios::createStatsOfErrors(int numImags){
 }
 
 void Utilitarios::createStatsBarHausdorff(){
-	std::string cmdDelLastLineHausDist("gsed -n -e :a -e '1,1!{P;N;D;};N;ba' ../outputData/HausdorffDistances.txt > ../outputData/hdgeneral.txt");
+	std::string cmdDelLastLineHausDist("sed -n -e :a -e '1,1!{P;N;D;};N;ba' ../outputData/HausdorffDistances.txt > ../outputData/hdgeneral.txt");
 	std::system(cmdDelLastLineHausDist.c_str());
 
 	std::string namePlotFile("../cmdPlots/barhdist.gnup");
@@ -421,7 +427,58 @@ void Utilitarios::createStatsBoxPlotsTypeTransParams(){
 	std::system(cmdTransposeRMSE.c_str());
 
 	std::string namePlotFile("../cmdPlots/boxplotTranfParams.gnup");
-	std::string nameCmdPlot("gnuplot "+namePlotFile);
-	std::system(nameCmdPlot.c_str());
 
+	//Separacion de los plots por el tipo de unidad de los parametros de transformacion
+	
+	//Rotacion
+	std::string boxRotacion("cat ../outputData/newRMSE_Registro.txt | awk '{$4=$5=$6=$7=\"\"; print $0}' > ../outputData/box0.txt");
+	std::system(boxRotacion.c_str());
+	
+	//Traslacion
+	std::string boxTraslacion("cat ../outputData/newRMSE_Registro.txt | awk '{$1=$2=$3=$7=\"\"; print $0}' > ../outputData/box1.txt");
+	std::system(boxTraslacion.c_str());
+
+	//Escala
+	std::string boxEscala("cat ../outputData/newRMSE_Registro.txt | awk '{print $7}' > ../outputData/box2.txt" );
+	std::system(boxEscala.c_str());
+		
+
+	//0 = rotation
+	//1 = traslacion
+	//2 = escala
+
+
+	std::vector<std::string> xtics = {"(\"Rx\" 1, \"Ry\" 2, \"Rz\" 3)", "(\"Tx\" 1, \"Ty\" 2, \"Tz\" 3)", "(\"Sg\" 1)"};
+	std::vector<std::string> ylabel = {"Error de Rotacion en Grados","Error de Traslacion en Milimetros","Error de Escala en Unidades"};
+	std::vector<std::string> labelfor = {
+		"[i=1:3] \"../outputData/box0.txt\" using (i):i",
+		"[i=1:3] \"../outputData/box1.txt\" using (i):i",
+		"[i=1:1] \"../outputData/box2.txt\" using (i):i"
+	};
+
+	for(int i=0;i<3;i++){	
+		//Cambio del output (cambiar el svg)
+		std::string newOutput="";
+		newOutput = "sed -i '/set output/c\\set output '../outputData/boxplotTransfParams"+std::to_string(i) + ".svg'";
+		std::system(newOutput.c_str());
+
+		//Cambio de xtics
+		std::string changextics="";
+		changextics = "sed -i '/set xtics/c\\set xtics " + xtics[i] + "' " + namePlotFile;
+		std::system(changextics.c_str());
+
+		//Cambio del ylabel
+		std::string changeylabel;
+		changeylabel = "sed -i '/set ylabel/c\\set ylabel \""+ylabel[i]+"\"' " + namePlotFile;
+		std::system(changeylabel.c_str());
+
+		//Cambio del for
+		std::string changelabelfor;
+		changelabelfor = "sed -i '/plot for/c\\plot for"+ labelfor[i]+ "' " + namePlotFile;
+		std::system(changelabelfor.c_str());
+
+		//Ejecucion el actual plot
+		std::string nameCmdPlot("gnuplot "+namePlotFile);
+		std::system(nameCmdPlot.c_str());
+	}
 }

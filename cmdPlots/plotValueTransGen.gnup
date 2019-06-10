@@ -8,10 +8,10 @@ set style fill solid
 set boxwidth 0.9
 set xtics format ""
 set grid ytics
-set ylabel "Valor de Parametros de Transformacion (grades,mm,factor)"
+set ylabel "Valor de Parametros de Transformacion"
 set xlabel "Parametros de Traslacion y Escala"
-set title "Diferencia entre los valores del GroundTruth y el de Registro de los Parametros de Transformacion"
+set title "Diferencia entre los valores de los Parametros de Transformacion del Volumen de Referencia y del Volumen Registrado "
 plot "../outputData/valueTransf0.txt" \
-using 2:xtic(1) with histogram title "GroundTruth" linecolor rgb green, '' using 3 with histogram title "Registration" linecolor rgb skyblue, \
+using 2:xtic(1) with histogram title "VolumenReferencia" linecolor rgb green, '' using 3 with histogram title "VolumenRegistrado" linecolor rgb skyblue, \
 '' u 0:2:2 with labels font "Helvetica, 10" offset char -3,0.5 title "", \
 '' u 0:3:3 with labels font "Helvetica, 10" offset char 3,0.5 title "" \
