@@ -111,7 +111,7 @@ void ScriptBuilder::buildScript(){
 		comman += focal2Point;
 
 		//Tolerancia de la metrica para terminar la optimización
-		string stepTolerance = "-steptolerance 0.04 ";
+		string stepTolerance = "-steptolerance 0.02 ";
 		comman += stepTolerance;
 
 		//Tamanio de Paso

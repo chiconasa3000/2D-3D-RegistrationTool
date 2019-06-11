@@ -236,7 +236,7 @@ void Utilitarios::computeHausdorffDistance(std::string logfilename, typename itk
 void Utilitarios::createStats(int numLevels, std::string logfilename, std::string dir_resultados, int indexTest){
 
 	//Eliminar datos innecesarios del log de resultados
-	std::string cmdPickResults("cat " + logfilename + " | sed -n -e :a -e '1,36!{P;N;D;};N;ba' | sed 1,10d > newlog.txt");
+	std::string cmdPickResults("cat " + logfilename + " | gsed -n -e :a -e '1,36!{P;N;D;};N;ba' | gsed 1,10d > newlog.txt");
 	int result = std::system(cmdPickResults.c_str());
 
 	//Separar el log de resultados por cada nivel de resolucion
@@ -276,15 +276,15 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
 	}
 
 	std::vector<std::vector<std::string>> vlabelsTransf(9, std::vector<std::string>(3));
-	vlabelsTransf[0][0] = "Rx"; vlabelsTransf[0][1] = "Ry"; vlabelsTransf[0][2] = "3:4";
-	vlabelsTransf[1][0] = "Rx"; vlabelsTransf[1][1] = "Rz"; vlabelsTransf[1][2] = "3:5";
-	vlabelsTransf[2][0] = "Ry"; vlabelsTransf[2][1] = "Rz"; vlabelsTransf[2][2] = "4:5";
-	vlabelsTransf[3][0] = "Tx"; vlabelsTransf[3][1] = "Ty"; vlabelsTransf[3][2] = "6:7";
-	vlabelsTransf[4][0] = "Tx"; vlabelsTransf[4][1] = "Tz"; vlabelsTransf[4][2] = "6:8";
-	vlabelsTransf[5][0] = "Ty"; vlabelsTransf[5][1] = "Tz"; vlabelsTransf[5][2] = "7:8";
-	vlabelsTransf[6][0] = "Tx"; vlabelsTransf[6][1] = "Sg"; vlabelsTransf[6][2] = "6:9";
-	vlabelsTransf[7][0] = "Ty"; vlabelsTransf[7][1] = "Sg"; vlabelsTransf[7][2] = "7:9";
-	vlabelsTransf[8][0] = "Tz"; vlabelsTransf[8][1] = "Sg"; vlabelsTransf[8][2] = "8:9";
+	vlabelsTransf[0][0] = "Rx versor"; vlabelsTransf[0][1] = "Ry versor"; vlabelsTransf[0][2] = "3:4";
+	vlabelsTransf[1][0] = "Rx versor"; vlabelsTransf[1][1] = "Rz versor"; vlabelsTransf[1][2] = "3:5";
+	vlabelsTransf[2][0] = "Ry versor"; vlabelsTransf[2][1] = "Rz versor"; vlabelsTransf[2][2] = "4:5";
+	vlabelsTransf[3][0] = "Tx (milimetros)"; vlabelsTransf[3][1] = "Ty (milimetros)"; vlabelsTransf[3][2] = "6:7";
+	vlabelsTransf[4][0] = "Tx (milimetros)"; vlabelsTransf[4][1] = "Tz (milimetros)"; vlabelsTransf[4][2] = "6:8";
+	vlabelsTransf[5][0] = "Ty (milimetros)"; vlabelsTransf[5][1] = "Tz (milimetros)"; vlabelsTransf[5][2] = "7:8";
+	vlabelsTransf[6][0] = "Tx (milimetros)"; vlabelsTransf[6][1] = "Sg (unidades)"; vlabelsTransf[6][2] = "6:9";
+	vlabelsTransf[7][0] = "Ty (milimetros)"; vlabelsTransf[7][1] = "Sg (unidades)"; vlabelsTransf[7][2] = "7:9";
+	vlabelsTransf[8][0] = "Tz (milimetros)"; vlabelsTransf[8][1] = "Sg (unidades)"; vlabelsTransf[8][2] = "8:9";
 
 
 	std::string filelevel(directorioResultados + "level3");
@@ -322,7 +322,7 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 	std::system(valRota.c_str());	
 	
 	//Parametros de Traslacion
-	std::string valTras("tail -4 " + nameValoresTransformacion + ".txt | sed -n -e :a -e '1,1!{P;N;D;};N;ba' > " + nameValoresTransformacion + "1.txt");
+	std::string valTras("tail -4 " + nameValoresTransformacion + ".txt | gsed -n -e :a -e '1,1!{P;N;D;};N;ba' > " + nameValoresTransformacion + "1.txt");
 	std::system(valTras.c_str());
 
 	//Parametro de Escala
@@ -333,7 +333,7 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 	//1 = traslacion
 	//2 = escala
 	
-	std::vector<std::string> ylabels = {"Valores en Grados","Valores en Milimetros","Valores en Unidades"};
+	std::vector<std::string> ylabels = {"Valores en Grados (º)","Valores en Milimetros (mm)","Valores en Unidades (u)"};
 	std::vector<std::string> xlabels = {"Parametros de Rotacion","Parametros de Traslacion","Parametro de Escala"};
 
 	for(int i=0;i<3;i++){
@@ -344,20 +344,20 @@ void Utilitarios::createStatsOfTransValues(std::string dirRes, std::string logfi
 
 		//Replace the name of the plot and the outputname graph 
 		std::string replaceNewNamePlot("");
-		std::string replaceNameOutputPlotCmd(" sed '/set output/c\\" + newPlotParamsValuesDir + "\"' ../cmdPlots/plotValueTransGen.gnup > " + namePlotFile);
+		std::string replaceNameOutputPlotCmd(" gsed '/set output/c\\" + newPlotParamsValuesDir + "\"' ../cmdPlots/plotValueTransGen.gnup > " + namePlotFile);
 		std::system(replaceNameOutputPlotCmd.c_str());
 
 		//Change the name of inputFile respectivily
 		std::string nameNewReadingFilePlot("plot \""+ nameValoresTransformacion + std::to_string(i) + ".txt\"\\\\");
-		std::string replaceInputFileNameCmd("sed -i '/plot/c\\" + nameNewReadingFilePlot + "' "+namePlotFile);
+		std::string replaceInputFileNameCmd("gsed -i '/plot/c\\" + nameNewReadingFilePlot + "' "+namePlotFile);
 		std::system(replaceInputFileNameCmd.c_str());
 		
 		//Change the ylabel of the plot
 		std::string changeylabel="";
-		changeylabel = "sed -i '/set ylabel/c\\set ylabel \""+ylabels[i]+"\"' "+namePlotFile;
+		changeylabel = "gsed -i '/set ylabel/c\\set ylabel \""+ylabels[i]+"\"' "+namePlotFile;
 		std::system(changeylabel.c_str());
 		std::string changexlabel="";
-		changexlabel = "sed -i '/set xlabel/c\\set xlabel \""+xlabels[i]+"\"' " + namePlotFile;
+		changexlabel = "gsed -i '/set xlabel/c\\set xlabel \""+xlabels[i]+"\"' " + namePlotFile;
 		std::system(changexlabel.c_str());
 
 		std::string nameCmdPlot("gnuplot " + namePlotFile);
@@ -371,7 +371,7 @@ void Utilitarios::createStatsOfErrors(int numImags){
 	//obtener al mayor error de RMSE_registro para considerar el mayor rango para el spyder
 
 	//std::string command("sort -nk3 ../outputData/RMSE_Registro.txt | tail -1 | awk '{$1=\"\"; $2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
-	std::string command(   "cat ../outputData/RMSE_Registro.txt | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
+	std::string command(   "cat ../outputData/RMSE_Registro.txt | gsed 1,1d | awk '{$1=$2=\"\"; print $0}' | tr -s ' '  '\\n' | sort -n | tail -1");
 	std::string maxRange = "";
 	FILE * stream;
 	const int max_buffer = 6;
@@ -386,7 +386,7 @@ void Utilitarios::createStatsOfErrors(int numImags){
 
 
 	std::string defineRange("");	
-	defineRange += "sed -i 's/a1_max =.*/a1_max = "+ std::to_string(nmaxRange) + "/g"+
+	defineRange += "gsed -i 's/a1_max =.*/a1_max = "+ std::to_string(nmaxRange) + "/g"+
 		"; s/a2_max =.*/a2_max = "+ std::to_string(nmaxRange) + "/g" +
 		"; s/a3_max =.*/a3_max = "+ std::to_string(nmaxRange) + "/g" +
 		"; s/a4_max =.*/a4_max = "+ std::to_string(nmaxRange) + "/g" +
@@ -397,11 +397,11 @@ void Utilitarios::createStatsOfErrors(int numImags){
 
 	int numColsPlot = numImags + 3;
 	std::string fixNumColsCmd("");
-	fixNumColsCmd += "sed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup";
+	fixNumColsCmd += "gsed -i '/do/c\\do for [COL=3:"+std::to_string(numColsPlot)+"] {' ../cmdPlots/spyder4.gnup";
 	std::system(fixNumColsCmd.c_str());
 
 	std::string fileoutput("");
-	fileoutput += "sed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
+	fileoutput += "gsed -i '/set output/c\\set output sprintf(\"../outputData/spyder\%d.svg\",tag)' ../cmdPlots/spyder4.gnup";
 	std::system(fileoutput.c_str());
 
 	//writing the plot with respective logfile
@@ -412,7 +412,7 @@ void Utilitarios::createStatsOfErrors(int numImags){
 }
 
 void Utilitarios::createStatsBarHausdorff(){
-	std::string cmdDelLastLineHausDist("sed -n -e :a -e '1,1!{P;N;D;};N;ba' ../outputData/HausdorffDistances.txt > ../outputData/hdgeneral.txt");
+	std::string cmdDelLastLineHausDist("gsed -n -e :a -e '1,1!{P;N;D;};N;ba' ../outputData/HausdorffDistances.txt > ../outputData/hdgeneral.txt");
 	std::system(cmdDelLastLineHausDist.c_str());
 
 	std::string namePlotFile("../cmdPlots/barhdist.gnup");
@@ -423,7 +423,7 @@ void Utilitarios::createStatsBarHausdorff(){
 
 void Utilitarios::createStatsBoxPlotsTypeTransParams(){
 	std::string cmdTransposeRMSE("");
-	cmdTransposeRMSE += "cat ../outputData/RMSE_Registro.txt |sed -n -e :a -e '1,1!{P;N;D;};N;ba' | sed 1,1d | awk '{$1=$2=\"\"; print $0}' | awk -f ../cmdPlots/transposeTable.awk > ../outputData/newRMSE_Registro.txt";
+	cmdTransposeRMSE += "cat ../outputData/RMSE_Registro.txt |gsed -n -e :a -e '1,1!{P;N;D;};N;ba' | gsed 1,1d | awk '{$1=$2=\"\"; print $0}' | awk -f ../cmdPlots/transposeTable.awk > ../outputData/newRMSE_Registro.txt";
 	std::system(cmdTransposeRMSE.c_str());
 
 	std::string namePlotFile("../cmdPlots/boxplotTranfParams.gnup");
@@ -439,7 +439,7 @@ void Utilitarios::createStatsBoxPlotsTypeTransParams(){
 	std::system(boxTraslacion.c_str());
 
 	//Escala
-	std::string boxEscala("cat ../outputData/newRMSE_Registro.txt | awk '{print $7}' > ../outputData/box2.txt" );
+	std::string boxEscala("cat ../outputData/newRMSE_Registro.txt | awk '{print $7}' > ../outputData/box2.txt");
 	std::system(boxEscala.c_str());
 		
 
@@ -449,32 +449,32 @@ void Utilitarios::createStatsBoxPlotsTypeTransParams(){
 
 
 	std::vector<std::string> xtics = {"(\"Rx\" 1, \"Ry\" 2, \"Rz\" 3)", "(\"Tx\" 1, \"Ty\" 2, \"Tz\" 3)", "(\"Sg\" 1)"};
-	std::vector<std::string> ylabel = {"Error de Rotacion en Grados","Error de Traslacion en Milimetros","Error de Escala en Unidades"};
+	std::vector<std::string> ylabel = {"Error de Rotacion en Grados (º)","Error de Traslacion en Milimetros (mm)","Error de Escala en Unidades (u)"};
 	std::vector<std::string> labelfor = {
 		"[i=1:3] \"../outputData/box0.txt\" using (i):i",
 		"[i=1:3] \"../outputData/box1.txt\" using (i):i",
 		"[i=1:1] \"../outputData/box2.txt\" using (i):i"
 	};
 
-	for(int i=0;i<3;i++){	
+	for(int i=0; i<3; i++){	
 		//Cambio del output (cambiar el svg)
 		std::string newOutput="";
-		newOutput = "sed -i '/set output/c\\set output '../outputData/boxplotTransfParams"+std::to_string(i) + ".svg'";
+		newOutput = "gsed -i '/set output/c\\set output \"../outputData/boxplotTransfParams" + std::to_string(i) + ".svg\"' " + namePlotFile;
 		std::system(newOutput.c_str());
 
 		//Cambio de xtics
 		std::string changextics="";
-		changextics = "sed -i '/set xtics/c\\set xtics " + xtics[i] + "' " + namePlotFile;
+		changextics = "gsed -i '/set xtics/c\\set xtics " + xtics[i] + "' " + namePlotFile;
 		std::system(changextics.c_str());
 
 		//Cambio del ylabel
 		std::string changeylabel;
-		changeylabel = "sed -i '/set ylabel/c\\set ylabel \""+ylabel[i]+"\"' " + namePlotFile;
+		changeylabel = "gsed -i '/set ylabel/c\\set ylabel \""+ylabel[i]+"\"' " + namePlotFile;
 		std::system(changeylabel.c_str());
 
 		//Cambio del for
 		std::string changelabelfor;
-		changelabelfor = "sed -i '/plot for/c\\plot for"+ labelfor[i]+ "' " + namePlotFile;
+		changelabelfor = "gsed -i '/plot for/c\\plot for"+ labelfor[i]+ "' " + namePlotFile;
 		std::system(changelabelfor.c_str());
 
 		//Ejecucion el actual plot

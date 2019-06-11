@@ -12,9 +12,14 @@ a5= 360/npoints*5
 a6= 360/npoints*6
 a7= 360/npoints*7
 
+set raxis
+unset xtics
+set ytics axis in scale 1,0.5 nomirror norotate autojustify
+set key at -0.8,0.9,0 box
 set grid polar 360.
 set size square
 set style data lines
+set style increment default
 
 unset border
 set arrow nohead from 0,0 to first 1*cos(a1) , 1*sin(a1)
@@ -25,13 +30,13 @@ set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
 set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
 set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 
-a1_max = 5.344000
-a2_max = 5.344000
-a3_max = 5.344000
-a4_max = 5.344000
-a5_max = 5.344000
-a6_max = 5.344000
-a7_max = 5.344000
+a1_max = 20.080000
+a2_max = 20.080000
+a3_max = 20.080000
+a4_max = 20.080000
+a5_max = 20.080000
+a6_max = 20.080000
+a7_max = 20.080000
 a1_min = 0
 a2_min = 0
 a3_min = 0
@@ -41,21 +46,21 @@ a6_min = 0
 a7_min = 0
 
 set label "Rotacion X" at cos(a1),sin(a1) center offset char 1,1
-set label "Rotacion Y" at cos(a2),sin(a2) center offset char -1,1
+set label "Rotacion Y" at cos(a2),sin(a2) center offset char -2,-1
 set label "Rotacion Z" at cos(a3),sin(a3) center offset char -1,-1
 set label "Traslacion X" at cos(a4),sin(a4) center offset char 0,-1
-set label "Traslacion Y" at cos(a5),sin(a5) center offset char 3,0
+set label "Traslacion Y" at cos(a5),sin(a5) center offset char -3,-0.5
 set label "Traslacion Z" at cos(a6),sin(a6) center offset char -1,-1
 set label "Escala" at cos(a7),sin(a7) center offset char 3,0
 
 set xrange [-1:1]
 set yrange [-1:1]
-unset xtics
-unset ytics
+#unset xtics
+#unset ytics
 set rrange [0:1]
 set title "Error de Parametros de Transformacion"
 
-do for [COL=3:6] {
+do for [COL=3:7] {
 	tag = COL-2
 set output sprintf("../outputData/spyder%d.svg",tag)
 	plot "../outputData/RMSE_Registro.txt" using \

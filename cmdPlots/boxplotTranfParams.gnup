@@ -1,5 +1,5 @@
 set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "BoxPlotTransformation" butt dashlength 1.0
-set output '../outputData/boxplotTransfParams.svg'
+set output "../outputData/boxplotTransfParams2.svg"
 
 set border 2 front lt black linewidth 1.000 dashtype solid
 set boxwidth 0.2 absolute

@@ -480,9 +480,9 @@ int main(int argc, char* argv[] )
 	//sera la sexta parte del total 100/6 = 16.6 o cuarta parte 100/4 = 25.0
 	OptimizerType::ScalesType scales( ParTotal );
 	scales.Fill(itk::NumericTraits<OptimizerType::ScalesType::ValueType>::One);
-	scales[0] = 1.0*10.0;
-	scales[1] = 1.0*10.0;
-	scales[2] = 1.0*10.0;
+	scales[0] = 1.0;
+	scales[1] = 1.0;
+	scales[2] = 1.0;
 	scales[3] = 1.0/256.3;
 	scales[4] = 1.0/256.3;
 	scales[5] = 1.0/256.3;
