@@ -144,7 +144,8 @@ class OptimizerObserver : public itk::Command
 					std::to_string(optimizer->GetCurrentPosition()[5]) + " " +
 					std::to_string(optimizer->GetCurrentPosition()[6]) + "\n";
 				logOptimizer->write(logoptimizer.c_str(),logoptimizer.size());		
-				std::cout << " Similarity: " << optimizer->GetValue() << std::endl;
+				//std::cout << " Similarity: " << optimizer->GetValue() << std::endl;
+				std::cout << logoptimizer << std::endl;
 			}
 			else if( itk::StartEvent().CheckEvent( & event ) )
 			{
@@ -188,7 +189,7 @@ int main(int argc, char* argv[] )
 	char * outputDirectory = NULL;
 	char * inputTransform = NULL;
 	char * logFileName = NULL;
-
+	int numRegistro = 0;
 	bool writeFinalVol = false;
 	bool writeStatistics = false;
 	bool ok;	
@@ -306,6 +307,14 @@ int main(int argc, char* argv[] )
 			ok = true;
 			writeStatistics = true;
 		}
+		if ((ok == false) && (strcmp(argv[1], "-numReg") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			numRegistro = atoi(argv[1]);
+			argc--; argv++;
+		}
+
 	}	
 	/*
 	   if( argc < 13 )
@@ -480,9 +489,9 @@ int main(int argc, char* argv[] )
 	//sera la sexta parte del total 100/6 = 16.6 o cuarta parte 100/4 = 25.0
 	OptimizerType::ScalesType scales( ParTotal );
 	scales.Fill(itk::NumericTraits<OptimizerType::ScalesType::ValueType>::One);
-	scales[0] = 1.0;
-	scales[1] = 1.0;
-	scales[2] = 1.0;
+	scales[0] = 1.0*10.0;
+	scales[1] = 1.0*10.0;
+	scales[2] = 1.0*10.0;
 	scales[3] = 1.0/256.3;
 	scales[4] = 1.0/256.3;
 	scales[5] = 1.0/256.3;
@@ -987,14 +996,121 @@ int main(int argc, char* argv[] )
 	}
     if(writeStatistics){
 	Utilitarios *util = new Utilitarios();
-	//util->createStats(4,"../outputData/log.txt","../outputData",0);
-    }
-	
-	logregistro.close();
+	//Numero de Niveles, log, directoriosalida, registro a evaluar
+	int numReg = numRegistro;
+	util->createStats(numLevels,logFileName,"../outputData/resultsReg_",numReg);
 
-	//----------------------------------------------------------------------------
-	// End of the example
-	//----------------------------------------------------------------------------
-	return EXIT_SUCCESS;
+	//Lectura de Archivos de el volumen Transformado Aleatoriamente
+	std::string deformRandomTransform = "../outputDataIni/ImagesDefs/TransformFiles/transfSim_"+ std::to_string(numReg) +".txt";
+
+	itk::TransformFileReader::Pointer transformReader_2 = itk::TransformFileReader::New();
+	transformReader_2->SetFileName(deformRandomTransform);
+
+	std::cout<<"Lectura de Transformacion de la Deformacion "<< numReg <<" registro"<<std::endl;
+	try{
+		transformReader_2->Update();
+	}catch(itk::ExceptionObject &e)
+	{
+		std::cout << e.GetDescription() << std::endl;
+	}
+
+	itk::TransformFileReader::TransformListType* transformList_2 = transformReader_2->GetTransformList();	
+	itk::TransformFileReader::TransformPointer baseTransform_2 = transformList_2->front();
+
+	std::cout<<"Parameters Deformed Volume Transform"<<std::endl;
+	std::cout<< baseTransform_2->GetParameters() << std::endl;
+
+	//Formando el nombre del archivo de transformacion
+	std::string currentTransformFile = "../outputData/resultsReg_"+ std::to_string(numReg) +"/outTransform.txt";
+
+	itk::TransformFileReader::Pointer transformReader = itk::TransformFileReader::New();
+	transformReader->SetFileName(currentTransformFile);
+
+	std::cout<<"Lectura de Archivo de Transformacion del "<<numReg<<" registro"<<std::endl;
+	try{
+		transformReader->Update();
+	}catch(itk::ExceptionObject &e)
+	{
+		std::cout << e.GetDescription() << std::endl;
+	}
+
+	itk::TransformFileReader::TransformListType* transformList = transformReader->GetTransformList();	
+	itk::TransformFileReader::TransformPointer baseTransform = transformList->front();
+
+	std::cout<<"Current Parameters Transform"<<std::endl;
+	std::cout<< baseTransform->GetParameters() << std::endl;
+
+	float gt_rx, gt_ry, gt_rz, gt_tx, gt_ty, gt_tz, gt_sg, rg_rx, rg_ry, rg_rz, rg_tx, rg_ty, rg_tz, rg_sg;	
+	float ngt_rx,ngt_ry,ngt_rz, nrg_rx, nrg_ry, nrg_rz;	
+	//Captura de valores de transformacion
+	gt_rx = baseTransform_2->GetParameters()[0];
+	gt_ry = baseTransform_2->GetParameters()[1];
+	gt_rz = baseTransform_2->GetParameters()[2];
+	gt_tx = baseTransform_2->GetParameters()[3];
+	gt_ty = baseTransform_2->GetParameters()[4];
+	gt_tz = baseTransform_2->GetParameters()[5];
+	gt_sg = baseTransform_2->GetParameters()[6];
+
+	//cast from versor to euler	
+	util->convertVersorToEuler(gt_rx, gt_ry, gt_rz, ngt_rx, ngt_ry, ngt_rz);		
+	rg_rx = baseTransform->GetParameters()[0];
+	rg_ry = baseTransform->GetParameters()[1];
+	rg_rz = baseTransform->GetParameters()[2];
+	rg_tx = baseTransform->GetParameters()[3];
+	rg_ty = baseTransform->GetParameters()[4];
+	rg_tz = baseTransform->GetParameters()[5];
+	rg_sg = baseTransform->GetParameters()[6];
+
+	util->convertVersorToEuler(rg_rx, rg_ry, rg_rz, nrg_rx, nrg_ry, nrg_rz);
+
+	//Archivo log de cada test para almacenar los valores de los parametros de transformacion el antes y el despues
+	std::string filenameTransValue = "../outputData/resultsReg_" + std::to_string(numReg) + "/valueTransf" + std::to_string(numReg) + ".txt";
+	std::ofstream fileTransValue;
+	fileTransValue.open(filenameTransValue);
+
+	//Escritura de los valores de los parametros de transformacion
+	fileTransValue << "#\tGroundTruth\tRegistration"<<std::endl;
+	fileTransValue << "Rx\t" + std::to_string(ngt_rx) + "\t" + std::to_string(nrg_rx) << std::endl;
+	fileTransValue << "Ry\t" + std::to_string(ngt_ry) + "\t" + std::to_string(nrg_ry) << std::endl;
+	fileTransValue << "Rz\t" + std::to_string(ngt_rz) + "\t" + std::to_string(nrg_rz) << std::endl;
+	fileTransValue << "Tx\t" + std::to_string(gt_tx) + "\t" + std::to_string(rg_tx) << std::endl;
+	fileTransValue << "Ty\t" + std::to_string(gt_ty) + "\t" + std::to_string(rg_ty) << std::endl;
+	fileTransValue << "Tz\t" + std::to_string(gt_tz) + "\t" + std::to_string(rg_tz) << std::endl;
+	fileTransValue << "Sg\t" + std::to_string(gt_sg) + "\t" + std::to_string(rg_sg) << std::endl;
+
+	fileTransValue.close();
+
+	util->createStatsOfTransValues(outputDirectory,"no usado",numReg);
+	
+
+	std::ofstream fileError;
+	fileError.open("../outputData/diferror_"+std::to_string(numReg));
+	float t_rx, t_ry, t_rz, t_tx, t_ty, t_tz, t_sg; 		
+	fileError << "#Error" << numReg << std::endl;
+	t_rx = abs(ngt_rx - nrg_rx);
+	fileError << t_rx << std::endl;
+	t_ry = abs(ngt_ry - nrg_ry);
+	fileError << t_ry << std::endl;
+	t_rz = abs(ngt_rz - nrg_rz);
+	fileError << t_rz << std::endl;
+	t_tx = abs(gt_tx - rg_tx);
+	fileError << t_tx << std::endl;
+	t_ty = abs(gt_ty - rg_ty);
+	fileError << t_ty << std::endl;
+	t_tz = abs(gt_tz - rg_tz);
+	fileError << t_tz << std::endl;
+	t_sg = abs(gt_sg - rg_sg);
+	fileError << t_sg << std::endl;
+
+	
+
+    }
+
+    logregistro.close();
+
+    //----------------------------------------------------------------------------
+    // End of the example
+    //----------------------------------------------------------------------------
+    return EXIT_SUCCESS;
 }
 

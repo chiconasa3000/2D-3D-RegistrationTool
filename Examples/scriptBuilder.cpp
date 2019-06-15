@@ -115,7 +115,7 @@ void ScriptBuilder::buildScript(){
 		comman += stepTolerance;
 
 		//Tamanio de Paso
-		string stepSize = "-stepsize 6.0 ";
+		string stepSize = "-stepsize 3.0 ";
 		comman += stepSize;
 
 		//Nro de Niveles de Resolucion y 
