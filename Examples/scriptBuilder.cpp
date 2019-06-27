@@ -115,7 +115,7 @@ void ScriptBuilder::buildScript(){
 		comman += stepTolerance;
 
 		//Tamanio de Paso
-		string stepSize = "-stepsize 3.0 ";
+		string stepSize = "-stepsize 4.0 ";
 		comman += stepSize;
 
 		//Nro de Niveles de Resolucion y 
@@ -267,7 +267,7 @@ void ScriptBuilder::buildScript(){
 			comman += nameVirtualImage;
 			
 			//Distancia de Fuente a Isocentro
-			string sourceToIsocenterDistance = "-scd -200 ";
+			string sourceToIsocenterDistance = "-scd -122.5 ";
 			comman += sourceToIsocenterDistance;
 
 

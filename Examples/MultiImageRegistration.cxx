@@ -362,10 +362,15 @@ int main(int argc, char* argv[] )
 	typedef itk::Similarity3DTransform< double> TransformType;
 
 	TransformType::Pointer transform = TransformType::New();
+	TransformType::Pointer initialTransform = TransformType::New();
+	
 	//transform->SetComputeZYX(true);
 	transform->SetIdentity();
-	registration->SetTransform( transform );
 
+	//TransformType::ScaleType scale = 1.0;
+	//transform->SetScale(scale);
+	
+	registration->SetTransform( transform );
 
 	//----------------------------------------------------------------------------
 	// Load the moving image
@@ -489,13 +494,21 @@ int main(int argc, char* argv[] )
 	//sera la sexta parte del total 100/6 = 16.6 o cuarta parte 100/4 = 25.0
 	OptimizerType::ScalesType scales( ParTotal );
 	scales.Fill(itk::NumericTraits<OptimizerType::ScalesType::ValueType>::One);
-	scales[0] = 1.0*10.0;
-	scales[1] = 1.0*10.0;
-	scales[2] = 1.0*10.0;
+	
+	//En el primer nivelcon *10.0 en rotacion oscilas mucho en el primer nivel
+	//aunque en el ultimo nivel decrece y se vuelve mas continuo (esto pierde el extremo optimo)
+
+	//En el prime nivel con *5.0 en rotacion oscilas menos en el primer nivel
+	//aunque en el ultimo nivel aumenta las oscilaciones al ser mas cercanos al extremo local
+
+
+	scales[0] = 1.0*5.0;
+	scales[1] = 1.0*5.0;
+	scales[2] = 1.0*5.0;
 	scales[3] = 1.0/256.3;
 	scales[4] = 1.0/256.3;
 	scales[5] = 1.0/256.3;
-	scales[6] = 1.0;
+	scales[6] = 1.0/5.0;
 
 	optimizer->SetScales( scales );
 
@@ -522,7 +535,10 @@ int main(int argc, char* argv[] )
 	optimizer->AddObserver( itk::IterationEvent(), optimizerObserver );
 	optimizer->AddObserver( itk::StartEvent(), optimizerObserver );
 	optimizer->AddObserver( itk::EndEvent(), optimizerObserver );	
-
+	
+	//Change the initial Position in the Optimizer
+	//optimizer->SetInitialPosition(similarityParameters);
+	
 	//set the optimizer in the registration process
 	registration->SetOptimizer( optimizer );
 
