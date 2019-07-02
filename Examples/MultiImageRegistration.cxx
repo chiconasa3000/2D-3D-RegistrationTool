@@ -502,13 +502,13 @@ int main(int argc, char* argv[] )
 	//aunque en el ultimo nivel aumenta las oscilaciones al ser mas cercanos al extremo local
 
 
-	scales[0] = 1.0*5.0;
-	scales[1] = 1.0*5.0;
-	scales[2] = 1.0*5.0;
-	scales[3] = 1.0/256.3;
-	scales[4] = 1.0/256.3;
-	scales[5] = 1.0/256.3;
-	scales[6] = 1.0/5.0;
+	scales[0] = 1.0*10.0;
+	scales[1] = 1.0*10.0;
+	scales[2] = 1.0*10.0;
+	scales[3] = 1.0/500.0;
+	scales[4] = 1.0/500.0;
+	scales[5] = 1.0/500.0;
+	scales[6] = 1.0/2.0;
 
 	optimizer->SetScales( scales );
 

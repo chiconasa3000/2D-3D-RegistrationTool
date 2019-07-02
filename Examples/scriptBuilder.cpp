@@ -267,7 +267,7 @@ void ScriptBuilder::buildScript(){
 			comman += nameVirtualImage;
 			
 			//Distancia de Fuente a Isocentro
-			string sourceToIsocenterDistance = "-scd -122.5 ";
+			string sourceToIsocenterDistance = "-scd -124 ";
 			comman += sourceToIsocenterDistance;
 
 
