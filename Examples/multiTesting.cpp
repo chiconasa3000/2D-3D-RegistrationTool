@@ -196,9 +196,15 @@ int main(int argc, char *argv[]){
 	//Archivo log para los errores de parametros de transformacion	
 	ofstream myfile;
 	myfile.open("../outputData/RMSE_Registro.txt");	
-	
+
+	ofstream comandoUsado;
+	comandoUsado.open("../outputData/datosRegistro.txt");	
 	//utilitarios para la creacion de estadisticas	
 	Utilitarios *utils = new Utilitarios();
+	
+	//Comando Usado
+	comandoUsado << "OriginVol: " << origin_volume;
+	comandoUsado << "TargetVol: " << target_volume;
 
 	//Buffer para acumular etiquetas de errores
 	std::string srx="", sry="", srz="", stx="", sty="", stz="", ssg="",csrx="";	

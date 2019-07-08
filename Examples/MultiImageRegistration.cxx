@@ -501,14 +501,18 @@ int main(int argc, char* argv[] )
 	//En el prime nivel con *5.0 en rotacion oscilas menos en el primer nivel
 	//aunque en el ultimo nivel aumenta las oscilaciones al ser mas cercanos al extremo local
 
-
-	scales[0] = 1.0*10.0;
-	scales[1] = 1.0*10.0;
-	scales[2] = 1.0*10.0;
-	scales[3] = 1.0/500.0;
-	scales[4] = 1.0/500.0;
-	scales[5] = 1.0/500.0;
-	scales[6] = 1.0/2.0;
+	//100 de escala es muy lento para llegar a un 20 pero 1000  de escala llega a obtener el nro 20
+	//Cuando se divide entre 100.0 a la escala oscila demasiado tanto asi que llega a alcanzar valores de 1.65 de escala
+	float scaRot = 1.0;
+	float scaTra = 1000.0;
+	float scaSca = 1.0;
+	scales[0] = 1.0*scaRot;
+	scales[1] = 1.0*scaRot;
+	scales[2] = 1.0*scaRot;
+	scales[3] = 1.0/scaTra;
+	scales[4] = 1.0/scaTra;
+	scales[5] = 1.0/scaTra;
+	scales[6] = 1.0/scaSca;
 
 	optimizer->SetScales( scales );
 
@@ -519,8 +523,10 @@ int main(int argc, char* argv[] )
 	//optimizer->SetNumberOfIterations(2500);
 
 	optimizer->SetMaximumIteration( 1000 ); //100
-	optimizer->SetMaximumLineIteration(10); //10 - 4
-	optimizer->SetValueTolerance( 1e-3 );
+	int maxlineiter = 10;
+	double  valueTolerance = 1e-3;
+	optimizer->SetMaximumLineIteration(maxlineiter); //10 - 4
+	optimizer->SetValueTolerance( valueTolerance );
 	optimizer->SetUseUnitLengthGradient( true );
 	optimizer->SetToPolakRibiere();
 	optimizer->SetCatchGetValueException( true );
@@ -582,7 +588,12 @@ int main(int argc, char* argv[] )
 	//Set the observer in the ofstream register
 	registrationObserver->buildOfstream(logregistro);
 	optimizerObserver->buildOfstream(logregistro);
-
+	
+	logregistro << "MaximumLineIteration: " << maxlineiter << std::endl;
+	logregistro << "ValueTolerance: " << valueTolerance << std::endl;
+	logregistro << "scaRot: " << scaRot << std::endl;
+	logregistro << "scaTra: " << scaTra << std::endl;
+	logregistro << "scaSca: " << scaSca << std::endl;
 
 	//----------------------------------------------------------------------------
 	// Save projected images
@@ -738,7 +749,7 @@ int main(int argc, char* argv[] )
 	//this will be the initial parameters
 	registration->SetInitialTransformParameters( transform->GetParameters() );
 
-
+	
 	//Print parameters using in the registration
 
 	logregistro << "StepTolerance "<< optimizer->GetStepTolerance()<<std::endl; 

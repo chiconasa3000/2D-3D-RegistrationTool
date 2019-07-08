@@ -1,7 +1,7 @@
 set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "BoxPlotTransformation" butt dashlength 1.0
 set output "../outputData/resultsReg_0/ValueTraslationScale0.svg"
 green = "#80bfaa"; skyblue = "#55a0d5"
-set yrange [-20:20]
+set yrange [*:*]
 set style data histogram
 set style histogram cluster gap 1
 set style fill solid
