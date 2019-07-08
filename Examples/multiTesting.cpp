@@ -203,8 +203,10 @@ int main(int argc, char *argv[]){
 	Utilitarios *utils = new Utilitarios();
 	
 	//Comando Usado
-	comandoUsado << "OriginVol: " << origin_volume;
-	comandoUsado << "TargetVol: " << target_volume;
+	comandoUsado << "OriginVol: " << origin_volume << std::endl;
+	comandoUsado << "TargetVol: " << target_volume << std::endl;
+	
+	comandoUsado.close();
 
 	//Buffer para acumular etiquetas de errores
 	std::string srx="", sry="", srz="", stx="", sty="", stz="", ssg="",csrx="";	

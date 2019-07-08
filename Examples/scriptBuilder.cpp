@@ -211,9 +211,6 @@ void ScriptBuilder::buildScript(){
 		//Para conseguir el stream cuando ejecutamos el comando que hemos construido
 		GetStdoutFromCommand(comman);
 
-		
-
-
 	}else if(tipoScript.compare("genVirtualImage")==0){
 		//Volumen de Entrada
 		string volEntrada = "../outputData/ImagesDefs/Images/imagenDef_"+to_string(indexTest)+".mha ";

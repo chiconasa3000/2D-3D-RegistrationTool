@@ -236,7 +236,7 @@ void Utilitarios::computeHausdorffDistance(std::string logfilename, typename itk
 void Utilitarios::createStats(int numLevels, std::string logfilename, std::string dir_resultados, int indexTest){
 
 	//Eliminar datos innecesarios del log de resultados
-	std::string cmdPickResults("cat " + logfilename + " | gsed -n -e :a -e '1,36!{P;N;D;};N;ba' | gsed 1,10d > newlog.txt");
+	std::string cmdPickResults("cat " + logfilename + " | gsed -n -e :a -e '1,36!{P;N;D;};N;ba' | gsed 1,15d > newlog.txt");
 	int result = std::system(cmdPickResults.c_str());
 
 	//Separar el log de resultados por cada nivel de resolucion
