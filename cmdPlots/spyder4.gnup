@@ -30,13 +30,13 @@ set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
 set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
 set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 
-a1_max = 7.579000
-a2_max = 7.579000
-a3_max = 7.579000
-a4_max = 7.579000
-a5_max = 7.579000
-a6_max = 7.579000
-a7_max = 7.579000
+a1_max = 94.360000
+a2_max = 94.360000
+a3_max = 94.360000
+a4_max = 94.360000
+a5_max = 94.360000
+a6_max = 94.360000
+a7_max = 94.360000
 a1_min = 0
 a2_min = 0
 a3_min = 0
@@ -45,12 +45,12 @@ a5_min = 0
 a6_min = 0
 a7_min = 0
 
-set label "Rotacion X" at cos(a1),sin(a1) center offset char 1,1
-set label "Rotacion Y" at cos(a2),sin(a2) center offset char -2,-1
-set label "Rotacion Z" at cos(a3),sin(a3) center offset char -1,-1
-set label "Traslacion X" at cos(a4),sin(a4) center offset char 0,-1
-set label "Traslacion Y" at cos(a5),sin(a5) center offset char -3,-0.5
-set label "Traslacion Z" at cos(a6),sin(a6) center offset char -1,-1
+set label "Rotación X" at cos(a1),sin(a1) center offset char 1,1
+set label "Rotación Y" at cos(a2),sin(a2) center offset char -2,-1
+set label "Rotación Z" at cos(a3),sin(a3) center offset char -1,-1
+set label "Traslación X" at cos(a4),sin(a4) center offset char 0,-1
+set label "Traslación Y" at cos(a5),sin(a5) center offset char -3,-0.5
+set label "Traslación Z" at cos(a6),sin(a6) center offset char -1,-1
 set label "Escala" at cos(a7),sin(a7) center offset char 3,0
 
 set xrange [-1:1]
@@ -58,7 +58,7 @@ set yrange [-1:1]
 #unset xtics
 #unset ytics
 set rrange [0:1]
-set title "Error de Parametros de Transformacion"
+set title "Error de Parámetros de Transformación"
 
 do for [COL=3:23] {
 	tag = COL-2

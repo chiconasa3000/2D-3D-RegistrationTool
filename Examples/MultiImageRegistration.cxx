@@ -77,7 +77,8 @@ class RegistrationObserver : public itk::Command
 				//Reducir a la mitad la tolerancia de parametros y el tamaño de paso en la busqueda de valores
 				//los dos a la mitad en cada nivel de resolucion, en la ultima ambos deben ser de muy bajo valor
 				OptimizerType* optimizer = dynamic_cast<OptimizerType*>(registration->GetOptimizer() );
-
+				
+				//optimizer->SetValueTolerance(0.5 * optimizer->GetValueTolerance());
 				optimizer->SetStepLength( 0.5 * optimizer->GetStepLength() );
 				//std::cout << "StepLength set to " << optimizer->GetStepLength() << std::endl;
 				optimizer->SetStepTolerance( 0.5 * optimizer->GetStepTolerance() );
@@ -450,7 +451,7 @@ int main(int argc, char* argv[] )
 
 		interpolator->SetFocalPoint( focalPoint );
 		interpolator->SetTransform( transform );
-		interpolator->SetThreshold( 0.0 );
+		interpolator->SetThreshold( 100.0 );
 
 
 		/* Fijando al interpolador la nueva direccion para el volumen acorde a la direccion de la imagen fija*/	
@@ -524,7 +525,7 @@ int main(int argc, char* argv[] )
 
 	optimizer->SetMaximumIteration( 1000 ); //100
 	int maxlineiter = 10;
-	double  valueTolerance = 1e-3;
+	double  valueTolerance = 1e-6;
 	optimizer->SetMaximumLineIteration(maxlineiter); //10 - 4
 	optimizer->SetValueTolerance( valueTolerance );
 	optimizer->SetUseUnitLengthGradient( true );
