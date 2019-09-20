@@ -221,7 +221,7 @@ namespace itk
 
 			for( unsigned int dim=0; dim < m_MaxDimension; dim++ )
 			{
-				val += cc[dim] / vcl_sqrt( fac[dim] * mac[dim] ) / m_MaxDimension;
+				val += cc[dim] / sqrt( fac[dim] * mac[dim] ) / m_MaxDimension;
 			}
 			return val;
 		}

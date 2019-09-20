@@ -99,7 +99,7 @@ void ScriptBuilder::buildScript(){
 		comman += fixed1Image;
 
 		//Punto Focal de la 1era Imagen 2D
-		string focal1Point = "0 -1500 0 ";
+		string focal1Point = "0 -1000 0 ";
 		comman += focal1Point;
 
 		//2da Imagen 2D Fija (DRR o imagen virtual)
@@ -107,7 +107,7 @@ void ScriptBuilder::buildScript(){
 		comman += fixed2Image;
 
 		//Punto Focal de la 2da Imagen 2D
-		string focal2Point = "1500 0 0 ";
+		string focal2Point = "1000 0 0 ";
 		comman += focal2Point;
 
 		//Tolerancia de la metrica para terminar la optimización
@@ -248,7 +248,7 @@ void ScriptBuilder::buildScript(){
 			comman += directCosine;
 
 			//Posicion de Punto Focal
-			puntoFocal = "-foc 0 -1500 0 ";
+			puntoFocal = "-foc 0 -1000 0 ";
 
 			comman += puntoFocal;
 
@@ -265,7 +265,7 @@ void ScriptBuilder::buildScript(){
 			comman += nameVirtualImage;
 			
 			//Distancia de Fuente a Isocentro
-			string sourceToIsocenterDistance = "-scd -200 ";
+			string sourceToIsocenterDistance = "-scd -124 ";
 			comman += sourceToIsocenterDistance;
 
 
@@ -276,7 +276,7 @@ void ScriptBuilder::buildScript(){
 			comman += directCosine;
 
 			//Posicion de Punto Focal
-			puntoFocal = "-foc 1500 0 0 ";
+			puntoFocal = "-foc 1000 0 0 ";
 
 			comman += puntoFocal;
 

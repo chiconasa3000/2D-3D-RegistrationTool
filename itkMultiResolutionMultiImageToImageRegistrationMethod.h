@@ -7,6 +7,8 @@
 #include <itkNumericTraits.h>
 #include <itkDataObjectDecorator.h>
 
+//#include "vcl/vcl_math.h"
+
 #include "itkMultiImageRegistrationMacro.h"
 #include "itkMultiImageToImageMetric.h"
 #include "itkMultiImageToImageRegistrationMethod.h"

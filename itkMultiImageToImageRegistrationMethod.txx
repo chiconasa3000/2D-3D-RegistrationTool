@@ -377,7 +377,7 @@ namespace itk
           break;
         default:
           itkExceptionMacro("MakeOutput request for an output number larger than the expected number of outputs");
-          return 0;
+          return static_cast<DataObject*>(NULL);
       }
     }
 
@@ -419,9 +419,12 @@ namespace itk
         const unsigned int OldFImgTotal = m_FixedMultiImage.size();
         for( unsigned int fImg=0; fImg<OldFImgTotal; fImg++ )
         {
-          DataObject* oldFixedSingleImage = this->ProcessObject::
-            GetInput( 1+fImg );
-          this->ProcessObject::RemoveInput( oldFixedSingleImage );
+          DataObject* oldFixedSingleImage = this->ProcessObject::GetInput( 1+fImg );
+         		//Esto se reemplaza con el string key del objeto a eliminar
+		//O tambien puedes colocar la posicion del objeto
+		 //this->ProcessObject::RemoveInput( oldFixedSingleImage );
+		 this->ProcessObject::RemoveInput( 1+fImg );
+
         }
 
         //Then, set the new input images.

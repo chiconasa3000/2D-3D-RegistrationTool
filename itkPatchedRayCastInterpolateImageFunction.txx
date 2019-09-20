@@ -119,7 +119,7 @@ public:
 
     if (m_ValidRay)
       {
-      return vcl_sqrt(m_VoxelIncrement[0]*spacing[0]*m_VoxelIncrement[0]*spacing[0]
+      return sqrt(m_VoxelIncrement[0]*spacing[0]*m_VoxelIncrement[0]*spacing[0]
                     + m_VoxelIncrement[1]*spacing[1]*m_VoxelIncrement[1]*spacing[1]
                     + m_VoxelIncrement[2]*spacing[2]*m_VoxelIncrement[2]*spacing[2] );
       }
@@ -449,10 +449,10 @@ PatchedRayCastHelper<TInputImage, TCoordRep>
              + C*m_BoundingCorner[c1][2] );
 
     // initialise plane value and normalise
-    m_BoundingPlane[j][0] = A/vcl_sqrt(A*A + B*B + C*C);
-    m_BoundingPlane[j][1] = B/vcl_sqrt(A*A + B*B + C*C);
-    m_BoundingPlane[j][2] = C/vcl_sqrt(A*A + B*B + C*C);
-    m_BoundingPlane[j][3] = D/vcl_sqrt(A*A + B*B + C*C);
+    m_BoundingPlane[j][0] = A/sqrt(A*A + B*B + C*C);
+    m_BoundingPlane[j][1] = B/sqrt(A*A + B*B + C*C);
+    m_BoundingPlane[j][2] = C/sqrt(A*A + B*B + C*C);
+    m_BoundingPlane[j][3] = D/sqrt(A*A + B*B + C*C);
 
     if ( (A*A + B*B + C*C) == 0 )
       {
@@ -799,9 +799,9 @@ PatchedRayCastHelper<TInputImage, TCoordRep>
 
   // Calculate the number of voxels in each direction
 
-  xNum = vcl_fabs(m_RayVoxelStartPosition[0] - m_RayVoxelEndPosition[0]);
-  yNum = vcl_fabs(m_RayVoxelStartPosition[1] - m_RayVoxelEndPosition[1]);
-  zNum = vcl_fabs(m_RayVoxelStartPosition[2] - m_RayVoxelEndPosition[2]);
+  xNum = fabs(m_RayVoxelStartPosition[0] - m_RayVoxelEndPosition[0]);
+  yNum = fabs(m_RayVoxelStartPosition[1] - m_RayVoxelEndPosition[1]);
+  zNum = fabs(m_RayVoxelStartPosition[2] - m_RayVoxelEndPosition[2]);
 
   // The direction iterated in is that with the greatest number of voxels
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1011,9 +1011,9 @@ PatchedRayCastHelper<TInputImage, TCoordRep>
     startOK = false;
     endOK = false;
 
-    Istart[0] = (int) vcl_floor(m_RayVoxelStartPosition[0]);
-    Istart[1] = (int) vcl_floor(m_RayVoxelStartPosition[1]);
-    Istart[2] = (int) vcl_floor(m_RayVoxelStartPosition[2]);
+    Istart[0] = (int) floor(m_RayVoxelStartPosition[0]);
+    Istart[1] = (int) floor(m_RayVoxelStartPosition[1]);
+    Istart[2] = (int) floor(m_RayVoxelStartPosition[2]);
 
     if( (Istart[0] >= 0) && (Istart[0] + Idirn[0] < m_NumberOfVoxelsInX) &&
         (Istart[1] >= 0) && (Istart[1] + Idirn[1] < m_NumberOfVoxelsInY) &&
@@ -1031,13 +1031,13 @@ PatchedRayCastHelper<TInputImage, TCoordRep>
       m_TotalRayVoxelPlanes--;
       }
 
-    Istart[0] = (int) vcl_floor(m_RayVoxelStartPosition[0]
+    Istart[0] = (int) floor(m_RayVoxelStartPosition[0]
                             + m_TotalRayVoxelPlanes*m_VoxelIncrement[0]);
 
-    Istart[1] = (int) vcl_floor(m_RayVoxelStartPosition[1]
+    Istart[1] = (int) floor(m_RayVoxelStartPosition[1]
                             + m_TotalRayVoxelPlanes*m_VoxelIncrement[1]);
 
-    Istart[2] = (int) vcl_floor(m_RayVoxelStartPosition[2]
+    Istart[2] = (int) floor(m_RayVoxelStartPosition[2]
                             + m_TotalRayVoxelPlanes*m_VoxelIncrement[2]);
 
     if( (Istart[0] >= 0) && (Istart[0] + Idirn[0] < m_NumberOfVoxelsInX) &&
@@ -1313,20 +1313,20 @@ PatchedRayCastHelper<TInputImage, TCoordRep>
     {
     case TRANSVERSE_IN_X:
       {
-      y = m_Position3Dvox[1] - vcl_floor(m_Position3Dvox[1]);
-      z = m_Position3Dvox[2] - vcl_floor(m_Position3Dvox[2]);
+      y = m_Position3Dvox[1] - floor(m_Position3Dvox[1]);
+      z = m_Position3Dvox[2] - floor(m_Position3Dvox[2]);
       break;
       }
     case TRANSVERSE_IN_Y:
       {
-      y = m_Position3Dvox[0] - vcl_floor(m_Position3Dvox[0]);
-      z = m_Position3Dvox[2] - vcl_floor(m_Position3Dvox[2]);
+      y = m_Position3Dvox[0] - floor(m_Position3Dvox[0]);
+      z = m_Position3Dvox[2] - floor(m_Position3Dvox[2]);
       break;
       }
     case TRANSVERSE_IN_Z:
       {
-      y = m_Position3Dvox[0] - vcl_floor(m_Position3Dvox[0]);
-      z = m_Position3Dvox[1] - vcl_floor(m_Position3Dvox[1]);
+      y = m_Position3Dvox[0] - floor(m_Position3Dvox[0]);
+      z = m_Position3Dvox[1] - floor(m_Position3Dvox[1]);
       break;
       }
     default:
@@ -1352,7 +1352,7 @@ void
 PatchedRayCastHelper<TInputImage, TCoordRep>
 ::IncrementIntensities(double increment)
 {
-  short inc = (short) vcl_floor(increment + 0.5);
+  short inc = (short) floor(increment + 0.5);
 
   if (! m_ValidRay)
     {
@@ -1519,6 +1519,16 @@ PatchedRayCastInterpolateImageFunction< TInputImage, TCoordRep >
 
 }
 
+template<class TInputImage, class TCoordRep>
+typename PatchedRayCastInterpolateImageFunction< TInputImage, TCoordRep >
+::SizeType 
+PatchedRayCastInterpolateImageFunction< TInputImage, TCoordRep >
+::GetRadius() const
+{
+	//Not Implemented but is useful
+	SizeType sizeImage;
+	return sizeImage;
+} 
 /* -----------------------------------------------------------------------
    Evaluate at image index position
    ----------------------------------------------------------------------- */

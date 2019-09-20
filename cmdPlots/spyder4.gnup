@@ -30,13 +30,13 @@ set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
 set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
 set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 
-a1_max = 94.360000
-a2_max = 94.360000
-a3_max = 94.360000
-a4_max = 94.360000
-a5_max = 94.360000
-a6_max = 94.360000
-a7_max = 94.360000
+a1_max = 311.100000
+a2_max = 311.100000
+a3_max = 311.100000
+a4_max = 311.100000
+a5_max = 311.100000
+a6_max = 311.100000
+a7_max = 311.100000
 a1_min = 0
 a2_min = 0
 a3_min = 0
@@ -60,7 +60,7 @@ set yrange [-1:1]
 set rrange [0:1]
 set title "Error de Parámetros de Transformación"
 
-do for [COL=3:23] {
+do for [COL=3:7] {
 	tag = COL-2
 set output sprintf("../outputData/spyder%d.svg",tag)
 	plot "../outputData/RMSE_Registro.txt" using \

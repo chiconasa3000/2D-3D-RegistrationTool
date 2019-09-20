@@ -300,9 +300,9 @@ int main( int argc, char * argv[] )
 			//rx = rand()%(10 - (-10) + 1) +(-10);
 			//ry = rand()%(10 - (-10) + 1) +(-10);
 			//rz = rand()%(10 - (-10) + 1) +(-10);
-			rx = ((double)rand()/RAND_MAX)*(20 - -20) + -20;
-			ry = ((double)rand()/RAND_MAX)*(20 - -20) + -20;
-			rz = ((double)rand()/RAND_MAX)*(20 - -20) + -20;
+			rx = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
+			ry = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
+			rz = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
 
 			util->convertEulerToVersor(rx,ry,rz,ax,ay,az,angle);
 			
@@ -316,9 +316,9 @@ int main( int argc, char * argv[] )
 
 			//Traslation Vector 
 			//traslaciones entre -10 y 10 mm
-			similarityParameters[3] = ((double)rand()/RAND_MAX)*(20 - -20) + -20;
-			similarityParameters[4] = ((double)rand()/RAND_MAX)*(20 - -20) + -20;
-			similarityParameters[5] = ((double)rand()/RAND_MAX)*(20 - -20) + -20;
+			similarityParameters[3] = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
+			similarityParameters[4] = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
+			similarityParameters[5] = ((double)rand()/RAND_MAX)*(10 - -10) + -10;
 
 			//Scale Factor (no podemos afectar mucho la escala)
 			//sin escalas grandes obviarian informacion de la imagen
