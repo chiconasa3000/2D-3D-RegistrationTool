@@ -4,7 +4,7 @@ The Most Beautiful Tool to Understand or Realize the registration on medical ima
 2D/3D Registration using itk framework
 
 Volumen Plantilla
-![alt text](https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/Documentation/Images/approyvol.png "Logo Title Text 1")
+![alt text](https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approydrr.png "Volumen")
 
 ## Test registration process by default using all specific commands
 
