@@ -1,0 +1,8 @@
+Writing ../outputData/ImagesDefs/Images/imagenDef_14.mha
+Deformacion Aplicada = 
+ Rotation Degrees = [ 0.884744, 9.89959, 2.4817 ]
+Axis = [ 0.23463, 0.107267, 0.966148 ]
+ Versor = [ 0.0209078, 0.0095586, 0.0860935 ]
+Angle = 0.178457
+ Translation = [ 9.9972, 2.89465, -9.63928 ]
+ Scale  = 1.05374

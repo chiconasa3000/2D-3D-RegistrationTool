@@ -37,7 +37,7 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
 template < typename TFixedImage, typename TMovingImage >
 void
 MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
-::Initialize() throw (ExceptionObject)
+::Initialize()
 {
     Superclass::Initialize();
 
@@ -340,8 +340,7 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
         SizeType  inputSize  = this->m_FixedMultiImageRegion[f].GetSize();
         IndexType inputStart = this->m_FixedMultiImageRegion[f].GetIndex();
 
-        const unsigned long NumberOfLevels =
-                this->m_FixedMultiImagePyramid[f]->GetNumberOfLevels();
+        const unsigned long NumberOfLevels = this->m_FixedMultiImagePyramid[f]->GetNumberOfLevels();
 
         this->m_FixedMultiImageRegionPyramid.push_back( FixedImageRegionPyramidType( NumberOfLevels ) );
 
@@ -357,14 +356,14 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
                 const float scaleFactor = static_cast<float>( schedule[ level ][ dim ] );
 
                 size[ dim ] = static_cast<typename SizeType::SizeValueType>(
-                            vcl_floor(static_cast<float>( inputSize[ dim ] ) / scaleFactor ) );
+                           	floor(static_cast<float>( inputSize[ dim ] ) / scaleFactor ) );
                 if( size[ dim ] < 1 )
                 {
                     size[ dim ] = 1;
                 }
 
                 start[ dim ] = static_cast<typename IndexType::IndexValueType>(
-                            vcl_ceil(static_cast<float>( inputStart[ dim ] ) / scaleFactor ) );
+                            ceil(static_cast<float>( inputStart[ dim ] ) / scaleFactor ) );
             }
             this->m_FixedMultiImageRegionPyramid[f][level].SetSize( size );
             this->m_FixedMultiImageRegionPyramid[f][level].SetIndex( start );

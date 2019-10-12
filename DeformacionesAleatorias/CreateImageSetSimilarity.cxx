@@ -195,12 +195,12 @@ int main( int argc, char * argv[] )
 	}
 
 	//Archivo de Registro LOG
-	std::ofstream logregistro(logfilename);
+	std::ofstream logregistro;
 		
 	if(verbose)
 	{
         if (inputImageFile){
-			logregistro  << "Input image: "  << inputImageFile  << std::endl;
+			//logregistro  << "Input image: "  << inputImageFile  << std::endl;
             std::cout << "Input image: "  << inputImageFile  << std::endl;
         }
     }
@@ -323,7 +323,7 @@ int main( int argc, char * argv[] )
 			//Scale Factor (no podemos afectar mucho la escala)
 			//sin escalas grandes obviarian informacion de la imagen
 			//escala entre 1.0 y 1.5 
-			similarityParameters[6] = ((double)rand()/RAND_MAX)*(1.5 -  1.0) + 1.0;
+			similarityParameters[6] = ((double)rand()/RAND_MAX)*(1.2 -  1.0) + 1.0;
 			//similarityParameters[6] = 1;
 
 			similarityTransform->SetParameters(similarityParameters);
@@ -365,7 +365,8 @@ int main( int argc, char * argv[] )
 		rescaleFilter2->SetOutputMinimum(0);
 		rescaleFilter2->SetOutputMaximum(255);
 		rescaleFilter2->Update();
-			
+		
+				
 		writer->SetInput( rescaleFilter2->GetOutput() );
 
 		string fName = "";
@@ -373,7 +374,7 @@ int main( int argc, char * argv[] )
 		fnameStream << i ;
 
 		//Write the transform files
-		itk::TransformFileWriterTemplate<double>::Pointer transformFileWriter =  itk::TransformFileWriterTemplate<double>::New();
+		itk::TransformFileWriterTemplate<float>::Pointer transformFileWriter =  itk::TransformFileWriterTemplate<float>::New();
 		itksys::SystemTools::MakeDirectory( (fName + folderName + "/TransformFiles/").c_str() );
 		string fileName = fName + folderName + "/TransformFiles/" + "transfSim_" +fnameStream.str() + ".txt";
 		transformFileWriter->SetFileName(fileName.c_str());
@@ -383,6 +384,11 @@ int main( int argc, char * argv[] )
 		itksys::SystemTools::MakeDirectory( (fName + folderName + "/Images/").c_str() );
 		fName = fName + folderName + "/Images/" + "imagenDef_"+ fnameStream.str();
 		fName += (Dimension == 2) ? ".png" : ".mha";
+		
+		//Build the name of logfile
+		string fulllogfilename="";
+		fulllogfilename = fulllogfilename + folderName  + logfilename + std::to_string(i) + ".txt";
+		logregistro.open(fulllogfilename);
 
 		writer->SetFileName( fName.c_str() );
 		logregistro << "Writing " << fName.c_str() << std::endl; 
@@ -406,8 +412,10 @@ int main( int argc, char * argv[] )
 			
 			logregistro << "Deformacion Aplicada = " << std::endl;
 			logregistro << " Rotation Degrees = [ " << rx << ", "<< ry << ", " << rz  << " ]"<<std::endl;
-			logregistro << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
-			logregistro << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
+            		logregistro << "Axis = [ " << ax << ", " << ay << ", " << az << " ]" << std::endl;
+            		logregistro << " Versor = [ " << RotationAlongX << ", "<< RotationAlongY << ", " << RotationAlongZ  << " ]"<<std::endl;
+            		logregistro << "Angle = " << angle << std::endl;
+            		logregistro << " Translation = [ " << TranslationAlongX  << ", "<<TranslationAlongY << ", "<< TranslationAlongZ << " ]"<<std::endl;
 			logregistro << " Scale  = " << EscalaXYZ << std::endl;
 
 			//std::cout << "Deformacion Aplicada = " << std::endl;

@@ -15,5 +15,6 @@ mydebug
 *.DS_Store
 GenDRRs/*.DS_Store
 *.swp
-inputData/ImagesDefs/*
+inputData/pelvisSegmIntensityRAI.mha
 inputData/brokenPelvisCenteredScale.mha
+inputData/ImagesDefs

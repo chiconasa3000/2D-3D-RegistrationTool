@@ -1,0 +1,127 @@
+Writing projection file ../outputData/resultsReg_18/initial_projection_0_-1000_0FF0.mha
+Writing subtraction file ../outputData/resultsReg_18/initial_subtraction_0_-1000_0SS0.mha
+Writing subtraction file ../outputData/resultsReg_18/fixedImage0.mha
+Writing projection file ../outputData/resultsReg_18/initial_projection_-1000_0_0FF1.mha
+Writing subtraction file ../outputData/resultsReg_18/initial_subtraction_-1000_0_0SS1.mha
+Writing subtraction file ../outputData/resultsReg_18/fixedImage1.mha
+StepTolerance 0.01
+StepLength 4
+Schedules4 3 2
+Saving input matrix file ../outputData/resultsReg_18/inMatrix_0.01_4.txt
+Resolution level 0
+Iteration: 0 Similarity: 0.414551 Position: -0.000722 0.000145 -0.000842 0.077084 -0.183000 -0.089181 0.989938
+Iteration: 1 Similarity: 0.492730 Position: -0.038532 -0.003038 -0.037036 -0.388955 -4.985993 1.399923 1.062303
+Iteration: 2 Similarity: 0.585635 Position: -0.041684 -0.003155 -0.039722 -0.236449 -5.043756 1.354817 0.994282
+Iteration: 3 Similarity: 0.587636 Position: -0.043204 -0.002627 -0.040287 -0.182268 -5.097044 1.350125 0.984048
+Iteration: 4 Similarity: 0.683215 Position: -0.052527 0.003151 -0.041284 -0.743824 -5.062032 3.234975 1.039519
+Iteration: 5 Similarity: 0.753955 Position: -0.055594 0.005134 -0.041899 -0.672891 -5.131419 3.560393 0.996555
+Iteration: 6 Similarity: 0.807730 Position: -0.069453 0.019886 -0.044011 -0.342391 -4.974572 4.249103 0.983442
+Iteration: 7 Similarity: 0.858911 Position: -0.072608 0.020876 -0.043838 -0.240668 -4.871207 4.429405 1.018860
+Iteration: 8 Similarity: 0.870504 Position: -0.077277 0.018994 -0.044483 -0.231364 -4.749971 4.764447 1.033331
+Iteration: 9 Similarity: 0.893358 Position: -0.078238 0.018067 -0.045077 -0.176049 -4.690372 4.871052 1.013945
+Iteration: 10 Similarity: 0.959199 Position: -0.091511 0.003160 -0.052949 0.262111 -4.320862 6.276551 1.004777
+Iteration: 11 Similarity: 0.992552 Position: -0.092659 0.002765 -0.053585 0.250378 -4.320547 6.372145 1.026529
+Iteration: 12 Similarity: 0.994611 Position: -0.093554 0.003251 -0.053950 0.260531 -4.221465 6.556580 1.033439
+Iteration: 13 Similarity: 1.010488 Position: -0.094451 0.004401 -0.054532 0.391964 -4.544244 6.819683 1.018734
+Iteration: 14 Similarity: 1.026026 Position: -0.095463 0.005600 -0.055572 0.513864 -4.847578 7.072188 1.033581
+Iteration: 15 Similarity: 1.046560 Position: -0.098415 0.008383 -0.058906 1.265457 -5.537990 7.328302 1.022287
+Iteration: 16 Similarity: 1.061948 Position: -0.102051 0.010625 -0.064657 2.368407 -6.447576 7.811423 1.027775
+Iteration: 17 Similarity: 1.067922 Position: -0.101089 0.008180 -0.065092 2.271849 -6.323469 7.886792 1.037256
+Iteration: 18 Similarity: 1.075543 Position: -0.100461 0.006814 -0.065358 2.339863 -6.341296 8.022139 1.027444
+Iteration: 19 Similarity: 1.089935 Position: -0.095291 0.000924 -0.066020 1.882930 -6.819000 8.051521 1.030717
+Iteration: 20 Similarity: 1.090404 Position: -0.094673 0.000835 -0.066174 1.855548 -6.819880 8.036603 1.028224
+Iteration: 21 Similarity: 1.092550 Position: -0.094385 0.001749 -0.066365 1.809823 -6.906272 8.091654 1.023638
+Iteration: 22 Similarity: 1.101075 Position: -0.092460 0.004540 -0.067483 1.763674 -7.034415 8.344273 1.034187
+Iteration: 23 Similarity: 1.111303 Position: -0.091048 0.005285 -0.068102 1.844819 -7.494669 8.398446 1.024260
+Iteration: 24 Similarity: 1.123656 Position: -0.087591 0.004509 -0.069654 1.998628 -8.385587 8.643154 1.034279
+Iteration: 25 Similarity: 1.132246 Position: -0.086527 0.004282 -0.070307 2.018332 -8.539895 8.795027 1.024724
+Iteration: 26 Similarity: 1.142738 Position: -0.080364 0.002694 -0.074420 1.926923 -9.054658 9.313172 1.029957
+Iteration: 27 Similarity: 1.145340 Position: -0.079144 0.002619 -0.074850 1.893330 -9.124803 9.415670 1.024907
+Iteration: 28 Similarity: 1.147571 Position: -0.077557 0.003204 -0.073332 1.955840 -9.489994 9.289632 1.021056
+Iteration: 29 Similarity: 1.148706 Position: -0.077454 0.003213 -0.073022 1.984115 -9.524384 9.248416 1.025160
+Iteration: 30 Similarity: 1.152962 Position: -0.077937 0.003557 -0.070504 1.975395 -9.601067 9.649561 1.029450
+Iteration: 31 Similarity: 1.154836 Position: -0.077822 0.003544 -0.070089 1.949374 -9.643928 9.645687 1.025226
+Iteration: 32 Similarity: 1.155077 Position: -0.077556 0.003427 -0.069814 2.004694 -9.601897 9.670715 1.024566
+Iteration: 33 Similarity: 1.155077 Position: -0.077556 0.003427 -0.069814 2.004694 -9.601897 9.670715 1.024566
+Iteration: 34 Similarity: 1.155117 Position: -0.077521 0.003389 -0.069772 2.017611 -9.592502 9.656013 1.025684
+Iteration: 35 Similarity: 1.155117 Position: -0.077521 0.003389 -0.069772 2.017611 -9.592502 9.656013 1.025684
+Iteration: 36 Similarity: 1.155251 Position: -0.077410 0.003381 -0.069749 1.871536 -9.559751 9.670841 1.026221
+Iteration: 37 Similarity: 1.156303 Position: -0.077179 0.003383 -0.069673 1.815885 -9.917411 9.663183 1.025624
+Iteration: 38 Similarity: 1.156494 Position: -0.077323 0.003436 -0.069691 1.819375 -9.867857 9.892227 1.026049
+Resolution level 1
+Iteration: 0 Similarity: 1.079257 Position: -0.074491 0.003073 -0.072092 1.975392 -9.928873 9.780742 1.021985
+Iteration: 1 Similarity: 1.080974 Position: -0.074334 0.003099 -0.072165 1.967850 -9.948728 9.795204 1.025392
+Iteration: 2 Similarity: 1.081027 Position: -0.074370 0.003087 -0.072160 1.968569 -9.946737 9.791143 1.025140
+Iteration: 3 Similarity: 1.081793 Position: -0.074065 0.003633 -0.072289 1.959877 -10.103296 9.633080 1.026857
+Iteration: 4 Similarity: 1.082668 Position: -0.073733 0.003988 -0.072377 1.946525 -10.226738 9.493025 1.025852
+Iteration: 5 Similarity: 1.083128 Position: -0.073632 0.003992 -0.072423 1.941781 -10.189838 9.502903 1.024330
+Iteration: 6 Similarity: 1.083173 Position: -0.073753 0.004008 -0.072418 2.094819 -10.212886 9.503646 1.024540
+Iteration: 7 Similarity: 1.083485 Position: -0.073798 0.004018 -0.072413 2.113115 -10.143504 9.506966 1.024335
+Iteration: 8 Similarity: 1.084032 Position: -0.073706 0.003999 -0.072403 2.116085 -10.182798 9.353257 1.024585
+Resolution level 2
+Iteration: 0 Similarity: 0.981378 Position: -0.072068 0.002569 -0.072522 2.150341 -10.149145 9.126048 1.026321
+Iteration: 1 Similarity: 0.983123 Position: -0.071738 0.002543 -0.072554 2.155509 -10.137435 9.096409 1.022775
+Iteration: 2 Similarity: 0.986889 Position: -0.070588 0.003289 -0.072880 2.300340 -10.138116 8.716838 1.024728
+Iteration: 3 Similarity: 0.987759 Position: -0.070466 0.003535 -0.072910 2.324246 -10.125401 8.692242 1.022887
+Iteration: 4 Similarity: 0.989035 Position: -0.070492 0.004106 -0.073060 2.388427 -10.051435 8.618102 1.025176
+Iteration: 5 Similarity: 0.989603 Position: -0.070496 0.004292 -0.073097 2.383621 -10.034394 8.616854 1.023468
+Iteration: 6 Similarity: 0.990454 Position: -0.070524 0.004444 -0.073167 2.439106 -9.913138 8.583334 1.022047
+Iteration: 7 Similarity: 0.993099 Position: -0.070570 0.004600 -0.073376 2.544514 -9.692935 8.628661 1.026123
+Iteration: 8 Similarity: 0.994227 Position: -0.070701 0.004742 -0.073614 2.670712 -9.357545 8.733899 1.026345
+Iteration: 9 Similarity: 0.994590 Position: -0.070720 0.004706 -0.073623 2.677313 -9.347852 8.732030 1.025321
+Iteration: 10 Similarity: 0.994956 Position: -0.070805 0.004500 -0.073626 2.680928 -9.357496 8.686867 1.024330
+Iteration: 11 Similarity: 0.995142 Position: -0.070832 0.004478 -0.073635 2.686926 -9.347554 8.687677 1.024748
+Iteration: 12 Similarity: 0.995142 Position: -0.070832 0.004478 -0.073635 2.686926 -9.347554 8.687677 1.024748
+Iteration: 13 Similarity: 0.995161 Position: -0.070880 0.004429 -0.073642 2.571498 -9.357682 8.700345 1.025193
+Iteration: 14 Similarity: 0.995161 Position: -0.070880 0.004429 -0.073642 2.571498 -9.357682 8.700345 1.025193
+Iteration: 15 Similarity: 0.995161 Position: -0.070880 0.004429 -0.073642 2.571498 -9.357682 8.700345 1.025193
+Resolution level 3
+Iteration: 0 Similarity: 0.760326 Position: -0.070995 0.003932 -0.073581 2.551580 -9.346865 8.653170 1.026057
+Iteration: 1 Similarity: 0.761244 Position: -0.071044 0.003751 -0.073504 2.579143 -9.353263 8.647371 1.024530
+Iteration: 2 Similarity: 0.762177 Position: -0.071188 0.003389 -0.073390 2.592462 -9.367271 8.602804 1.025865
+Iteration: 3 Similarity: 0.762726 Position: -0.071254 0.003282 -0.073318 2.584857 -9.346270 8.575156 1.024489
+Iteration: 4 Similarity: 0.763333 Position: -0.071491 0.002953 -0.073251 2.540572 -9.298052 8.506042 1.025891
+Iteration: 5 Similarity: 0.764097 Position: -0.071685 0.002688 -0.073227 2.539863 -9.249969 8.438355 1.024096
+Iteration: 6 Similarity: 0.764097 Position: -0.071685 0.002688 -0.073227 2.539863 -9.249969 8.438355 1.024096
+Iteration: 7 Similarity: 0.764259 Position: -0.071736 0.002727 -0.073307 2.540423 -9.270064 8.438614 1.025007
+Iteration: 8 Similarity: 0.764614 Position: -0.071838 0.002669 -0.073499 2.540458 -9.281397 8.380758 1.024224
+Iteration: 9 Similarity: 0.764614 Position: -0.071838 0.002669 -0.073499 2.540458 -9.281397 8.380758 1.024224
+Iteration: 10 Similarity: 0.764614 Position: -0.071838 0.002669 -0.073499 2.540458 -9.281397 8.380758 1.024224
+Iteration: 11 Similarity: 0.764933 Position: -0.071825 0.002622 -0.073436 2.558350 -9.158072 8.374908 1.023782
+Iteration: 12 Similarity: 0.765266 Position: -0.071830 0.002651 -0.073475 2.554138 -9.168814 8.290502 1.024349
+Result = 
+ Rotation Along X = -0.0718297 deg
+ Rotation Along Y = 0.00265105 deg
+ Rotation Along Z = -0.0734753 deg
+ Translation X = 2.55414 mm
+ Translation Y = -9.16881 mm
+ Translation Z = 8.2905 mm
+ Escala value = 1.02435
+ Number Of Iterations = 13
+ Metric value  = 0.765266
+Saving output transform file ../outputData/resultsReg_18/outTransform.txt
+Saving output matrix file ../outputData/resultsReg_18/outMatrix_0.01_4.txt
+Writing Final projection file ../outputData/resultsReg_18/projection_0_-1000_0_0.01_4FF0.mha
+Writing Final subtraction file ../outputData/resultsReg_18/subtraction_0_-1000_0_0.01_4SS0.mha
+Writing Final projection file ../outputData/resultsReg_18/projection_-1000_0_0_0.01_4FF1.mha
+Writing Final subtraction file ../outputData/resultsReg_18/subtraction_-1000_0_0_0.01_4SS1.mha
+Escribiendo Volumen de Salida ../outputData/resultsReg_18/newVolumen.mha
+System:              iMac-de-citesoft-mac.local
+Processor:           Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz
+    Cache:           32768
+    Clock:           4200
+    Physical CPUs:   4
+    Logical CPUs:    8
+    Virtual Memory:  Total: 0               Available: 0
+    Physical Memory: Total: 32768           Available: 20588
+OSName:              Mac OS X
+    Release:         10.14.4
+    Version:         18E226
+    Platform:        x86_64
+    Operating System is 64 bit
+ITK Version: 4.13.2
+Name Of Probe (Time)          Iterations     Total (s)      Min (s)        Mean-Min (diff)Mean/Min (%)   Mean (s)       Max-Mean (diff)Max/Mean (%)   Max (s)        Total Diff (s) StdDev (s)     StdErr (s)     
+Tiempo de Registro            1              169.783        169.783        0              100            169.783        0              100            169.783        0              0              0              
+Tiempo de Transformacion      1              1.29232        1.29232        0              100            1.29232        0              100            1.29232        0              0              0              
+HausdorffDistance: 111.575
+HD_Average: 15.7646

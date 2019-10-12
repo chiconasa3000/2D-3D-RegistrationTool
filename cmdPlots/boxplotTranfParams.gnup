@@ -1,0 +1,17 @@
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "BoxPlotTransformation" butt dashlength 1.0
+set output "../outputData/boxplotTransfParams2.svg"
+
+set border 2 front lt black linewidth 1.000 dashtype solid
+set boxwidth 0.2 absolute
+set style fill solid 0.50 border lt -1
+unset key
+set pointsize 0.5
+set grid ytics
+set style data boxplot
+set xtics ("Sg" 1)
+set ytics border in scale 1,0.5 nomirror norotate  autojustify
+set yrange [*:*] noreverse nowriteback
+set title "Distribucion de Errores por Tipo de Parametro de Transformacion"
+set ylabel "Error de Escala en Unidades (u)"
+set xlabel "Tipo de Parametro de Transformacion"
+plot for[i=1:1] "../outputData/box2.txt" using (i):i

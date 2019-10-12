@@ -1,0 +1,85 @@
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "spyderplot" butt dashlength 1.0
+
+set polar
+set angles degrees
+
+npoints = 7
+a1= 360/npoints*1
+a2= 360/npoints*2
+a3= 360/npoints*3
+a4= 360/npoints*4
+a5= 360/npoints*5
+a6= 360/npoints*6
+a7= 360/npoints*7
+
+set raxis
+unset xtics
+set ytics axis in scale 1,0.5 nomirror norotate autojustify
+set key at -0.8,0.9,0 box
+set grid polar 360.
+set size square
+set style data lines
+set style increment default
+
+unset border
+set arrow nohead from 0,0 to first 1*cos(a1) , 1*sin(a1)
+set arrow nohead from 0,0 to first 1*cos(a2) , 1*sin(a2)
+set arrow nohead from 0,0 to first 1*cos(a3) , 1*sin(a3)
+set arrow nohead from 0,0 to first 1*cos(a4) , 1*sin(a4)
+set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
+set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
+set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
+
+a1_max = 15.710000
+a2_max = 15.710000
+a3_max = 15.710000
+a4_max = 15.710000
+a5_max = 15.710000
+a6_max = 15.710000
+a7_max = 15.710000
+a1_min = 0
+a2_min = 0
+a3_min = 0
+a4_min = 0
+a5_min = 0
+a6_min = 0
+a7_min = 0
+
+set label "Rotación X" at cos(a1),sin(a1) center offset char 1,1
+set label "Rotación Y" at cos(a2),sin(a2) center offset char -2,-1
+set label "Rotación Z" at cos(a3),sin(a3) center offset char -1,-1
+set label "Traslación X" at cos(a4),sin(a4) center offset char 0,-1
+set label "Traslación Y" at cos(a5),sin(a5) center offset char -3,-0.5
+set label "Traslación Z" at cos(a6),sin(a6) center offset char -1,-1
+set label "Escala" at cos(a7),sin(a7) center offset char 3,0
+
+set xrange [-1:1]
+set yrange [-1:1]
+#unset xtics
+#unset ytics
+set rrange [0:1]
+set title "Error de Parámetros de Transformación"
+
+do for [COL=3:7] {
+	tag = COL-2
+set output sprintf("../outputData/spyder%d.svg",tag)
+	plot "../outputData/RMSE_Registro.txt" using \
+	($2==1 ? a1:\
+	($2==2 ? a2:\
+	($2==3 ? a3:\
+	($2==4 ? a4:\
+	($2==5 ? a5:\
+	($2==6 ? a6:\
+	($2==7 ? a7:\
+	$2)))))))\
+	:\
+	($2 == 1 ? ((column(COL) - a1_min)/(a1_max-a1_min)):\
+	($2 == 2 ? ((column(COL) - a2_min)/(a2_max-a2_min)):\
+	($2 == 3 ? ((column(COL) - a3_min)/(a3_max-a3_min)):\
+	($2 == 4 ? ((column(COL) - a4_min)/(a4_max-a4_min)):\
+	($2 == 5 ? ((column(COL) - a5_min)/(a5_max-a5_min)):\
+	($2 == 6 ? ((column(COL) - a6_min)/(a6_max-a6_min)):\
+	($2 == 7 ? ((column(COL) - a7_min)/(a7_max-a7_min)):\
+	column(COL)))))))) \
+	w l title sprintf("Test%d",tag)
+}

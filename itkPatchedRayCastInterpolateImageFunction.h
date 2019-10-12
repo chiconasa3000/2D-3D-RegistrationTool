@@ -135,7 +135,7 @@ typedef DirectionMovingType DirectionFixedType;
   virtual OutputType EvaluateAtContinuousIndex(
     const ContinuousIndexType &index ) const;
 
-
+ SizeType GetRadius() const;
   /** Connect the Transform. */
   itkSetObjectMacro( Transform, TransformType );
   /** Get a pointer to the Transform.  */

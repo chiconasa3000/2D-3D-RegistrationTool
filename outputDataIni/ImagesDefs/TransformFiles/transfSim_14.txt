@@ -1,0 +1,5 @@
+#Insight Transform File V1.0
+#Transform 0
+Transform: Similarity3DTransform_float_3_3
+Parameters: 0.020907843 0.009558599 0.08609346 9.997197 2.8946488 -9.6392765 1.0537355
+FixedParameters: 0 0 0
