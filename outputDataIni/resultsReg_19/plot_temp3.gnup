@@ -1,6 +1,0 @@
-set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "metricevolution" butt dashlength 1.0
-set xlabel "Iteration No."
-set ylabel "NormalizedGradientCorrelation" 
-set title "Metric Evolution Level 3"
-set output "../outputData/resultsReg_19/ImageRegistrationProgressMetric3.svg"
-plot "../outputData/resultsReg_19/level3.txt" using 1:2 notitle with lines lt 1, "../outputData/resultsReg_19/level3.txt" using 1:2 notitle with points lt 0 pt 12 ps 1

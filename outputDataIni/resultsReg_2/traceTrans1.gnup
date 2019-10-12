@@ -1,8 +1,0 @@
-set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "traceevolution" butt dashlength 1.0
-set xlabel "Rotacion en X."
-set ylabel "Rotacion en Y" 
-set title "Param Transf Evolution Level 1"
-set parametric
-set size square
-set output "../outputData/resultsReg_2/TraceTransf1.svg"
-plot "../outputData/resultsReg_2/level1.txt" using 3:4 notitle with lines lt 1, "../outputData/resultsReg_2/level1.txt" using 3:4 notitle with points lt 0 pt 12 ps 1
