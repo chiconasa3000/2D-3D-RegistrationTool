@@ -3,8 +3,8 @@
 The Most Beautiful Tool to Understand or Realize the registration on medical images
 2D/3D Registration using itk framework
 
-Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+Volumen Plantilla
+![alt text](https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/Documentation/Images/approyvol.png "Logo Title Text 1")
 
 ## Test registration process by default using all specific commands
 
