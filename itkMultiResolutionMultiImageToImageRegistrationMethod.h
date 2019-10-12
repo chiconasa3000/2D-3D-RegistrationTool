@@ -181,7 +181,7 @@ public:
       This method is executed at every level of the pyramid with the
       values corresponding to this resolution
    */
-  void Initialize() throw (ExceptionObject);
+  void Initialize();
 
 
   //tipos para la generacion de proyecciones y substraccion con la imagen movible

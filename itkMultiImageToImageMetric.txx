@@ -43,7 +43,7 @@ namespace itk {
 	template <class TFixedImage, class TMovingImage>
 		void
 		MultiImageToImageMetric<TFixedImage,TMovingImage>
-		::DoConnectionRevision( ) const throw ( ExceptionObject )
+		::DoConnectionRevision( ) const
 		{
 			const unsigned int FImgTotal = m_FixedMultiImage.size();
 			for( unsigned int fImg=0; fImg < FImgTotal; fImg++ )
@@ -92,7 +92,7 @@ namespace itk {
 	template <class TFixedImage, class TMovingImage>
 		void
 		MultiImageToImageMetric<TFixedImage,TMovingImage>
-		::DoNumberRevision( ) const throw ( ExceptionObject )
+		::DoNumberRevision( ) const
 		{
 			//Does the moving image exist?
 			if( !m_MovingImage )
@@ -279,7 +279,7 @@ namespace itk {
 	template <class TFixedImage, class TMovingImage>
 		void
 		MultiImageToImageMetric<TFixedImage,TMovingImage>
-		::Initialize(void) throw ( ExceptionObject )
+		::Initialize(void)
 		{
 			const unsigned int FImgTotal = m_FixedMultiImage.size();
 			if( FImgTotal == 0 )

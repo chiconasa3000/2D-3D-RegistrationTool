@@ -29,7 +29,7 @@ namespace itk
 	template <class TFixedImage, class TMovingImage>
 		void
 		NormalizedGradientCorrelationImageToImageMetric<TFixedImage,TMovingImage>
-		::Initialize(void) throw ( ExceptionObject )
+		::Initialize(void)
 		{
 			// Initialise the base class
 			Superclass::Initialize();
@@ -55,8 +55,7 @@ namespace itk
 						&m_FixedBoundaryCondition );
 				m_FixedSobelFilters[dim]->SetOperator( m_SobelOperators[dim] );
 				m_FixedSobelFilters[dim]->SetInput( this->GetFixedImage() );
-				m_FixedSobelFilters[dim]->GetOutput()->SetRequestedRegion(
-						this->GetFixedImageRegion() );
+				m_FixedSobelFilters[dim]->GetOutput()->SetRequestedRegion( this->GetFixedImageRegion() );
 			}
 			/*
 			std::cout<<"Direction Before Moving 3D: "<<std::endl;
@@ -84,6 +83,9 @@ namespace itk
 			m_RescaleIntImageFilter = RescaleIntImageFilterType::New();
 			m_RescaleIntImageFilter->SetOutputMinimum(   0 );
 			m_RescaleIntImageFilter->SetOutputMaximum( 255 );
+			
+			std::cout << "REGION" << this->m_FixedImage->GetBufferedRegion() << std::endl;
+
 			m_RescaleIntImageFilter->SetInput( m_ResampleImageFilter->GetOutput());
 			m_RescaleIntImageFilter->Update(); //Imagen movible proyeccion con  0-255 y threshold 0 por el interpolador
 
@@ -186,7 +188,7 @@ namespace itk
 				InputPointType inputPoint;
 				this->GetFixedImage()->TransformIndexToPhysicalPoint( fixedIndex, inputPoint );
 
-				if( this->m_FixedImageMask && !this->m_FixedImageMask->IsInside( inputPoint ) )
+				if( this->m_FixedImageMask && !this->m_FixedImageMask->IsInsideInWorldSpace( inputPoint ) )
 				{
 					continue;
 				}

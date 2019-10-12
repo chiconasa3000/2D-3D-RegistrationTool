@@ -365,7 +365,8 @@ int main( int argc, char * argv[] )
 		rescaleFilter2->SetOutputMinimum(0);
 		rescaleFilter2->SetOutputMaximum(255);
 		rescaleFilter2->Update();
-			
+		
+				
 		writer->SetInput( rescaleFilter2->GetOutput() );
 
 		string fName = "";

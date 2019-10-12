@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
 	char *input_name = NULL;		//input volume
 	char *output_name = NULL;		//virtual image
 	char *logfilename = NULL;		//FileName Log
-	char *type_projection = "OR";		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
+	char *type_projection = (char*)"OR";		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
 
 	float scd = 1000.0;			//distance from source to isocenter
 
