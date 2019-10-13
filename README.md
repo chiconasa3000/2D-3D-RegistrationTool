@@ -48,5 +48,11 @@ The Most Beautiful Tool to Understand or Realize the registration on medical ima
 
 Enjoy :wink:
 
+Soon GPU implementation
 
+<div align = 'center'>
+     <a href = 'https://www.youtube.com/watch?v=-P28LKWTzrI&t=16s'>
+        <img src = 'https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/gputask.gif' alt = 'GPU Inspirtation. Click to go to YouTube!' width = '800px' height = '400px'>
+     </a>
+</div>
 
