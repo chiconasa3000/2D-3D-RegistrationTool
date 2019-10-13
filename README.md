@@ -16,7 +16,7 @@ The Most Beautiful Tool to Understand or Realize the registration on medical ima
 </figure>
 
 <figure>
-<img style="float: left;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/reg_gtvsplan2.png " width="250">
+<img style="float: left;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/reg18_gtvsplan2.png " width="250">
 <img style="float: right;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/reg18difvolap.png " width="250">
 <figcaption>Before and After Registration Process</figcaption>
 </figure>
