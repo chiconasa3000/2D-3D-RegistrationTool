@@ -3,11 +3,24 @@
 The Most Beautiful Tool to Understand or Realize the registration on medical images
 2D/3D Registration using itk framework
 
-![volume](https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approyvol.png "Volumen")
+<figure>
+<img style="float: left;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approyvol.png " width="250">
+<img style="float: right;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approydrr.png " width="250">
+<figcaption>Volume Projection Anteroposterior View.</figcaption>
+</figure>
 
-![volume](https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approydrr.png "Volumen")
+<figure>
+<img style="float: left;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/mlproyvol.png " width="250">
+<img style="float: right;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/mlproydrr.png " width="250">
+<figcaption>Volumen Projection Lateral View.</figcaption>
+</figure>
 
-<img style="float: right;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approyvol.png ">
+<figure>
+<img style="float: left;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/reg_gtvsplan2.png " width="250">
+<img style="float: right;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/reg18difvolap.png " width="250">
+<figcaption>Before and After Registration Process</figcaption>
+</figure>
+
 
 ## Test registration process by default using all specific commands
 
