@@ -3,10 +3,11 @@
 The Most Beautiful Tool to Understand or Realize the registration on medical images
 2D/3D Registration using itk framework
 
-![volume](https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approyvol.png "Volumen"){: style="float:right"; width=50%}
+![volume](https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approyvol.png "Volumen")
 
-![volume](https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approydrr.png "Volumen"){: style="float:left"; width=50%}
+![volume](https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approydrr.png "Volumen")
 
+<img style="float: right;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approyvol.png ">
 
 ## Test registration process by default using all specific commands
 
