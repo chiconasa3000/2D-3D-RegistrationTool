@@ -52,7 +52,7 @@ Soon GPU implementation
 
 <div align = 'center'>
      <a href = 'https://www.youtube.com/watch?v=-P28LKWTzrI&t=16s'>
-        <img src = 'https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/gputask.gif' alt = 'GPU Inspirtation. Click to go to YouTube!' width = '400px' height = '300px'>
+        <img src = 'https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/gpudemo.gif' alt = 'GPU Inspirtation. Click to go to YouTube!' width = '500px' height = '288px'>
      </a>
 </div>
 
