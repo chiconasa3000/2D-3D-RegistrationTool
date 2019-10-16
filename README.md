@@ -3,24 +3,33 @@
 The Most Beautiful Tool to Understand or Realize the registration on medical images
 2D/3D Registration using itk framework
 
-<figure>
-<img style="float: left;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approyvol.png " width="250">
-<img style="float: right;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/approydrr.png " width="250">
-<figcaption>Volume Projection Anteroposterior View.</figcaption>
-</figure>
+<p align="center">
+    <img src="Documentation/Images/approyvol.png" height="250px">
+    <img src="Documentation/Images/approydrr.png" height="250px">
+</p>
 
-<figure>
-<img style="float: left;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/mlproyvol.png " width="250">
-<img style="float: right;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/mlproydrr.png " width="250">
-<figcaption>Volumen Projection Lateral View.</figcaption>
-</figure>
+<p align="center">
+Volume Projection Anteroposterior View
+</p>
 
-<figure>
-<img style="float: left;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/reg18_gtvsplan2.png " width="250">
-<img style="float: right;" src="https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/reg18difvolap.png " width="250">
-<figcaption>Before and After Registration Process</figcaption>
-</figure>
+<p align="center">
+    <img src="Documentation/Images/mlproyvol.png" height="250px">
+    <img src="Documentation/Images/mlproydrr.png" height="250px">
+</p>
 
+<p align="center">
+Volumen Projection Lateral View.
+</p>
+
+
+<p align="center">
+    <img src="Documentation/Images/reg18_gtvsplan2.png" height="250px">
+    <img src="Documentation/Images/reg18difvolap.png" height="250px">
+</p>
+
+<p align="center">
+Before and After Registration Process
+</p>
 
 ## Test registration process by default using all specific commands
 
@@ -52,7 +61,8 @@ Soon GPU implementation
 
 <div align = 'center'>
      <a href = 'https://www.youtube.com/watch?v=-P28LKWTzrI&t=16s'>
-        <img src = 'https://gitlab.com/chiconasa3000/Cpu-midas-journal-800/raw/master/Documentation/Images/gpudemo.gif' alt = 'GPU Inspirtation. Click to go to YouTube!' width = '500px' height = '288px'>
+        <img src = 'Documentation/Images/gpudemo.gif' width = '500px' height = '288px'>
      </a>
 </div>
+
 
