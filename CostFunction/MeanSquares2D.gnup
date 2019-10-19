@@ -1,0 +1,12 @@
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "meanSquares" butt dashlength 1.0
+set output 'meanSquares2dx.svg'
+set title "Progreso de la Métrica del Parametro de Transformación"
+set xlabel "Parametro de Rotación (º)"
+set ylabel "Metrica - Función de Costo"
+#refx = 18; refy = 0.0320109;
+#regx = -18; regy = 0.0307433;
+#set label sprintf("Ref: (%.2f,%.2f)",refx,refy) at refx,refy point pt 7 offset 1,-1
+#set label sprintf("Reg: (%.2f,%.2f)",regx,regy) at regx,regy point pt 7 offset 1,-1
+set key left top Left box 3
+plot '../CostFunction/MeanSquaresMetricOutput.txt' ls 1 title "FuncionCosto" 
+

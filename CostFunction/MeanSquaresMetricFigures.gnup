@@ -1,0 +1,25 @@
+set dgrid3d 50,50,2
+set contour both
+set cntrparam bspline
+set cntrparam levels incremental 0,1000,12000
+set noclabel 
+set zlabel "Mean Squares Metric"
+set xlabel "Translation in X (mm)"
+set ylabel "Translation in Y (mm)"
+
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "meanSquares" butt dashlength 1.0
+set output 'MeanSquaresMetricPlot1.svg'
+splot "../MeanSquaresMetricOutput.txt" notitle with lines
+
+set nosurface
+set contour base
+set view 0,90,1,1
+set size square
+set cntrparam levels incremental 0,500,12000
+set xlabel
+set ylabel
+
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "meanSquares" butt dashlength 1.0
+set output 'MeanSquaresMetricPlot2.svg'
+splot "../MeanSquaresMetricOutput.txt" notitle with lines
+

@@ -107,6 +107,10 @@ target_link_libraries(MultiImageRegistration ${Libraries})
 add_executable(VisualRegister Examples/visualRegister.cpp utils.cpp)
 target_link_libraries(VisualRegister ${Libraries})
 
+#FuncionDeCosto
+add_executable(DoCostFunction CostFunction/MeanSquaresImageMetric1.cxx utils.cpp)
+target_link_libraries(DoCostFunction ${Libraries})
+
 
 #install(FILES ${HeaderFiles} DESTINATION include COMPONENT Development)
 

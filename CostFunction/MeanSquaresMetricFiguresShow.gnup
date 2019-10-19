@@ -1,0 +1,13 @@
+set term x11 enhanced font "arial,15" 
+
+set dgrid3d 50,50,2
+set contour both
+set cntrparam bspline
+set cntrparam levels incremental 0,1000,12000
+set noclabel 
+set zlabel "Mean Squares Metric"
+set xlabel "Translation in X (mm)"
+set ylabel "Translation in Y (mm)"
+
+splot "../MeanSquaresMetricOutput.txt" notitle with lines
+
