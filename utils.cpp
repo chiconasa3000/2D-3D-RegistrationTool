@@ -251,7 +251,7 @@ void Utilitarios::createStats(int numLevels, std::string logfilename, std::strin
 	for(int i=0;i<numLevels;i++){
 		//Solo seleccionar ciertas columnas para el plot
 		std::string nameloginLevel(directorioResultados + "level" + std::to_string(i));
-		std::string cmdChooseCols("awk '{$1=\"\"; $3=\"\"; $5=\"\"; print $0}' " + nameloginLevel + ".txt" + " | tee " + nameloginLevel + ".txt");
+		std::string cmdChooseCols("awk -i inplace '{$1=\"\"; $3=\"\"; $5=\"\"; print $0}' " + nameloginLevel + ".txt" );
 		//std::string cmdChooseCols("awk -i inplace '{print $2 \"\\t\" $4 \"\\t\" $6 \"\\t\" $8 \"\\t\" $10}' " + nameloginLevel+".txt");
 		std::system(cmdChooseCols.c_str());
 

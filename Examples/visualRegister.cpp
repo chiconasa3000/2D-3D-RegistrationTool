@@ -14,6 +14,21 @@ int main(int argc, char *argv[]){
 	int indRegistro = 0;
 	int numLevels = 0;
 	char *movingImage = NULL;
+	
+	//Umbral
+	float threshold = 0.;
+	
+	//Direction Cosines
+	float dcx = 0.;
+	float dcy = 0.;
+	float dcz = 0.;
+
+	float focalPointx = 0.;			//focalPoint in x
+	float focalPointy = 1000.0;		//focalPoint in y
+	float focalPointz = 0.;			//focalPoint in z
+	
+	float scd = 1000.0;			//distance from source to isocenter
+
 
 	bool ok = false;	
 	while(argc > 1){
@@ -39,6 +54,46 @@ int main(int argc, char *argv[]){
 			numLevels = atoi(argv[1]);
 			argc--; argv++;
 		}
+		
+		if ((ok == false) && (strcmp(argv[1], "-threshold") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			threshold=atof(argv[1]);
+			argc--; argv++;
+		}
+		if ((ok == false) && (strcmp(argv[1], "-dc") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			dcx=atof(argv[1]);
+			argc--; argv++;
+			dcy=atof(argv[1]);
+			argc--; argv++;
+			dcz=atof(argv[1]);
+			argc--; argv++;
+		}
+		if ((ok == false) && (strcmp(argv[1], "-foc") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			focalPointx = atof(argv[1]);
+			argc--; argv++;
+			focalPointy = atof(argv[1]);
+			argc--; argv++;
+			focalPointz = atof(argv[1]);
+			argc--; argv++;
+		}
+
+		if ((ok == false) && (strcmp(argv[1], "-scd") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			scd = atof(argv[1]);
+			argc--; argv++;
+		}
+
+
 
 	}
 	
@@ -51,19 +106,11 @@ int main(int argc, char *argv[]){
 	//Nombre de la ruta de resultados de registro
 	std::string dirResultados = "../outputData/resultsReg_" + strIndReg + "/";
 
-	//Ruta de la imagen movible
-	//const unsigned int Dimensions = 3;
-	
-	//typedef itk::Image<short int,Dimensions> FixedImageType;
-	//typedef itk::Image<short int, Dimensions> MovingImageType;
-
-	//Lectura de la imagen Movible
-	//typedef itk::ImageFileReader<MovingImageType> MovingImageReaderType;  	
-	//MovingImageReaderType::Pointer movingReader = MovingImageReaderType::New();
-	//movingReader->SetFileName(movingImage);
-		
-	
-
+	//Parametros Numericos a texto
+	std::string threshold_str = std::to_string(threshold);
+	std::string dcg_str = std::to_string(dcx) + " " + std::to_string(dcy)+" "+std::to_string(dcz);
+	std::string fpg_str = std::to_string(focalPointx) +" "+ std::to_string(focalPointy) +" "+ std::to_string(focalPointz);
+	std::string scd_str = std::to_string(scd);
 	//Creacion del directorio donde se almacenaran los resultados
 	std::string outDir = "../outputData/visImages";
 	itksys::SystemTools::MakeDirectory(outDir);
@@ -71,6 +118,8 @@ int main(int argc, char *argv[]){
 	
 	//Recorriendo el nro de niveles
 	for(int i=0; i < numLevels; i++){
+		//Numero de niveles actual
+		std::string currentLvl = std::to_string(i);
 
 		//Armando la ruta y el nombre del log
 		logfilename = "level" + std::to_string(i) + ".txt";
@@ -106,7 +155,7 @@ int main(int argc, char *argv[]){
 			}
 
 			//Procesamos los valores actuales de transformacion
-			std::cout << vx << " " << vy << " " << vz << " " << tx << " " << ty << " " << tz << " " << sg << std::endl;
+			//std::cout << vx << " " << vy << " " << vz << " " << tx << " " << ty << " " << tz << " " << sg << std::endl;
 			
 			//Conversion de versor a grados	
 			util->convertVersorToEuler(vx,vy,vz,rx,ry,rz);
@@ -122,14 +171,14 @@ int main(int argc, char *argv[]){
 		
 			cmdGenFixedImages = "";
 			//Generacion de la primera imagen fija AP
-			cmdGenFixedImages = cmdGenFixedImages +  "./genVirtualImage -v -p AP -dc 90 0 0 -foc 0 -1000 0" + " -rx " 
+			cmdGenFixedImages = cmdGenFixedImages +  "./genVirtualImage -v -p AP -dc "+dcg_str +" -foc "+fpg_str + " -rx " 
 			+ str_rx + " -ry " + str_ry + " -rz " + str_rz + " -t " + str_tx + " " + str_ty + " " + str_tz + " " 
 			+ " -sg " + str_sg + 
-			" -o pelvisHealthy_ap_vis_" + strcont + ".mha " + "-scd -200 -threshold 0 -inputVol " + movingImage + 
-			+ " -logFileName ../outputData/" + "visImages/log_vis_ap"+ strcont + " ";	
+			" -o pelvisHealthy_ap_vis_" + currentLvl + strcont + ".mha " + "-scd "+scd_str+" -threshold "+ threshold_str + " -inputVol " + movingImage + 
+			+ " -logFileName ../outputData/" + "visImages/log_vis_ap"+ currentLvl + strcont + " ";	
 			
-			std::cout << cmdGenFixedImages << std::endl;
-			//std::system(cmdGenFixedImages.c_str());
+			//std::cout << cmdGenFixedImages << std::endl;
+			std::system(cmdGenFixedImages.c_str());
 
 			//Generacion de la segunda imagen fija ML				
 				
