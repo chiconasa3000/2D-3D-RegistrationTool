@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
 	int indRegistro = 0;
 	int numLevels = 0;
 	char *movingImage = NULL;
-	
+	char *dirResReg = NULL;
 	//Umbral
 	float threshold = 0.;
 	
@@ -33,7 +33,13 @@ int main(int argc, char *argv[]){
 	bool ok = false;	
 	while(argc > 1){
 		ok = false;
-		
+		if((ok ==false) && (strcmp(argv[1], "-dirResultsReg") == 0)){
+			argc--; argv++;
+			ok == true;
+			dirResReg = argv[1];
+			argc--; argv++;
+		}
+
 		if((ok==false) && (strcmp(argv[1], "-movingImage")==0)){
 			argc--; argv++;
 			ok = true;
@@ -104,7 +110,8 @@ int main(int argc, char *argv[]){
 	std::string logfilename("");
 	
 	//Nombre de la ruta de resultados de registro
-	std::string dirResultados = "../outputData/resultsReg_" + strIndReg + "/";
+	std::string dirResRegStr = dirResReg;
+	std::string dirResultados = dirResRegStr + "resultsReg_" + strIndReg + "/";
 
 	//Parametros Numericos a texto
 	std::string threshold_str = std::to_string(threshold);
@@ -174,7 +181,7 @@ int main(int argc, char *argv[]){
 			cmdGenFixedImages = cmdGenFixedImages +  "./genVirtualImage -v -p AP -dc "+dcg_str +" -foc "+fpg_str + " -rx " 
 			+ str_rx + " -ry " + str_ry + " -rz " + str_rz + " -t " + str_tx + " " + str_ty + " " + str_tz + " " 
 			+ " -sg " + str_sg + 
-			" -o pelvisHealthy_ap_vis_" + currentLvl + strcont + ".mha " + "-scd "+scd_str+" -threshold "+ threshold_str + " -inputVol " + movingImage + 
+			" -o pelvisHealthy_ap_vis_" + currentLvl + strcont + " -scd "+scd_str+" -threshold "+ threshold_str + " -inputVol " + movingImage + 
 			+ " -logFileName ../outputData/" + "visImages/log_vis_ap"+ currentLvl + strcont + " ";	
 			
 			//std::cout << cmdGenFixedImages << std::endl;
