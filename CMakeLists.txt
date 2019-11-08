@@ -63,6 +63,7 @@ BSplineDeformableTransformOpt.txx
 GenDRRs/gestorMatrixRot.h
 utils.h
 Examples/scriptBuilder.h
+GenDRRs/genVirtGen.h
 )
 
 #Add project's executables
@@ -106,6 +107,12 @@ target_link_libraries(MultiImageRegistration ${Libraries})
 #Visualizacion del Registro
 add_executable(VisualRegister Examples/visualRegister.cpp utils.cpp)
 target_link_libraries(VisualRegister ${Libraries})
+
+#Clase de Generacion de Imagenes Virtuales
+add_executable(GenVirtGen GenDRRs/appGenVirtGen.cpp GenDRRs/gestorMatrixRot.cxx GenDRRs/genVirtGen.cpp utils.cpp)
+target_link_libraries(GenVirtGen ${Libraries})
+
+
 
 #FuncionDeCosto
 add_executable(DoCostFunction CostFunction/MeanSquaresImageMetric1.cxx utils.cpp)
