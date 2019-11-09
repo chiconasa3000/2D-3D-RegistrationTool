@@ -105,7 +105,7 @@ add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx utils.
 target_link_libraries(MultiImageRegistration ${Libraries})
 
 #Visualizacion del Registro
-add_executable(VisualRegister Examples/visualRegister.cpp utils.cpp)
+add_executable(VisualRegister Examples/visualRegister.cpp GenDRRs/gestorMatrixRot.cxx GenDRRs/genVirtGen.cpp utils.cpp)
 target_link_libraries(VisualRegister ${Libraries})
 
 #Clase de Generacion de Imagenes Virtuales

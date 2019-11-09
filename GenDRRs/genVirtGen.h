@@ -55,19 +55,27 @@ private:
 	
 	//Instance of the interpolator
 	typedef itk::PatchedRayCastInterpolateImageFunction<MovingImageType, double> InterpolatorType;
-	
+	FilterType::Pointer filter;
+
 	typedef InterpolatorType::InputPointType FocalPointType;
 	
 	InterpolatorType::Pointer interpolator;
+	
+	HelperRot helperRot;
+
+	char *type_projection = NULL;	
+
 
 public:
+	GenVirtGen(char * typeProjection,char *logFileName);
 	void setLogFile(char *logfile);	
-	void printSelf();
 	int readMovingImage(char *input_name);
-	void initResampleFilter();
+	void initResampleFilter(int &dxx,int &dyy, float &im_sx, float &im_sy,bool customized_2DCX,float o2Dx, float o2Dy,float scd);
 	void initTransform(float tx,float ty,float tz, float dcx, float dcy, float dcz,float rx, float ry, float rz,float sg);	
-	//void copyPropertiesInputImage(int dxx, int dyy, float im_sx, float im_sy);
+	void copyPropertiesInputImage(int &dxx, int &dyy, float &im_sx, float &im_sy);
 	void initInterpolator(float focalPointx, float focalPointy, float focalPointz, float threshold);
+	void writeResultImage(char *output_name);
+	MovingImageType::Pointer returnResultImage(char *output_name);
 };
 
 

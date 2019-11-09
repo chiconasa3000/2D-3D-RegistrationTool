@@ -3,8 +3,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <sstream>
-#include "utils.h"
-
+#include "GenDRRs/genVirtGen.h"
+#include <itkSubtractImageFilter.h>
 
 //Visualizacion de Registro
 
@@ -15,19 +15,49 @@ int main(int argc, char *argv[]){
 	int numLevels = 0;
 	char *movingImage = NULL;
 	char *dirResReg = NULL;
-	//Umbral
-	float threshold = 0.;
-	
-	//Direction Cosines
+
+
+	char *output_name = NULL;		//virtual image
+	char *logFileName = NULL;
+	char *type_projection = (char*)"OR";		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
+
+	// Translation parameter of the isocenter in mm
+	float tx = 0.;
+	float ty = 0.;
+	float tz = 0.;
+
+	//Direction Cosines (rotation for orientation volume)
 	float dcx = 0.;
 	float dcy = 0.;
 	float dcz = 0.;
 
+
+	// CT volume rotation around isocenter along x,y,z axis in degrees
+	float rx = 0.;
+	float ry = 0.;
+	float rz = 0.;
+
+	//Scale
+	float sg = 1.;
+
+	int dxx = 0;				//pixels number virtual image in x
+	int dyy = 0;				//pixels number virtual image in y
+
+	float im_sx = 0;			//virtual image spacing in x
+	float im_sy = 0;			//virtual image spacing in y
+
 	float focalPointx = 0.;			//focalPoint in x
 	float focalPointy = 1000.0;		//focalPoint in y
 	float focalPointz = 0.;			//focalPoint in z
-	
+
+	float threshold = 0.;			//virtual image threshold
+
+	bool customized_2DCX = false;		//flag for central of 2d image
+	float o2Dx;				//virtual image origin in x
+	float o2Dy;				//virtual image origin in y
+
 	float scd = 1000.0;			//distance from source to isocenter
+
 
 
 	bool ok = false;	
@@ -61,13 +91,34 @@ int main(int argc, char *argv[]){
 			argc--; argv++;
 		}
 		
-		if ((ok == false) && (strcmp(argv[1], "-threshold") == 0))
+		if ((ok == false) && (strcmp(argv[1], "-p") == 0))
 		{
 			argc--; argv++;
 			ok = true;
-			threshold=atof(argv[1]);
+			type_projection = argv[1];
 			argc--; argv++;
 		}
+
+		if((ok==false) && strcmp(argv[1], "-logFileName")==0)
+		{
+			argc--; argv++;
+			ok = true;
+			logFileName = argv[1];
+			argc--; argv++;
+		}
+
+		if ((ok == false) && (strcmp(argv[1], "-t") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			tx=atof(argv[1]);
+			argc--; argv++;
+			ty=atof(argv[1]);
+			argc--; argv++;
+			tz=atof(argv[1]);
+			argc--; argv++;
+		}
+
 		if ((ok == false) && (strcmp(argv[1], "-dc") == 0))
 		{
 			argc--; argv++;
@@ -79,6 +130,39 @@ int main(int argc, char *argv[]){
 			dcz=atof(argv[1]);
 			argc--; argv++;
 		}
+
+		if ((ok == false) && (strcmp(argv[1], "-rx") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			rx=atof(argv[1]);
+			argc--; argv++;
+		}
+
+		if ((ok == false) && (strcmp(argv[1], "-ry") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			ry=atof(argv[1]);
+			argc--; argv++;
+		}
+
+		if ((ok == false) && (strcmp(argv[1], "-rz") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			rz=atof(argv[1]);
+			argc--; argv++;
+		}
+
+		if ((ok == false) && (strcmp(argv[1], "-sg") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			sg=atof(argv[1]);
+			argc--; argv++;
+		}
+
 		if ((ok == false) && (strcmp(argv[1], "-foc") == 0))
 		{
 			argc--; argv++;
@@ -91,6 +175,46 @@ int main(int argc, char *argv[]){
 			argc--; argv++;
 		}
 
+		if ((ok == false) && (strcmp(argv[1], "-threshold") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			threshold=atof(argv[1]);
+			argc--; argv++;
+		}
+
+
+
+
+		if ((ok == false) && (strcmp(argv[1], "-res") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			im_sx=atof(argv[1]);
+			argc--; argv++;
+			im_sy=atof(argv[1]);
+			argc--; argv++;
+		}
+
+		if ((ok == false) && (strcmp(argv[1], "-size") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			dxx = atoi(argv[1]);
+			argc--; argv++;
+			dyy = atoi(argv[1]);
+			argc--; argv++;
+		}
+		if((ok == false) && (strcmp(argv[1], "-2dcx")==0))
+		{
+			argc--; argv++;
+			ok = true;
+			o2Dx = atof(argv[1]);
+			argc--; argv++;
+			o2Dy = atof(argv[1]);
+			argc--; argv++;
+			customized_2DCX = true;		
+		}
 		if ((ok == false) && (strcmp(argv[1], "-scd") == 0))
 		{
 			argc--; argv++;
@@ -98,8 +222,13 @@ int main(int argc, char *argv[]){
 			scd = atof(argv[1]);
 			argc--; argv++;
 		}
-
-
+		if ((ok == false) && (strcmp(argv[1], "-o") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			output_name = argv[1];
+			argc--; argv++;
+		}
 
 	}
 	
@@ -113,16 +242,40 @@ int main(int argc, char *argv[]){
 	std::string dirResRegStr = dirResReg;
 	std::string dirResultados = dirResRegStr + "resultsReg_" + strIndReg + "/";
 
-	//Parametros Numericos a texto
-	std::string threshold_str = std::to_string(threshold);
-	std::string dcg_str = std::to_string(dcx) + " " + std::to_string(dcy)+" "+std::to_string(dcz);
-	std::string fpg_str = std::to_string(focalPointx) +" "+ std::to_string(focalPointy) +" "+ std::to_string(focalPointz);
-	std::string scd_str = std::to_string(scd);
-	//Creacion del directorio donde se almacenaran los resultados
-	std::string outDir = "../outputData/visImages";
-	itksys::SystemTools::MakeDirectory(outDir);
 	Utilitarios * util = new Utilitarios();
+
+	const unsigned int Dimension = 3;
+	//tipo de pixel by default para las imagenes
+	typedef short int InputPixelType;
+	typedef unsigned short OutputPixelType;
+	typedef itk::Image<InputPixelType, Dimension> FixedImageType;
+	typedef itk::Image<InputPixelType, Dimension> MovingImageType;
+	typedef itk::Image<InputPixelType, 3> OutputImageType;
+	MovingImageType::Pointer imageVolTemp;
+	MovingImageType::Pointer imageVolRef;
 	
+	//Tipo para la substraccion
+	typedef itk::SubtractImageFilter<FixedImageType,FixedImageType, OutputImageType>  SubtracterType;
+	//Tipo para el rescalado de contraste
+	typedef itk::RescaleIntensityImageFilter< MovingImageType, MovingImageType > RescaleFilterType;
+	//Tipo para escritura de diferencia
+	typedef itk::ImageFileWriter<OutputImageType> WriterType;
+	
+    	//el directorio donde estaran los resultados de las diferencias
+    	itksys::SystemTools::MakeDirectory("../outputData/difimages");
+
+
+	GenVirtGen *genVolRef = new GenVirtGen(type_projection,"../GenDRRs/logVolRef.txt");
+	genVolRef->readMovingImage("../inputData/ImagesDefsNews/Images/0.mha");	
+	genVolRef->initTransform(tx,ty,tz,dcx,dcy,dcz,rx,ry,rz,sg);
+	genVolRef->initInterpolator(focalPointx,focalPointy,focalPointz,100);
+	genVolRef->initResampleFilter(dxx, dyy, im_sx,im_sy,customized_2DCX,o2Dx,o2Dy,scd);
+	
+	std::string outVolRef = "pelvisHealthyVolRef";
+
+	imageVolRef = genVolRef->returnResultImage((char*)outVolRef.c_str());	
+	//genVolRef->writeResultImage((char*)outVolRef.c_str());
+
 	//Recorriendo el nro de niveles
 	for(int i=0; i < numLevels; i++){
 		//Numero de niveles actual
@@ -139,21 +292,20 @@ int main(int argc, char *argv[]){
 		std::ifstream fileParametros(dirResultados + "n" + logfilename);
 
 
-		float vx,vy,vz,tx,ty,tz,sg,rx,ry,rz;
+		float vx,vy,vz; //,tx,ty,tz,sg,rx,ry,rz;
 		//Recorre cada linea del archivo
 		std::string lineParametros;
 		std::string cmdGenFixedImages="";
 		int cont = 0;
 
 		while(std::getline(fileParametros,lineParametros)){
-			
 			vx = 0; vy=0; vz=0; tx=0; ty=0; tz=0; sg=0; rx=0; ry=0; rz=0;
 			
 			std::string strcont = std::to_string(cont);
 			
 			std::istringstream currentParamTransf(lineParametros);
 			
-			
+				
 			if(!(currentParamTransf >> vx >> vy >> vz >> tx >> ty >> tz >> sg))
 			{
 				std::cout << "Dentro de While"<< std::endl;		
@@ -162,36 +314,50 @@ int main(int argc, char *argv[]){
 			}
 
 			//Procesamos los valores actuales de transformacion
-			//std::cout << vx << " " << vy << " " << vz << " " << tx << " " << ty << " " << tz << " " << sg << std::endl;
+			std::cout << vx << " " << vy << " " << vz << " " << tx << " " << ty << " " << tz << " " << sg << std::endl;
 			
 			//Conversion de versor a grados	
 			util->convertVersorToEuler(vx,vy,vz,rx,ry,rz);
 	
-			//Conversion a str de un flotante
-			std::string str_rx = std::to_string(rx);
-			std::string str_ry = std::to_string(ry);
-			std::string str_rz = std::to_string(rz);
-			std::string str_tx = std::to_string(tx);
-			std::string str_ty = std::to_string(ty);
-			std::string str_tz = std::to_string(tz);
-			std::string str_sg = std::to_string(sg);
-		
 			cmdGenFixedImages = "";
-			//Generacion de la primera imagen fija AP
-			cmdGenFixedImages = cmdGenFixedImages +  "./genVirtualImage -v -p AP -dc "+dcg_str +" -foc "+fpg_str + " -rx " 
-			+ str_rx + " -ry " + str_ry + " -rz " + str_rz + " -t " + str_tx + " " + str_ty + " " + str_tz + " " 
-			+ " -sg " + str_sg + 
-			" -o pelvisHealthy_ap_vis_" + currentLvl + strcont + " -scd "+scd_str+" -threshold "+ threshold_str + " -inputVol " + movingImage + 
-			+ " -logFileName ../outputData/" + "visImages/log_vis_ap"+ currentLvl + strcont + " ";	
+	
+			GenVirtGen *genImagVirtual = new GenVirtGen(type_projection,logFileName);
+			genImagVirtual->readMovingImage(movingImage);	
+			genImagVirtual->initTransform(tx,ty,tz,dcx,dcy,dcz,rx,ry,rz,sg);
+			genImagVirtual->initInterpolator(focalPointx,focalPointy,focalPointz,threshold);
+			genImagVirtual->initResampleFilter(dxx, dyy, im_sx,im_sy,customized_2DCX,o2Dx,o2Dy,scd);
+			std::string outputFile = "pelvisHealthy_ap_vis_" + currentLvl + strcont;
+		        //char *ofile = outputFile.c_str();	
+			imageVolTemp = genImagVirtual->returnResultImage((char*)outputFile.c_str());
+			//genImagVirtual->writeResultImage((char*)outputFile.c_str());
 			
-			//std::cout << cmdGenFixedImages << std::endl;
-			std::system(cmdGenFixedImages.c_str());
+			//Realizamos la substraccion de la imagen de referencia y la imagen fija trasladada
+			
 
-			//Generacion de la segunda imagen fija ML				
-				
+			//the difference is between the projection and the current fixed image in this case the last level
+			SubtracterType::Pointer subtracter = SubtracterType::New();
+			subtracter->SetInput1( imageVolTemp );
+			subtracter->SetInput2( imageVolRef); 
+			
+			std::string outDifFile = "../outputData/difimages/diference_" + currentLvl + strcont + ".mha";
+			WriterType::Pointer subtractionWriter = WriterType::New();
+			subtractionWriter->SetFileName((char*) outDifFile.c_str() );
+			subtractionWriter->SetInput( subtracter->GetOutput() );
+			std::cout << "Writing subtraction file " << subtractionWriter->GetFileName() << std::endl;
+			try
+			{
+				subtractionWriter->Update();
+			}
+			catch( itk::ExceptionObject & e )
+			{
+				std::cerr << e.GetDescription() << std::endl;
+			}
 
 			cont++;
+
+
 		}
 	}
+
 }
 

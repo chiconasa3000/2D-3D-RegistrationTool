@@ -1,5 +1,9 @@
 #include "genVirtGen.h"
 
+GenVirtGen::GenVirtGen(char *typeProjection,char *logFileName){
+	type_projection = typeProjection;
+	setLogFile(logFileName);
+}
 
 int GenVirtGen::readMovingImage(char *input_name){
 	//comprobar existencia de imagen movible para proyeccion
@@ -25,12 +29,34 @@ int GenVirtGen::readMovingImage(char *input_name){
 		//std::cout<<"Imagen Movible a proyectar" << image<<std::endl;
 		timer.Stop("Loading Input Image");
 
+		unsigned int i;
+		const itk::Vector<double, 3> spacing = image->GetSpacing();  
+		MovingImageType::RegionType region = image->GetBufferedRegion();
+
+		logregistro << "  Resolution: [";	
+		for (i=0; i<Dimension; i++) 
+		{
+			logregistro << spacing[i];
+			if (i < Dimension-1){ logregistro << ", ";}
+		}
+		logregistro << "]" << std::endl;
+
+		const itk::Point<double, 3> origin = image->GetOrigin();
+		logregistro << "  Origin: ["; 
+		for (i=0; i<Dimension; i++) 
+		{
+			logregistro << origin[i];	
+			if (i < Dimension-1) 
+				logregistro << ", ";
+		}
+		logregistro << "]" << std::endl<< std::endl;
+
 		return EXIT_SUCCESS;
 
 	}else{
 		std::cerr << "Input image file missing !" << std::endl;
 		return EXIT_FAILURE;
-	
+
 	}	
 }
 
@@ -39,34 +65,8 @@ void GenVirtGen::setLogFile(char *logfile){
 	this->logregistro = std::ofstream(logfile);	
 }
 
-void GenVirtGen::printSelf(){
-
-	unsigned int i;
-	const itk::Vector<double, 3> spacing = image->GetSpacing();  
-	MovingImageType::RegionType region = image->GetBufferedRegion();
-
-	logregistro << "  Resolution: [";	
-	for (i=0; i<Dimension; i++) 
-	{
-		logregistro << spacing[i];
-		if (i < Dimension-1){ logregistro << ", ";}
-	}
-	logregistro << "]" << std::endl;
-
-	const itk::Point<double, 3> origin = image->GetOrigin();
-	logregistro << "  Origin: ["; 
-	for (i=0; i<Dimension; i++) 
-	{
-		logregistro << origin[i];	
-		if (i < Dimension-1) 
-			logregistro << ", ";
-	}
-	logregistro << "]" << std::endl<< std::endl;
-
-}
-
-void GenVirtGen::initResampleFilter(int dxx, int dyy, float im_sx, float im_sy){
-	FilterType::Pointer filter = FilterType::New();
+void GenVirtGen::initResampleFilter(int &dxx, int &dyy, float &im_sx, float &im_sy, bool customized_2DCX, float o2Dx, float o2Dy,float scd){
+	filter = FilterType::New();
 	filter->SetInput(image);
 	filter->SetDefaultPixelValue(0);
 	
@@ -81,7 +81,8 @@ void GenVirtGen::initResampleFilter(int dxx, int dyy, float im_sx, float im_sy){
 	MovingImageType::SizeType size;
 	double spacing[Dimension];
 	double origin[Dimension];
-
+	
+	
 	//Number of pixels of Fixed Image
 	size[0] = dxx;
 	size[1] = dyy;
@@ -132,6 +133,14 @@ void GenVirtGen::initResampleFilter(int dxx, int dyy, float im_sx, float im_sy){
 	//transform in the filter
 	filter->SetTransform(transform);
 
+	//applying the resample filter (generation)
+	timer.Start("DRR generation");
+	filter->Update();
+	timer.Stop("DRR generation");
+
+	logregistro << "Output image size: " << size[0] << ", " << size[1] << ", " << size[2] << std::endl;
+	logregistro << "Output image spacing: " << spacing[0] << ", " << spacing[1] << ", " << spacing[2] << std::endl;
+	logregistro << "Output image origin: "<< origin[0] << ", " << origin[1] << ", " << origin[2] << std::endl;
 
 }
 
@@ -150,7 +159,6 @@ void GenVirtGen::initTransform(float tx, float ty, float tz, float dcx, float dc
 	//std::cout<<"Transform: "<<transform << std::endl;
 	
 	//Matriz de Rotacion de Dirección Euleriana a pesar de que es de similaridad (Ojo but Works)
-	HelperRot helperRot; 
 	helperRot.initRotX(dtr*(dcx));
 	helperRot.initRotY(dtr*(dcy));
 	helperRot.initRotZ(dtr*(dcz));
@@ -176,10 +184,13 @@ void GenVirtGen::initTransform(float tx, float ty, float tz, float dcx, float dc
 	transform->SetScale(scale);	
 	similarityParameters = transform->GetParameters();
 
+	logregistro << "Rotation: " << rx << ", " << ry << ", " << rz << std::endl;
+	logregistro << "Versor: "<< similarityParameters[0] << ", " << similarityParameters[1] << ", "<< similarityParameters[2] << std::endl;
+	logregistro << "Traslation: " << similarityParameters[3] << ", " << similarityParameters[4] << ", " << similarityParameters[5] << std::endl;
+	logregistro << "Scale " << similarityParameters[6] << std::endl;
 }
 
-void GenVirtGen::copyPropertiesInputImage(int dxx, int dyy, float im_sx, float im_sy){
-
+void GenVirtGen::copyPropertiesInputImage(int &dxx, int &dyy, float &im_sx, float &im_sy){
 	//Read image properties in case of user don't insert size, spacing origin or isocenter
 	MovingImageType::PointType imOrigin = image->GetOrigin();
 	MovingImageType::SpacingType imRes = image->GetSpacing();
@@ -212,6 +223,7 @@ void GenVirtGen::copyPropertiesInputImage(int dxx, int dyy, float im_sx, float i
 		}	
 	}
 
+
 }
 
 
@@ -231,5 +243,78 @@ void GenVirtGen::initInterpolator(float focalPointx, float focalPointy, float fo
 	//Set the focal point in interpolator
 	interpolator->SetFocalPoint(focalPoint);
 	interpolator->SetTransform(transform);
-	std::cout<< "Interpolator: " << interpolator<<std::endl;
+	logregistro << "Focal point image: "<< focalPoint[0] << ", " << focalPoint[1] << ", " << focalPoint[2] << std::endl;
+
+
+}
+
+void GenVirtGen::writeResultImage(char *output_name){
+
+	if (output_name) 
+	{
+		timer.Start("DRR post-processing");
+
+		// The output of the filter can then be passed to a writer to
+		// save the DRR image to a file.
+
+		typedef itk::RescaleIntensityImageFilter< 
+		MovingImageType, OutputImageType > RescaleFilterType;
+		RescaleFilterType::Pointer rescaler = RescaleFilterType::New();
+		rescaler->SetOutputMinimum(   0 );
+		rescaler->SetOutputMaximum( 255 );
+		rescaler->SetInput( filter->GetOutput() );
+		rescaler->Update();
+		
+		timer.Stop("DRR post-processing");
+		
+		std::string fname;
+	        typedef itk::ImageFileWriter< OutputImageType >  WriterType;
+		  WriterType::Pointer writer = WriterType::New();
+
+		itksys::SystemTools::MakeDirectory( (fname + "../outputData"+"/virtualImages/").c_str() );
+
+		fname = fname + "../outputData" + "/virtualImages/" + output_name;
+		if(Dimension == 2)
+		{
+			fname += ".png";
+		}
+		else
+		{
+			fname += ".mha";
+		}
+		writer->SetFileName( fname.c_str() );
+		writer->SetInput(rescaler->GetOutput());
+
+		try{
+			std::cout << "Writing Virtual Image" << fname.c_str() << std::endl;
+			writer->Update();
+		}catch( itk::ExceptionObject & err ) 
+		{ 
+			std::cerr << "ERROR: ExceptionObject caught !" << std::endl; 
+			std::cerr << err << std::endl; 
+		} 
+	}
+	timer.ExpandedReport(logregistro);	
+	logregistro.close();
+
+}
+
+
+
+
+itk::Image<short int,3>::Pointer GenVirtGen::returnResultImage(char *output_name){
+
+	if (output_name) 
+	{
+		typedef itk::RescaleIntensityImageFilter< MovingImageType, MovingImageType > RescaleFilterType;
+		//threshold the image with the correct intensity values
+		RescaleFilterType::Pointer rescaler1 = RescaleFilterType::New();
+		rescaler1->SetOutputMinimum(   0 );
+		rescaler1->SetOutputMaximum( 255 );
+		rescaler1->SetInput( filter->GetOutput());
+		rescaler1->Update(); //Imagen movible proyeccion con  0-255 y threshold 0 por el interpolador
+
+
+		return rescaler1->GetOutput();	
+	}	
 }

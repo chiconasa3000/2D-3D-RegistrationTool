@@ -3,6 +3,7 @@
 
 int main(int argc,char *argv[]){
 	char *imageToProject = NULL;
+	char *output_name = NULL;		//virtual image
 	char *logFileName = NULL;
 	char *type_projection = (char*)"OR";		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
 
@@ -36,7 +37,12 @@ int main(int argc,char *argv[]){
 	float focalPointz = 0.;			//focalPoint in z
 	
 	float threshold = 0.;			//virtual image threshold
+	
+	bool customized_2DCX = false;		//flag for central of 2d image
+	float o2Dx;				//virtual image origin in x
+	float o2Dy;				//virtual image origin in y
 
+	float scd = 1000.0;			//distance from source to isocenter
 
 	bool ok;
 	while(argc > 1){
@@ -164,20 +170,63 @@ int main(int argc,char *argv[]){
 			dyy = atoi(argv[1]);
 			argc--; argv++;
 		}
+		if((ok == false) && (strcmp(argv[1], "-2dcx")==0))
+		{
+			argc--; argv++;
+			ok = true;
+			o2Dx = atof(argv[1]);
+			argc--; argv++;
+			o2Dy = atof(argv[1]);
+			argc--; argv++;
+			customized_2DCX = true;		
+		}
+		if ((ok == false) && (strcmp(argv[1], "-scd") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			scd = atof(argv[1]);
+			argc--; argv++;
+		}
+		if ((ok == false) && (strcmp(argv[1], "-o") == 0))
+		{
+			argc--; argv++;
+			ok = true;
+			output_name = argv[1];
+			argc--; argv++;
+		}
+
 
 	}
 	
-	GenVirtGen *genImagVirtual = new GenVirtGen();
-	genImagVirtual->readMovingImage(imageToProject);
-		
-	//el reporte log debe ser al ultimo despues de haber iniciado todas las variables a imprimir
-	//setlogfile deberia estar dentro de printself por seguridad	
-	genImagVirtual->setLogFile(logFileName);
-	genImagVirtual->printSelf();
-	genImagVirtual->initResampleFilter();
-	genImagVirtual->initTransform(tx,ty,tz, dcx,dcy,dcz,rx,ry,rz,sg);
+	const unsigned int Dimension = 3;
+	//tipo de pixel by default para las imagenes
+	typedef short int InputPixelType;
+	//typedef itk::Image<short int, Dimensions> FixedImageType;
+	typedef itk::Image<InputPixelType, Dimension> MovingImageType;
+	MovingImageType::Pointer image;
+	MovingImageType::Pointer image2;
+	
+	GenVirtGen *genImagVirtual = new GenVirtGen(type_projection,logFileName);
+	genImagVirtual->readMovingImage(imageToProject);	
+	genImagVirtual->initTransform(tx,ty,tz,dcx,dcy,dcz,rx,ry,rz,sg);
 	genImagVirtual->initInterpolator(focalPointx,focalPointy,focalPointz,threshold);
+	genImagVirtual->initResampleFilter(dxx, dyy, im_sx,im_sy,customized_2DCX,o2Dx,o2Dy,scd);
+	
+	image = genImagVirtual->returnResultImage(output_name);
+	std::cout<<"ImageProjectada3D: "<<image<<std::endl; 
+	genImagVirtual->writeResultImage(output_name);
+	
+	genImagVirtual->readMovingImage("../inputData/ImagesDefsNews/Images/0.mha");
+	genImagVirtual->initResampleFilter(dxx, dyy, im_sx,im_sy,customized_2DCX,o2Dx,o2Dy,scd);
+	
+	image2 = genImagVirtual->returnResultImage("pelvisRef");
+	std::cout<<"ImageProjectada3D: "<<image2<<std::endl; 
+	genImagVirtual->writeResultImage("pelvisRef");
+	
+	
+	
 	return 1;
+
 }
 
 
