@@ -121,8 +121,8 @@ void GenVirtGen::initResampleFilter(int &dxx, int &dyy, float &im_sx, float &im_
 	}
 
 	//set identity in direction cosine
-	const OutputImageType::DirectionType direction = image->GetDirection();
-	const OutputImageType::DirectionType newDirection = direction * helperRot.getRotg();
+	const MovingImageType::DirectionType direction = image->GetDirection();
+	const MovingImageType::DirectionType newDirection = direction * helperRot.getRotg();
 	filter->SetOutputDirection(newDirection);
 	
 	//Set properties of the virtual image
@@ -306,15 +306,7 @@ itk::Image<short int,3>::Pointer GenVirtGen::returnResultImage(char *output_name
 
 	if (output_name) 
 	{
-		typedef itk::RescaleIntensityImageFilter< MovingImageType, MovingImageType > RescaleFilterType;
-		//threshold the image with the correct intensity values
-		RescaleFilterType::Pointer rescaler1 = RescaleFilterType::New();
-		rescaler1->SetOutputMinimum(   0 );
-		rescaler1->SetOutputMaximum( 255 );
-		rescaler1->SetInput( filter->GetOutput());
-		rescaler1->Update(); //Imagen movible proyeccion con  0-255 y threshold 0 por el interpolador
-
-
-		return rescaler1->GetOutput();	
+		
+		return filter->GetOutput();	
 	}	
 }

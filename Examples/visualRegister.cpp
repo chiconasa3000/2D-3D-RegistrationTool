@@ -5,7 +5,7 @@
 #include <sstream>
 #include "GenDRRs/genVirtGen.h"
 #include <itkSubtractImageFilter.h>
-
+#include <itkFlipImageFilter.h>
 //Visualizacion de Registro
 
 int main(int argc, char *argv[]){
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
 
 
 	char *output_name = NULL;		//virtual image
-	char *logFileName = NULL;
+	char *volFixedImage = NULL;
 	char *type_projection = (char*)"OR";		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
 
 	// Translation parameter of the isocenter in mm
@@ -99,11 +99,11 @@ int main(int argc, char *argv[]){
 			argc--; argv++;
 		}
 
-		if((ok==false) && strcmp(argv[1], "-logFileName")==0)
+		if((ok==false) && strcmp(argv[1], "-volFixedImage")==0)
 		{
 			argc--; argv++;
 			ok = true;
-			logFileName = argv[1];
+			volFixedImage = argv[1];
 			argc--; argv++;
 		}
 
@@ -247,26 +247,27 @@ int main(int argc, char *argv[]){
 	const unsigned int Dimension = 3;
 	//tipo de pixel by default para las imagenes
 	typedef short int InputPixelType;
-	typedef unsigned short OutputPixelType;
+	typedef unsigned char OutputPixelType;
 	typedef itk::Image<InputPixelType, Dimension> FixedImageType;
 	typedef itk::Image<InputPixelType, Dimension> MovingImageType;
-	typedef itk::Image<InputPixelType, 3> OutputImageType;
+	typedef itk::Image<OutputPixelType, 3> OutputImageType;
 	MovingImageType::Pointer imageVolTemp;
 	MovingImageType::Pointer imageVolRef;
 	
 	//Tipo para la substraccion
-	typedef itk::SubtractImageFilter<FixedImageType,FixedImageType, OutputImageType>  SubtracterType;
+	typedef itk::SubtractImageFilter<MovingImageType,MovingImageType, MovingImageType>  SubtracterType;
 	//Tipo para el rescalado de contraste
-	typedef itk::RescaleIntensityImageFilter< MovingImageType, MovingImageType > RescaleFilterType;
+	typedef itk::RescaleIntensityImageFilter< MovingImageType, OutputImageType > RescaleFilterType;
 	//Tipo para escritura de diferencia
 	typedef itk::ImageFileWriter<OutputImageType> WriterType;
 	
     	//el directorio donde estaran los resultados de las diferencias
     	itksys::SystemTools::MakeDirectory("../outputData/difimages");
+	itksys::SystemTools::MakeDirectory("../outputData/logimages");
 
 
-	GenVirtGen *genVolRef = new GenVirtGen(type_projection,"../GenDRRs/logVolRef.txt");
-	genVolRef->readMovingImage("../inputData/ImagesDefsNews/Images/0.mha");	
+	GenVirtGen *genVolRef = new GenVirtGen(type_projection,"../outputData/logImages/logVolRef.txt");
+	genVolRef->readMovingImage(volFixedImage);	
 	genVolRef->initTransform(tx,ty,tz,dcx,dcy,dcz,rx,ry,rz,sg);
 	genVolRef->initInterpolator(focalPointx,focalPointy,focalPointz,100);
 	genVolRef->initResampleFilter(dxx, dyy, im_sx,im_sy,customized_2DCX,o2Dx,o2Dy,scd);
@@ -282,7 +283,7 @@ int main(int argc, char *argv[]){
 		std::string currentLvl = std::to_string(i);
 
 		//Armando la ruta y el nombre del log
-		logfilename = "level" + std::to_string(i) + ".txt";
+		logfilename = "level" + currentLvl + ".txt";
 		std::string currentFileLog(dirResultados + logfilename);
 
 		//Limpiando la primera columna de cada archivo
@@ -320,8 +321,10 @@ int main(int argc, char *argv[]){
 			util->convertVersorToEuler(vx,vy,vz,rx,ry,rz);
 	
 			cmdGenFixedImages = "";
-	
-			GenVirtGen *genImagVirtual = new GenVirtGen(type_projection,logFileName);
+			
+			std::string logdifimage = "../outputData/logimages/log" + currentLvl + strcont + ".txt";
+
+			GenVirtGen *genImagVirtual = new GenVirtGen(type_projection,(char*)logdifimage.c_str());
 			genImagVirtual->readMovingImage(movingImage);	
 			genImagVirtual->initTransform(tx,ty,tz,dcx,dcy,dcz,rx,ry,rz,sg);
 			genImagVirtual->initInterpolator(focalPointx,focalPointy,focalPointz,threshold);
@@ -339,10 +342,30 @@ int main(int argc, char *argv[]){
 			subtracter->SetInput1( imageVolTemp );
 			subtracter->SetInput2( imageVolRef); 
 			
-			std::string outDifFile = "../outputData/difimages/diference_" + currentLvl + strcont + ".mha";
+			//Rescalando la imagen a un umbral de 0 y 255			
+
+			typedef itk::RescaleIntensityImageFilter< MovingImageType, OutputImageType > RescaleFilterType;
+			//threshold the image with the correct intensity values
+			RescaleFilterType::Pointer rescaler1 = RescaleFilterType::New();
+			//rescaler1->SetOutputMinimum(   0 );
+			//rescaler1->SetOutputMaximum( 255 );
+			rescaler1->SetInput( subtracter->GetOutput());
+			rescaler1->Update(); //Imagen movible proyeccion con  0-255 y threshold 0 por el interpolador
+
+			//Girando la imagen en eje horizontal
+			using FlipImageFilterType = itk::FlipImageFilter<OutputImageType>;
+
+			FlipImageFilterType::Pointer flipFilter = FlipImageFilterType::New();
+			flipFilter->SetInput(rescaler1->GetOutput());
+			FlipImageFilterType::FlipAxesArrayType flipAxes;
+			flipAxes[0] = true;
+			flipAxes[1] = true;
+			flipFilter->SetFlipAxes(flipAxes);
+
+			std::string outDifFile = "../outputData/difimages/diference_" + currentLvl + strcont + ".png";
 			WriterType::Pointer subtractionWriter = WriterType::New();
 			subtractionWriter->SetFileName((char*) outDifFile.c_str() );
-			subtractionWriter->SetInput( subtracter->GetOutput() );
+			subtractionWriter->SetInput( flipFilter->GetOutput() );
 			std::cout << "Writing subtraction file " << subtractionWriter->GetFileName() << std::endl;
 			try
 			{

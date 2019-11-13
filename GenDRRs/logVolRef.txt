@@ -5,7 +5,7 @@ Rotation: 0, 0, 0
 Versor: 0, 0, 0
 Traslation: 0, 0, 0
 Scale 1
-Focal point image: 1000, 0, 0
-Output image size: 181, 245, 1
+Focal point image: 0, -1000, 0
+Output image size: 333, 245, 1
 Output image spacing: 1, 1, 1
-Output image origin: 200, 90, -122
+Output image origin: 166, -124, -122
