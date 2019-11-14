@@ -64,6 +64,7 @@ GenDRRs/gestorMatrixRot.h
 utils.h
 Examples/scriptBuilder.h
 GenDRRs/genVirtGen.h
+itkFRPROptimizer_opt.h
 )
 
 #Add project's executables
@@ -101,7 +102,7 @@ target_link_libraries(CreateImageSetSimilarity ${Libraries})
 
 
 #Registro de Imagenes
-add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx utils.cpp ${HeaderFiles})
+add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx itkFRPROptimizer_opt.cxx utils.cpp ${HeaderFiles})
 target_link_libraries(MultiImageRegistration ${Libraries})
 
 #Visualizacion del Registro

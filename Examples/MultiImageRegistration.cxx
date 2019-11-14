@@ -6,7 +6,7 @@
 //#include <itkEuler3DTransform.h>
 #include <itkSimilarity3DTransform.h>
 
-#include <itkFRPROptimizer.h>
+#include "itkFRPROptimizer_opt.h"
 //#include "itkVersorRigid3DTransformOptimizer.h"
 //#include "itkPowellOptimizer.h"
 
@@ -64,7 +64,7 @@ protected:
 public:
     typedef itk::MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage> RegistrationType;
     typedef RegistrationType*   RegistrationPointer;
-    typedef itk::FRPROptimizer  OptimizerType;
+    typedef itk::FRPROptimizer_opt  OptimizerType;
 
     void Execute(itk::Object *caller, const itk::EventObject & event)
     {
@@ -114,7 +114,7 @@ protected:
 
 public:
     //typedef itk::VersorRigid3DTransformOptimizer  OptimizerType;
-    typedef itk::FRPROptimizer  OptimizerType;
+    typedef itk::FRPROptimizer_opt  OptimizerType;
 
     typedef const OptimizerType*      OptimizerPointer;
 
@@ -485,7 +485,7 @@ int main(int argc, char* argv[] )
     // Create the optimizer
     //----------------------------------------------------------------------------
     //typedef itk::VersorRigid3DTransformOptimizer OptimizerType;
-    typedef itk::FRPROptimizer OptimizerType;
+    typedef itk::FRPROptimizer_opt OptimizerType;
 
 
     OptimizerType::Pointer optimizer = OptimizerType::New();

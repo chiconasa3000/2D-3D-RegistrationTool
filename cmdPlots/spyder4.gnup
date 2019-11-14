@@ -30,13 +30,13 @@ set arrow nohead from 0,0 to first 1*cos(a5) , 1*sin(a5)
 set arrow nohead from 0,0 to first 1*cos(a6) , 1*sin(a6)
 set arrow nohead from 0,0 to first 1*cos(a7) , 1*sin(a7)
 
-a1_max = 8.153000
-a2_max = 8.153000
-a3_max = 8.153000
-a4_max = 8.153000
-a5_max = 8.153000
-a6_max = 8.153000
-a7_max = 8.153000
+a1_max = 33.860000
+a2_max = 33.860000
+a3_max = 33.860000
+a4_max = 33.860000
+a5_max = 33.860000
+a6_max = 33.860000
+a7_max = 33.860000
 a1_min = 0
 a2_min = 0
 a3_min = 0
