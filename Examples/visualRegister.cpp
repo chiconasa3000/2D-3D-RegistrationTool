@@ -18,7 +18,6 @@ int main(int argc, char *argv[]){
 
 
 	char *output_name = NULL;		//virtual image
-	char *volFixedImage = NULL;
 	char *type_projection = (char*)"OR";		//tipo de proyeccion [AP(anteroposterior) , ML(mediolateral)]
 
 	// Translation parameter of the isocenter in mm
@@ -96,14 +95,6 @@ int main(int argc, char *argv[]){
 			argc--; argv++;
 			ok = true;
 			type_projection = argv[1];
-			argc--; argv++;
-		}
-
-		if((ok==false) && strcmp(argv[1], "-volFixedImage")==0)
-		{
-			argc--; argv++;
-			ok = true;
-			volFixedImage = argv[1];
 			argc--; argv++;
 		}
 
@@ -262,12 +253,14 @@ int main(int argc, char *argv[]){
 	typedef itk::ImageFileWriter<OutputImageType> WriterType;
 	
     	//el directorio donde estaran los resultados de las diferencias
-    	itksys::SystemTools::MakeDirectory("../outputData/difimages");
-	itksys::SystemTools::MakeDirectory("../outputData/logimages");
+    	itksys::SystemTools::MakeDirectory(dirResultados + "difimages"+type_projection);
+	itksys::SystemTools::MakeDirectory(dirResultados + "logimages"+type_projection);
 
 
-	GenVirtGen *genVolRef = new GenVirtGen(type_projection,"../outputData/logImages/logVolRef.txt");
-	genVolRef->readMovingImage(volFixedImage);	
+	std::string dirResFixedMoving = dirResultados +  "logImages"+type_projection+"/logVolRef.txt";
+	GenVirtGen *genVolRef = new GenVirtGen(type_projection,(char*)dirResFixedMoving.c_str());
+	std::string pathFixedImage = dirResRegStr+"ImagesDefs/Images/imagenDef_"+strIndReg+".mha";
+	genVolRef->readMovingImage((char*)pathFixedImage.c_str());	
 	genVolRef->initTransform(tx,ty,tz,dcx,dcy,dcz,rx,ry,rz,sg);
 	genVolRef->initInterpolator(focalPointx,focalPointy,focalPointz,100);
 	genVolRef->initResampleFilter(dxx, dyy, im_sx,im_sy,customized_2DCX,o2Dx,o2Dy,scd);
@@ -322,7 +315,7 @@ int main(int argc, char *argv[]){
 	
 			cmdGenFixedImages = "";
 			
-			std::string logdifimage = "../outputData/logimages/log" + currentLvl + strcont + ".txt";
+			std::string logdifimage = dirResultados + "logimages"+type_projection+"/log" + currentLvl + strcont + ".txt";
 
 			GenVirtGen *genImagVirtual = new GenVirtGen(type_projection,(char*)logdifimage.c_str());
 			genImagVirtual->readMovingImage(movingImage);	
@@ -362,7 +355,7 @@ int main(int argc, char *argv[]){
 			flipAxes[1] = true;
 			flipFilter->SetFlipAxes(flipAxes);
 
-			std::string outDifFile = "../outputData/difimages/diference_" + currentLvl + strcont + ".png";
+			std::string outDifFile = dirResultados + "difimages"+type_projection+"/diference_" + currentLvl + strcont + type_projection+ ".png";
 			WriterType::Pointer subtractionWriter = WriterType::New();
 			subtractionWriter->SetFileName((char*) outDifFile.c_str() );
 			subtractionWriter->SetInput( flipFilter->GetOutput() );
@@ -378,9 +371,17 @@ int main(int argc, char *argv[]){
 
 			cont++;
 
-
 		}
+
 	}
+
+	//Una vez completa las imagenes de diferencia formamos un gif a partir de ellas
+	std::string newOutput="";
+	newOutput = "convert "+dirResultados+"difimages"+type_projection+"/diference_00"+type_projection+".png -fill white -pointsize 20 -annotate +100+230 'Registro Nro 1' "+dirResultados+"difimages"+type_projection+"/dif_0.png";
+	std::system(newOutput.c_str());
+	
+	newOutput = "convert -delay 30 -loop 0 $(ls -1 "+dirResultados+"difimages"+type_projection+"/*.png | sort -V) "+dirResultados+"registrationdif"+type_projection+".gif";
+	std::system(newOutput.c_str());
 
 }
 

@@ -37,7 +37,7 @@ private:
 
 	//tipo de pixel by default para las imagenes
 	typedef short int InputPixelType;
-	typedef unsigned char OutputPixelType;
+	typedef unsigned short OutputPixelType;
 
 	//typedef itk::Image<short int, Dimensions> FixedImageType;
 	typedef itk::Image<InputPixelType, Dimension> MovingImageType;
