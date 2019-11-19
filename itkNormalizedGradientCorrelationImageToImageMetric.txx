@@ -225,7 +225,21 @@ namespace itk
 			{
 				val += cc[dim] / sqrt( fac[dim] * mac[dim] ) / m_MaxDimension;
 			}
+
+			typedef itk::Image<RealType,3> WriteImageType;
+			typedef itk::ImageFileWriter<WriteImageType> WriterTypeSobel;
+			typename WriterTypeSobel::Pointer wpoint;
+
+			//Guardamos cada imagen de la salida del operador de vecindad
+			//m_ResampleImageFilter = ResampleImageFilterType::New();
+			wpoint = WriterTypeSobel::New();
+			wpoint->SetFileName("exampleSobel.png");
+			wpoint->SetInput(this->m_FixedSobelFilters[1]->GetOutput());
+			std::cout<<"EscribiendoSobel"<<std::endl;
+			wpoint->Update();
+
 			return val;
+
 		}
 
 
