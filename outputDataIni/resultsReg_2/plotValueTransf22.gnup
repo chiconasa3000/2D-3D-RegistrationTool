@@ -1,0 +1,17 @@
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "BoxPlotTransformation" butt dashlength 1.0
+set output "../outputData/resultsReg_2/ValueTransf22.svg"
+green = "#80bfaa"; skyblue = "#55a0d5"
+set yrange [*:*]
+set style data histogram
+set style histogram cluster gap 1
+set style fill solid
+set boxwidth 0.9
+set xtics format ""
+set grid ytics
+set ylabel "Valores en Unidades (u)"
+set xlabel "Parametro de Escala"
+set title "Diferencia entre los valores de los Parametros de Transformacion del Volumen de Referencia y del Volumen Registrado "
+plot "../outputData/resultsReg_2/valueTransf22.txt"\
+using 2:xtic(1) with histogram title "VolumenReferencia" linecolor rgb green, '' using 3 with histogram title "VolumenRegistrado" linecolor rgb skyblue, \
+'' u 0:2:2 with labels font "Helvetica, 10" offset char -3,0.5 title "", \
+'' u 0:3:3 with labels font "Helvetica, 10" offset char 3,0.5 title "" \

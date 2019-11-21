@@ -1,0 +1,2 @@
+OriginVol: ../inputData/pelvisVol.mha
+TargetVol: ../inputData/pelvisVol.mha

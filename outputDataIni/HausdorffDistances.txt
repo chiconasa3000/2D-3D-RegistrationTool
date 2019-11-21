@@ -1,0 +1,4 @@
+HaussDist 0 : 0.028
+HaussDist 1 : 0.022
+HaussDist 2 : 0.024
+AverageTestHausdorffDistance: 0.0246667

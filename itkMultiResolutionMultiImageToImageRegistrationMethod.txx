@@ -59,7 +59,7 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
         //----------------------------------------------------------------------
         //save the moving image projection with the metric has already applied
         //---------------------------------------------------------------------
-/*
+
         //the moving image is updating with the last transformation
         typename ResamplerType::Pointer resampler = ResamplerType::New();
         resampler->SetInput( m_MovingImagePyramid->GetOutput( m_CurrentLevel ) );
@@ -127,7 +127,7 @@ MultiResolutionMultiImageToImageRegistrationMethod<TFixedImage,TMovingImage>
         catch( itk::ExceptionObject & e )
         {
             std::cerr << e.GetDescription() << std::endl;
-        }*/
+        }
     }
 
     // Create the current vector of fixed images' regions

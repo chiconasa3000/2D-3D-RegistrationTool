@@ -272,6 +272,13 @@ namespace itk {
 			}
 			m_Transform->SetParameters( parameters );
 		}
+	//template <class TFixedImage, class TMovingImage>
+	//	void
+	//	MultiImageToImageMetric<TFixedImage,TMovingImage>
+	//	::writeSobelRes(void){
+	//		return;
+	//		//m_MultiMetric[0]->writeSobelRes();	
+	//	}
 
 	/**
 	 * Initialize

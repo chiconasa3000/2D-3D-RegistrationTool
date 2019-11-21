@@ -1,0 +1,16 @@
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "traceevolution" butt dashlength 1.0
+set xlabel "Ty (milimetros)"
+set ylabel "Tz (milimetros)" 
+set title "Param Transf Evolution Last Level"
+set parametric
+set size square
+set output "../outputData/resultsReg_0/TraceTransf5.svg"
+plot "../outputData/resultsReg_0/level3.txt" using 7:8 notitle with lines lt 1, "../outputData/resultsReg_0/level3.txt" using 7:8 notitle with points lt 0 pt 12 ps 1
+set terminal svg size 600,400 dynamic  enhanced font 'arial,10' mousing name "traceevolution" butt dashlength 1.0
+set xlabel "Ty (milimetros)"
+set ylabel "Tz (milimetros)" 
+set title "Param Transf Evolution Last Level"
+set parametric
+set size square
+set output "../outputData/resultsReg_0/TraceTransf5.svg"
+plot "../outputData/resultsReg_0/level3.txt" using 7:8 notitle with lines lt 1, "../outputData/resultsReg_0/level3.txt" using 7:8 notitle with points lt 0 pt 12 ps 1

@@ -19,7 +19,9 @@
 #define itkNewSingleMetricMacro(type) \
 	virtual typename Superclass::MetricPointer NewSingleMetric (void) \
 { \
-	return static_cast<type*> (type::New().GetPointer()); \
+	typename Superclass::MetricPointer gPointer;\
+        gPointer = static_cast<type*> (type::New().GetPointer()); \
+	return gPointer; \
 }
 
 
@@ -209,7 +211,7 @@ namespace itk
 
 			/**  Get the value for single valued optimizers. */
 			virtual MeasureType GetValue( const TransformParametersType & parameters ) const;
-
+			//void writeSobelRes(void);
 
 		protected:
 			MultiImageToImageMetric();

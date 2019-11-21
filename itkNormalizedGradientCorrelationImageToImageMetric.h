@@ -46,7 +46,11 @@ namespace itk
 			 public ImageToImageMetric< TFixedImage, TMovingImage>
 	{
 		public:
-
+			//Escribir el resultado de sobel de la especifica imagen
+			void writeSobelRes(std::string type);
+			//Escribir imagen movible cuando transformada es actualizada
+			void writeMovingImage(std::string namefile);
+			
 			/** Standard class typedefs. */
 			typedef NormalizedGradientCorrelationImageToImageMetric Self;
 			typedef ImageToImageMetric<TFixedImage, TMovingImage >  Superclass;
@@ -113,7 +117,6 @@ namespace itk
 
 			/**  Get the value for single valued optimizers. */
 			MeasureType GetValue( const TransformParametersType & parameters ) const;
-
 			/**  Get value and derivatives for multiple valued optimizers. */
 			void GetValueAndDerivative( const TransformParametersType & parameters,
 					MeasureType& Value, DerivativeType& derivative ) const;
@@ -121,6 +124,7 @@ namespace itk
 			/** Initialize the Metric by making sure that all the components
 			 *  are present and plugged together correctly     */
 			virtual void Initialize(void);
+			
 
 			/** Set/Get the value of Delta used for computing derivatives by finite
 			 * differences in the GetDerivative() method */

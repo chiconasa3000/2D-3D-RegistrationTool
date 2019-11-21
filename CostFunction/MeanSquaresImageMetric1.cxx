@@ -39,6 +39,9 @@ int main( int argc, char * argv[] )
 	float stepx = 0;
 	float stepy = 0;	
 	
+	//limite probable de valor nulo de metrica
+	float limnul = 0.1;
+		
 	//Indice de imagen a evaluar
 	int indImagenEval = 0;
 
@@ -173,7 +176,15 @@ int main( int argc, char * argv[] )
 			combineImages = true;
 		}
 	
-		
+		if((ok == false) && (strcmp(argv[1], "-limnul") == 0)){
+			argc--; argv++;
+			ok = true;
+			limnul = atof(argv[1]);
+			argc--; argv++;
+
+		}
+
+
 
 
 	}	
@@ -349,7 +360,10 @@ int main( int argc, char * argv[] )
 	
 
 	MetricType::Pointer metric = m_MultiMetric[indImagenEval];
-
+	//if(indImagenEval == 0)
+	//	metric->writeSobelRes("AP");
+	//else
+	//	metric->writeSobelRes("ML");
 	if(strcmp(typePlot, "2D") == 0){
 		//Alterar por un solo parametro 
 		for( float dx = rangex_min; dx >= rangex_max; dx+=stepx )
@@ -370,12 +384,24 @@ int main( int argc, char * argv[] )
 
 				}
 			}else{
-
-				similarityParameters[indParam1] = (dx >= -1 && dx <= 0.0) ? -1 : dx;
-				similarityParameters[indParam1] = (dx <=  1 && dx >= 0.0) ? +1 : dx;
+				//En parametros de transformacion y escala
+				if(dx >= -limnul && dx <= 0.0){
+					similarityParameters[indParam1] = -limnul; 
+				}
+				else if(dx <= limnul && dx >= 0.0){
+					similarityParameters[indParam1] = limnul;
+				}else{
+					similarityParameters[indParam1] = dx;
+				}
+				//similarityParameters[indParam1] = (dx >= -1 && dx <= 0.0) ? -1 : dx;
+				//similarityParameters[indParam1] = (dx <=  1 && dx >= 0.0) ? +1 : dx;
 			}
 			transform->SetParameters(similarityParameters);
 			
+			//Cambiado la transformacion llamamos el guardado de la imagen movible
+			//std::string namefileMov = "moving"+std::to_string(dx)+".mha";
+			//metric->writeMovingImage(namefileMov);
+				
 			//Siempre resetera el valor de la metrica a cero
 			valueMetric = 0.0;
 			
