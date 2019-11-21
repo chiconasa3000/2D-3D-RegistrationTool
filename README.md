@@ -66,23 +66,23 @@ Before and After Registration Process
 
 <table align="center">
 <tr>
-    <td><img src="Documentation/Images/registrationAP0.gif"></td>
-    <td><img src="Documentation/Images/registrationML0.gif"></td>
-    <td><img src="Documentation/Images/registrationAP1.gif"></td>
-    <td><img src="Documentation/Images/registrationML1.gif"></td>
+    <td><img src="Documentation/Images/registrationdifAP0.gif"></td>
+    <td><img src="Documentation/Images/registrationdifML0.gif"></td>
+    <td><img src="Documentation/Images/registrationdifAP1.gif"></td>
+    <td><img src="Documentation/Images/registrationdifML1.gif"></td>
 </tr>
 <tr>
-    <td><img src="Documentation/Images/registrationAP2.gif"></td>
-    <td><img src="Documentation/Images/registrationML2.gif"></td>
-    <td><img src="Documentation/Images/registrationAP3.gif"></td>
-    <td><img src="Documentation/Images/registrationML3.gif"></td>
+    <td><img src="Documentation/Images/registrationdifAP2.gif"></td>
+    <td><img src="Documentation/Images/registrationdifML2.gif"></td>
+    <td><img src="Documentation/Images/registrationdifAP3.gif"></td>
+    <td><img src="Documentation/Images/registrationdifML3.gif"></td>
 
 </tr>
 <tr>
-    <td><img src="Documentation/Images/registrationAP4.gif"></td>
-    <td><img src="Documentation/Images/registrationML4.gif"></td>
-    <td><img src="Documentation/Images/registrationAP5.gif"></td>
-    <td><img src="Documentation/Images/registrationML5.gif"></td>
+    <td><img src="Documentation/Images/registrationdifAP4.gif"></td>
+    <td><img src="Documentation/Images/registrationdifML4.gif"></td>
+    <td><img src="Documentation/Images/registrationdifAP5.gif"></td>
+    <td><img src="Documentation/Images/registrationdifML5.gif"></td>
 </tr>
 </table>
 
