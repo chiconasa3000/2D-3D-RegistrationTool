@@ -19,3 +19,6 @@ GenDRRs/*.DS_Store
 inputData/pelvisSegmIntensityRAI.mha
 inputData/brokenPelvisCenteredScale.mha
 inputData/ImagesDefs
+outputDataIni
+inputData/ImagesDefsNews
+
