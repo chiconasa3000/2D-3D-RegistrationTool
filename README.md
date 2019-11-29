@@ -2,13 +2,13 @@
 Tool to understand some topics on medical image registration
 
 
-#Previous Work
+# Previous Work
 
 The whole process is following the scheme of work of Bertelsen A., Borro D. An ITK-Based Framework for 2D-3D Registration with Multiple Fixed Images http://insight-journal.org/browse/publication/800. it was tested in the thorax bone
 
 It was oriented firstly to assist in the radiotherapy by I. M. J. van der Bom https://www.researchgate.net/publication/278408614_Evaluation_of_optimization_methods_for_intensity-based_2D-3D_registration_in_x-ray_guided_interventions, it consists to get the correct form of tumors when we displace the tomograph inserting into the tumor with slices, these slices should be correct and it should have a correct form when the tomograph inside the radiation on the illness part, in this case, it was applied on the brain.
 
-#Summary
+# Summary
 
 Currently in medical analysis needs accuracy data, physicians require computer tomographies (CT) or magnetic resonances (MRI) in order to set measures or make a diagnostic on 3D models of the anatomical structure but these images have a high cost and not all medical center has these equipment.
 
@@ -16,11 +16,11 @@ Currently in medical analysis needs accuracy data, physicians require computer t
 There exist other kind of images more accesible, x-ray images are used for quickly diagnostic but x-ray images don't have enough information, for this reason some works proposed use x-ray images and volumetric template in order to generate a specific 3D model like a CT or MRI.
 
 
-In this work It used 2 orthogonal x-ray images to align a volumetric template for pelvic bone, it transforms 3D information to 2D information with Virtual X-ray images and uses registration for comparing on x-ray images and virtual x-ray images. The metric is based on pixel intensity information in order to change initial parameters of transformation for volumetric template alignment these changes are improved using an iterative method until reach the best alignment of the volumetric template.
+In this work, it used 2 orthogonal x-ray images to align a volumetric template for pelvic bone, it transforms 3D information to 2D information with virtual X-ray images and it uses registration for comparing on x-ray images and virtual x-ray images. The metric is based on pixel intensity information in order to change initial parameters of transformation for volumetric template alignment these changes are improved using an iterative method until reach the best alignment of the volumetric template.
 
 I know that it is not a complete work due to the following points: 
 
-* It work with simulated x-ray images from CT and not with real x-ray images because it is not common to get lateral views on hip bone there exist more anterposterior views. But It has the same properties as real x-ray (dimension, resolution, medical distances, orientacion and intensity information on medical images). 
+* It work with simulated x-ray images from CT and not with real x-ray images because it is not common to get lateral views on hip bone there exist more anteroposterior views. But It has the same properties as real x-ray (dimension, resolution, medical distances, orientation and intensity information on medical images). 
 
 
 * It needs a non rigid registration in order to achieve a local deformation on volumetric template and get a precisely and specific 3d model so it is only an alignment which is neccesarily in order to apply the non rigid registration.
@@ -39,7 +39,7 @@ The design of working is the next:
     <img src="Documentation/Images/PipelineWork.png" height="250px">
 </p>
 
-So It generate virtual x-ray images form reference volume and volumetric template. 2 views are required (bilateral or orthogonal views)
+So It generate virtual x-ray images from reference volume and volumetric template. 2 views are required (bilateral or orthogonal views)
 
 <p align="center">
     <img src="Documentation/Images/approyvol.png" height="250px">
@@ -74,6 +74,39 @@ This is a superposition between Reference Volume (purple color) and Volumetric T
 
 
 
+# Requirements
+
+
+
+* [itk-snap](http://www.itksnap.org/pmwiki/pmwiki.php?n=Downloads.SNAP3) or [3DSlicer](https://download.slicer.org/) to visualize results.
+
+* [Gnuplot](http://www.gnuplot.info/download.html) in order to visualize statistics
+
+* [ITK 5.0.1](https://itk.org/ITK/resources/software.html) the library for registration process.
+
+* [Cmake 3.16](https://cmake.org/download/) in order to build ITK and GnuPlot
+
+* [Git](https://git-scm.com/downloads) in order to clone the repository
+
+### Steps to Install
+
+* First, you need install Cmake on Windows  or Ubuntu. you need a gui for both in case of Windows it install by default, in case of Ubuntu use ccmake `sudo apt-get install ccmake` it helps you to choose what you want to build.
+
+* Install Git using `sudo apt-get install git ` on Ubuntu in Windows download and install
+
+* Install ITK 5.0.1 using this [guide](https://itk.org/ITKSoftwareGuide/html/Book1/ITKSoftwareGuide-Book1ch2.html) or use a short install on ubuntu with this [guide](https://itk.org/Wiki/ITK/Getting_Started/Build/Linux)
+
+    - **There exist a particular property when you build ITK, you need to activate in debug mode**
+    <p align="center">
+    <img src="Documentation/Images/buildindebugmode.png" height="250px">
+    </p>
+
+* Install Gnuplot build with this [guide](https://sourceforge.net/p/gnuplot/gnuplot-main/ci/master/tree/INSTALL)
+
+* Install itk-snap on Ubuntu using `sudo apt-get install -y itksnap`. If you install on Windows, there are binaries in order to execute directly.
+
+
+
 # Applications
 
 The next are some applications in order to do a registration process. Every command has a list of attributes which are in the implementation file. If you play with other attributes look at the implementation file.
@@ -89,9 +122,9 @@ The next are some applications in order to do a registration process. Every comm
 ```
 # Meaning of attributes: 
 * -numImag:  number of test or generate a number random of 3D model relocate
-* -originVol:  is the volumetric template which will be transformed
-* -targetVol: is the Reference Volume which is recolated in random positions.
-* -randMode: activate seed in order to generate different random numbers.
+* -originVol:  it is the volumetric template which will be transformed
+* -targetVol: it is the Reference Volume which is recolated in random positions.
+* -randMode: it activatea seed in order to generate different random numbers.
 * -threshold: interval of intensity on x-ray images.
 * -compareVols: flag to use Hausdorff Distance to compare reference and template
 * -writeStatistics: flag to show statistics in metric, difference of transformation parameters, correlation between metric and transformation value in every test and statistics for whole set of test.
@@ -104,19 +137,20 @@ The next are some applications in order to do a registration process. Every comm
 > It generates different reference volumes with random position saving the transformation which will be used in order to recolate the volume.
 
 ```
-./CreateImageSetSimilarity  -v -folderName ../outputData/ImagesDefs -numImages 1 -rx 20.0 -ry 0.0 -rz 0.0 -t 0.0 0.0 0.0 -sg 1.0 -inputVol ../inputData/pelvisVol.mha -logFileName logRelocatedVolume.txt
+./CreateImageSetSimilarity  -v -folderName ../outputData/ImagesDefs -numImages 1 -rnd -rnd_sem -rx 0.0 -ry 0.0 -rz 0.0 -t 0.0 0.0 0.0 -sg 1.0 -inputVol ../inputData/pelvisVol.mha -logFileName logRelocatedVolume.txt
 ```
 
 ```
 # Meaning of attributes: 
-* -v activate verbose mode in order to save a general information according to the process.
-* -folderName is the directory where put the output volumes which are relocated.
-* -numImages is how many new volumes will be generated with different position according to he input volume.
-* -rx, -ry, -rz: they are rotation parameters
-* -t It is the traslation parameter.
-* -sg It is the scale parameter.
-* -inputVol is the base volume which generates the new recolated volumes. (references volumes)
-* -logFileName is the file where put all the information of the create recolated volumes
+* -v it activates verbose mode in order to save a general information according to the process.
+* -folderName it is the directory where put the output volumes which are relocated.
+* -numImages it is how many new volumes will be generated with different position according to he input volume.
+* -rnd y -rnd_sem they activate a random position on 3d model
+* -rx, -ry, -rz: they are rotation parameters if -rnd is not activated
+* -t It is the traslation parameter. -rnd is not activated
+* -sg It is the scale parameter. -rnd is not activated
+* -inputVol It is the base volume which generates the new recolated volumes. (references volumes)
+* -logFileName It is the file where put all the information of the create recolated volumes
 ```
 
 
@@ -187,13 +221,13 @@ The next are some applications in order to do a registration process. Every comm
 * -typePlot It is the type of plot, It could be 2D for only one fixed image
 * or use both fixed images to produce 3D plot of cost function vs parameters.
 * -indParam It is what parameter has chosen for every fixed image. The order of parameters are (rx,ry,rz,tx,ty,tz,sg).
-* -rangex It is the changing interval of transformation paramete. It is applied for one fixed image. If you want 3D plot use additionally -rangey.
-* -step is how many change the interval in every range
+* -rangex It is the changing interval of transformation parameter. It is applied for one fixed image. If you want 3D plot use additionally -rangey.
+* -step It is how many change the interval in every range
 ```
 
 ## Visual Register
 
-> It build some animation in order to visualize the process registration
+> It build some animation in order to visualize the registration process
 
 ```
 ./VisualRegister -dirResultsReg ~/Desktop/BienHechoChristian/outputDataImag0/ -movingImage ../inputData/pelvisVol.mha -indRegistro 0 -numLevels 4 -p AP -dc 90 0 0 -foc 0 -1000 0 -threshold 100 -scd -124 -o pelvisDif
@@ -246,6 +280,7 @@ Soon GPU implementation
         <img src = 'Documentation/Images/gpudemo.gif' width = '500px' height = '288px'>
      </a>
 </p>
+
 
 
 
