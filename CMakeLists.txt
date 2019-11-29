@@ -12,6 +12,15 @@ project(CPUitkMultiImageRegistration)
 
 set_source_files_properties(*.txx PROPERTIES LANGUAGE CXX)
 
+#Librerias para CUDA
+#find_package(CUDA QUIET REQUIRED)
+
+#set(
+#	CUDA_NVCC_FLAGS
+#	${CUDA_NVCC_FLAGS};
+#	-m64 -gencode arch=compute_30,code=compute_30
+#)
+
 #Archivos ITK
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
@@ -22,12 +31,19 @@ include(${ITK_USE_FILE})
 #  LOADPACKAGE(${Package})
 ##ENDFOREACH(Package)
 
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}  ${CUDA_INCLUDE_DIRS} /usr/local/cuda-9.1/samples/common/inc)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+#link_directories(${CUDA_LIB_DIR} /usr/local/cuda-9.1/lib64)
 
 #Set any libraries that your project depends on.
 #examples: ITKCommon, VTKRendering, etc
 #set(Libraries ITKAlgorithms ITKBasicFilters ITKCommon ITKIO)
 set(Libraries ${ITK_LIBRARIES})
+
+
+#set(Librariesboth ${ITK_LIBRARIES} ${CUDA_LIB_DIR})
+
 
 file(GLOB TXX_FILES *.txx)
 
@@ -102,8 +118,13 @@ target_link_libraries(CreateImageSetSimilarity ${Libraries})
 
 
 #Registro de Imagenes
-add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx itkFRPROptimizer_opt.cxx utils.cpp ${HeaderFiles})
+#add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx itkFRPROptimizer_opt.cxx utils.cpp ${HeaderFiles} ${CUDA_INCLUDE_DIRS} )
+#target_link_libraries(MultiImageRegistration ${Libraries} ${CUDA_LIB_DIR} ${CUDA_LIBS})
+
+add_executable(MultiImageRegistration Examples/MultiImageRegistration.cxx itkFRPROptimizer_opt.cxx utils.cpp ${HeaderFiles} )
 target_link_libraries(MultiImageRegistration ${Libraries})
+
+
 
 #Visualizacion del Registro
 add_executable(VisualRegister Examples/visualRegister.cpp GenDRRs/gestorMatrixRot.cxx GenDRRs/genVirtGen.cpp utils.cpp)
@@ -113,12 +134,18 @@ target_link_libraries(VisualRegister ${Libraries})
 add_executable(GenVirtGen GenDRRs/appGenVirtGen.cpp GenDRRs/gestorMatrixRot.cxx GenDRRs/genVirtGen.cpp utils.cpp)
 target_link_libraries(GenVirtGen ${Libraries})
 
-
-
 #FuncionDeCosto
 add_executable(DoCostFunction CostFunction/MeanSquaresImageMetric1.cxx utils.cpp)
 target_link_libraries(DoCostFunction ${Libraries})
 
+#Pruebas de FRPROptimizer
+#add_executable(TestFRPROptimizer itkFRPROptimizerTest.cxx itkFRPROptimizer_opt.cxx ${HeaderFiles})
+#target_link_libraries(TestFRPROptimizer ${CUDA_LIBS} ${Libraries} )
+
+
+#${CUDA_DIR}
+#${CUDA_LIB_DIR}
+#${CUDA_INCLUDE_DIRS}
 
 #install(FILES ${HeaderFiles} DESTINATION include COMPONENT Development)
 

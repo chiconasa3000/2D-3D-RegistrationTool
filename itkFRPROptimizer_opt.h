@@ -46,6 +46,18 @@ namespace itk
  *
  * \ingroup ITKOptimizers
  */
+//// CUDA Runtime
+//#include <cuda_runtime.h>
+//
+//// Using updated (v2) interfaces for CUBLAS and CUSPARSE
+//#include <cusparse.h>
+//#include <cublas_v2.h>
+//
+//// Utilities and system includes
+//#include <helper_functions.h>  // helper for shared functions common to CUDA Samples
+//#include <helper_cuda.h>       // helper for CUDA error checking
+//
+
 
 class ITKOptimizers_EXPORT FRPROptimizer_opt:
   public PowellOptimizer

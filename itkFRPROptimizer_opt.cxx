@@ -18,6 +18,7 @@
 #ifndef _itkFRPROptimizer_opt_cxx
 #define _itkFRPROptimizer_opt_cxx
 
+
 #include "itkFRPROptimizer_opt.h"
 
 namespace itk
